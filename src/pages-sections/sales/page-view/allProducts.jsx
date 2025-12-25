@@ -1,0 +1,90 @@
+"use client";
+
+import { useRef } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+
+// LOCAL CUSTOM COMPONENTS
+import SaleNavbar from "../sales-navbar";
+import ProductList from "../product-list";
+import CategoryList from "../category-list";
+import ProductPagination from "../product-pagination";
+
+// GLOBAL CUSTOM HOOK
+import useScroller from "hooks/useScroller";
+
+// GLOBAL CUSTOM COMPONENTS
+import FlexBox from "components/flex-box/flex-box";
+
+// STYLED COMPONENT
+import { CategoryWrapper } from "../styles";
+
+// CUSTOM DATA MODEL
+
+
+// ==============================================================
+
+
+// ==============================================================
+
+export default function SalesOnePageView({
+  offer,
+  discount,
+  page,
+  products,
+  pageSize,
+  categories,
+  totalProducts
+}) {
+  const categoryRef = useRef(null);
+  const {
+    isFixedHeader
+  } = useScroller(categoryRef);
+  const isInitialLoading = Array.isArray(products) ? products.length === 0 : !products;
+
+  return <Container className="mt-2">
+      {isInitialLoading && (
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            bgcolor: "rgba(255,255,255,0.6)",
+            zIndex: 9999
+          }}
+        >
+          <CircularProgress color="primary" />
+        </Box>
+      )}
+      {/* CATEGORY HEADER NAV */} testssss
+      <CategoryWrapper show={isFixedHeader}>
+        <SaleNavbar path="/allProducts?view=grid" categories={categories} />
+      </CategoryWrapper>
+
+      {/* TITLE */}
+      <FlexBox mb={4} flexWrap="wrap" gap={1}>
+        <Typography variant="h1" color="primary">
+          {offer} vvv offer
+        </Typography>
+
+        <Typography variant="h1" sx={{
+        color: "grey.600"
+      }}>
+          {discount}
+        </Typography>
+      </FlexBox>
+
+      {/* CATEGORY LIST AREA */}
+      <CategoryList ref={categoryRef} categories={categories} />
+
+      {/* PRODUCT LIST AREA */}
+      <ProductList products={products || []} />
+
+      {/* PAGINATION AREA */}
+      <ProductPagination page={page} perPage={pageSize} totalProducts={totalProducts} />
+    </Container>;
+}

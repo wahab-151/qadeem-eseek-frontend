@@ -1,0 +1,106 @@
+name: 🚀 Deploy Safeplug Frontend to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 🧩 Build & Deploy Next.js SSR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Setup Node.js and npm caching
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: ⚙️ Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 🧠 Test SSH connection
+        run: |
+          echo "🔗 Testing SSH connection..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo ✅ SSH connection successful!"
+
+      - name: 📝 Create .env file for build
+        run: |
+          echo "📝 Creating .env file from GitHub Secrets..."
+          cat > .env << EOF
+          ${{ secrets.ENV_FILE }}
+          EOF
+          echo "✅ .env file created"
+
+      - name: 🏗️ Build Next.js app (SSR)
+        run: |
+          echo "🏗️ Installing dependencies..."
+          npm ci
+          echo "⚙️ Building Next.js app..."
+          npm run build
+          echo "✅ Build completed successfully!"
+
+      - name: 📦 Upload project to VPS
+        run: |
+          echo "📦 Uploading project files to VPS via rsync..."
+          rsync -az --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.next/cache' \
+            ./ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/safeplug/safeplugfrontend/
+          
+          echo "📝 Creating .env file on VPS..."
+          echo "${{ secrets.ENV_FILE }}" | ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd /root/safeplug/safeplugfrontend && cat > .env"
+
+      - name: 🚀 Deploy & Restart PM2 Service
+        run: |
+          echo "🚀 Deploying on VPS..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            set -e
+            cd /root/safeplug/safeplugfrontend
+
+            echo "📦 Preparing standalone build..."
+            
+            echo "📂 Copying public folder to standalone..."
+            cp -r /root/safeplug/safeplugfrontend/public /root/safeplug/safeplugfrontend/.next/standalone/ || true
+            
+            echo "📂 Copying static folder to standalone..."
+            cp -r /root/safeplug/safeplugfrontend/.next/static /root/safeplug/safeplugfrontend/.next/standalone/.next/ || true
+            
+            echo "📝 Copying .env to standalone..."
+            cp /root/safeplug/safeplugfrontend/.env /root/safeplug/safeplugfrontend/.next/standalone/ || true
+
+            echo "🧹 Cleaning old PM2 process..."
+            pm2 stop safeplug-frontend || true
+            pm2 delete safeplug-frontend || true
+
+            echo "⚙️ Starting Next.js standalone server on port 3001..."
+            cd /root/safeplug/safeplugfrontend/.next/standalone
+            PORT=3001 pm2 start server.js --name "safeplug-frontend"
+
+            echo "💾 Saving PM2 state..."
+            pm2 save
+
+            echo "✅ Deployment completed successfully!"
+          EOF
+
+      - name: ✅ Verify Deployment
+        run: |
+          echo "🔍 Verifying deployment..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            echo "📊 PM2 Status:"
+            pm2 list | grep safeplug || echo "⚠️ safeplug-frontend not running"
+            echo ""
+            echo "🧾 Last 10 log lines:"
+            pm2 logs safeplug-frontend --lines 10 --nostream || echo "⚠️ No logs yet"
+          EOF

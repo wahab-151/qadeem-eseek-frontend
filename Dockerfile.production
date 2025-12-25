@@ -1,0 +1,89 @@
+# 🚀 Production-Optimized Dockerfile for Next.js Frontend
+# Multi-stage build for smaller image size and faster startup
+
+# Stage 1: Base image
+FROM node:20-alpine AS base
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Stage 2: Install dependencies
+FROM base AS deps
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install production dependencies only
+RUN npm ci --only=production --ignore-scripts && \
+    npm cache clean --force
+
+# Stage 3: Build the application
+FROM base AS builder
+WORKDIR /app
+
+# Declare all build-time secrets
+ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+ARG NEXT_PUBLIC_SERVER_BASE_URL
+ARG RECAPTCHA_SECRET_KEY
+ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
+# Set build environment variables
+ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+ENV NEXT_PUBLIC_SERVER_BASE_URL=$NEXT_PUBLIC_SERVER_BASE_URL
+ENV RECAPTCHA_SECRET_KEY=$RECAPTCHA_SECRET_KEY
+ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Copy dependencies and source code
+COPY package.json package-lock.json* ./
+RUN npm ci --ignore-scripts
+COPY . .
+
+# Build Next.js application
+RUN npm run build
+
+# Stage 4: Production runner
+FROM base AS runner
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Declare runtime secrets
+ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+ARG NEXT_PUBLIC_SERVER_BASE_URL
+ARG RECAPTCHA_SECRET_KEY
+ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
+# Set runtime environment variables
+ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+ENV NEXT_PUBLIC_SERVER_BASE_URL=$NEXT_PUBLIC_SERVER_BASE_URL
+ENV RECAPTCHA_SECRET_KEY=$RECAPTCHA_SECRET_KEY
+ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
+# Create non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy necessary files from builder
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+# Set correct permissions
+RUN chown -R nextjs:nodejs /app
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+# Start the application
+CMD ["npm", "start"]

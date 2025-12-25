@@ -1,0 +1,64 @@
+"use client";
+
+import { Fragment, useState } from "react";
+import Badge from "@mui/material/Badge";
+
+// GLOBAL CUSTOM HOOKS
+import useCart from "hooks/useCart";
+
+// STYLED COMPONENTS
+import { StyledBox, StyledDrawer, StyledNavLink, Wrapper } from "./styles";
+
+// TYPES
+
+
+// ==============================================================
+
+
+// ==============================================================
+
+export default function MobileNavigationBar2({
+  children,
+  navigation
+}) {
+  const {
+    state
+  } = useCart();
+  const [open, setOpen] = useState(false);
+  const handleDrawerClose = () => setOpen(false);
+  const handleDrawerToggle = () => setOpen(state => !state);
+  
+  // Calculate total quantity like in header cart
+  const itemCount = state?.cart?.reduce((total, item) => total + (item.qty || 0), 0) || 0;
+  
+  return <Fragment>
+      <StyledDrawer open={open} anchor="left" onClose={handleDrawerClose}>
+        {children}
+      </StyledDrawer>
+
+      <Wrapper>
+        {navigation.map(({
+        Icon,
+        title,
+        href,
+        badge
+      }) => {
+        
+// LINK INNER CONTENTS
+        const ICON = <Icon className="icon" fontSize="small" />;
+        const CONTENT = <Fragment>
+              {badge ? <Badge badgeContent={itemCount} color="primary">
+                  {ICON}
+                </Badge> : ICON}
+
+              {title}
+            </Fragment>;
+        return href ? <StyledNavLink key={title} href={href}>
+              {CONTENT}
+            </StyledNavLink> : <StyledBox key={title} onClick={handleDrawerToggle}>
+              {CONTENT}
+            </StyledBox>;
+      })}
+      </Wrapper>
+    </Fragment>;
+}

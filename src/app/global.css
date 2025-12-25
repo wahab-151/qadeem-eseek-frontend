@@ -1,0 +1,7 @@
+/* Hide Next.js dev "N" indicator and toast overlay in development */
+body > div[style*="bottom: 0px"][style*="left: 0px"],
+[data-nextjs-dev-overlay],
+[data-nextjs-toast="true"],
+#__next-route-announcer {
+  display: none !important;
+}
