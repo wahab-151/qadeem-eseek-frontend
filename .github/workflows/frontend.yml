@@ -104,3 +104,5 @@ jobs:
             echo "🧾 Last 10 log lines:"
             pm2 logs safeplug-frontend --lines 10 --nostream || echo "⚠️ No logs yet"
           EOF
+
+          

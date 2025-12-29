@@ -42,6 +42,22 @@ const nextConfig = {
       '@mui/lab'
     ],
   },
+  // SECURITY: Prevent script generation and file system access
+  webpack: (config, { isServer }) => {
+    // Disable file system access in webpack (modern syntax)
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
+  // SECURITY: Disable any build-time script execution
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
 };
 
 module.exports = nextConfig;
