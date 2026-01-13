@@ -3,24 +3,23 @@ import { useState, useEffect, useRef } from "react";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
 import { keyframes } from "@mui/material";
 import { CarouselEager as Carousel } from "components/carousel";
 import QadeemButton from "components/QadeemButton";
 import LazyImage from "components/LazyImage";
 import Link from "next/link";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import KeyboardDoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import KeyboardDoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRight";
+import LaunchIcon from "@mui/icons-material/Launch";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import api from "utils/__api__/home";
 
 // Define keyframe animation for image entering from right
 const slideFromRight = keyframes`
   0% {
-    opacity: 0;
     transform: translateX(100%);
   }
   100% {
-    opacity: 1;
     transform: translateX(0);
   }
 `;
@@ -28,11 +27,9 @@ const slideFromRight = keyframes`
 // Define keyframe animation for image exiting to left
 const slideToLeft = keyframes`
   0% {
-    opacity: 1;
     transform: translateX(0);
   }
   100% {
-    opacity: 0;
     transform: translateX(-100%);
   }
 `;
@@ -55,7 +52,7 @@ const defaultCategories = [
     id: 3,
     name: "Handicrafts",
     image:
-      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
   },
   {
     id: 4,
@@ -72,12 +69,26 @@ const defaultCategories = [
 ];
 
 // Category Card Component
-const CategoryCard = ({ category, index, animationKey, isTransitioning, previousFirstId, previousFirstImage, previousFirstName, previousSecondId, previousSecondImage }) => {
+const CategoryCard = ({
+  category,
+  index,
+  animationKey,
+  isTransitioning,
+  previousFirstId,
+  previousFirstImage,
+  previousFirstName,
+  previousSecondId,
+  previousSecondImage,
+  debug,
+  transitionMs,
+}) => {
   // First image should be bigger, others smaller
   const isFirst = index === 0;
   const isSecond = index === 1;
-  const isFirstEntering = isFirst && isTransitioning && previousFirstId !== category.id;
-  const isSecondEntering = isSecond && isTransitioning && previousSecondId !== category.id;
+  const isFirstEntering =
+    isFirst && isTransitioning && previousFirstId !== category.id;
+  const isSecondEntering =
+    isSecond && isTransitioning && previousSecondId !== category.id;
 
   return (
     <Box
@@ -98,6 +109,37 @@ const CategoryCard = ({ category, index, animationKey, isTransitioning, previous
         transform: "translateZ(0)", // Force hardware acceleration
       }}
     >
+      {debug && (isFirst || isSecond) && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 8,
+            left: 8,
+            zIndex: 20,
+            bgcolor: "rgba(0,0,0,0.7)",
+            color: "#fff",
+            px: 1,
+            py: 0.5,
+            fontSize: 11,
+            lineHeight: 1.2,
+            fontFamily: "monospace",
+            maxWidth: "95%",
+            borderRadius: 1,
+          }}
+        >
+          <div>{`pos=${index} ${isFirst ? "FIRST" : "SECOND"}`}</div>
+          <div>{`id=${category?.id} prev1=${previousFirstId} prev2=${previousSecondId}`}</div>
+          <div style={{ opacity: 0.85 }}>
+            {`img=${String(category?.image || "").slice(0, 38)}`}
+          </div>
+          {isTransitioning && (
+            <div style={{ opacity: 0.85 }}>
+              {`prev2img=${String(previousSecondImage || "").slice(0, 30)}`}
+            </div>
+          )}
+        </Box>
+      )}
+
       <Box
         sx={{
           position: "absolute",
@@ -106,91 +148,133 @@ const CategoryCard = ({ category, index, animationKey, isTransitioning, previous
           width: "100%",
           height: "100%",
           overflow: "hidden", // Ensure the sliding image doesn't overflow
+          backgroundColor: "#000", // Prevent background from showing through
         }}
       >
         {/* Exit animation for previous first image sliding out to left */}
-        {isFirst && isTransitioning && previousFirstId && previousFirstId !== category.id && previousFirstImage && (
-          <Box
-            key={`exit-first-${previousFirstId}-${animationKey}`}
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              zIndex: 2,
-              animation: `${slideToLeft} 0.7s ease-in-out forwards`,
-              willChange: "transform, opacity",
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-            }}
-          >
-            <LazyImage
-              src={previousFirstImage}
-              alt="Previous category"
-              fill
-              style={{
-                objectFit: "cover",
+        {isFirst &&
+          isTransitioning &&
+          previousFirstId &&
+          previousFirstId !== category.id &&
+          previousFirstImage && (
+            <Box
+              key={`exit-first-${previousFirstId}-${animationKey}`}
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 2,
+                animation: `${slideToLeft} ${transitionMs}ms ease-in-out forwards`,
+                willChange: "transform",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+                transform: "translateZ(0)", // Force hardware acceleration
+                opacity: 1, // Ensure full opacity
               }}
-            />
-          </Box>
-        )}
-        
+            >
+              <LazyImage
+                src={previousFirstImage}
+                alt="Previous category"
+                fill
+                style={{
+                  objectFit: "cover",
+                }}
+                priority
+                loading="eager"
+              />
+            </Box>
+          )}
+
         {/* Exit animation for previous second image sliding out to left */}
-        {isSecond && isTransitioning && previousSecondId && previousSecondId !== category.id && previousSecondImage && (
-          <Box
-            key={`exit-second-${previousSecondId}-${animationKey}`}
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              zIndex: 2,
-              animation: `${slideToLeft} 0.7s ease-in-out forwards`,
-              willChange: "transform, opacity",
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-            }}
-          >
-            <LazyImage
-              src={previousSecondImage}
-              alt="Previous second category"
-              fill
-              style={{
-                objectFit: "cover",
+        {/* This is the image that was in second position, now moving to first */}
+        {isSecond &&
+          isTransitioning &&
+          previousSecondId &&
+          previousSecondId !== category.id &&
+          previousSecondImage && (
+            <Box
+              key={`exit-second-${previousSecondId}-${animationKey}`}
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 2,
+                animation: `${slideToLeft} ${transitionMs}ms ease-in-out forwards`,
+                willChange: "transform",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+                transform: "translateZ(0)", // Force hardware acceleration
+                opacity: 1, // Ensure full opacity
               }}
-            />
-          </Box>
-        )}
+            >
+              <LazyImage
+                src={previousSecondImage}
+                alt="Previous second category"
+                fill
+                style={{
+                  objectFit: "cover",
+                }}
+                priority
+                loading="eager"
+              />
+            </Box>
+          )}
         
         {/* Enter animation for new first or second image sliding in from right */}
-        <Box
-          key={isFirst ? `big-${category.id}-${animationKey}` : isSecond ? `small-${category.id}-${animationKey}` : `small-${category.id}`}
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: (isFirstEntering || isSecondEntering) ? 1 : "auto",
-            animation: isFirstEntering || isSecondEntering 
-              ? `${slideFromRight} 0.7s ease-in-out` 
-              : ((isFirst || isSecond) && !isTransitioning ? `${slideFromRight} 0.7s ease-in-out` : "none"),
-            willChange: (isFirstEntering || isSecondEntering || isFirst || isSecond) ? "transform, opacity" : "auto",
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-          }}
-        >
-          <LazyImage
-            src={category.image}
-            alt={category.name}
-            fill
-            style={{
-              objectFit: "cover",
+        {/* Base card handles entering animation; no extra overlays to avoid double slides */}
+        {
+          <Box
+            key={
+              isFirst
+                ? `big-${category.id}-${isTransitioning ? animationKey : category.id}`
+                : isSecond
+                  ? `small-${category.id}-${isTransitioning ? animationKey : category.id}`
+                  : `small-${category.id}`
+            }
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              zIndex:
+                isFirstEntering || isSecondEntering
+                  ? 1
+                  : isTransitioning && (isFirst || isSecond)
+                    ? 0
+                    : "auto",
+              animation:
+                (isFirstEntering || isSecondEntering) && isTransitioning
+                  ? `${slideFromRight} ${transitionMs}ms ease-in-out forwards`
+                  : "none",
+              willChange:
+                isFirstEntering || isSecondEntering || isFirst || isSecond
+                  ? "transform"
+                  : "auto",
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "translateZ(0)", // Force hardware acceleration
+              opacity: 1, // Ensure full opacity at all times
+              // Ensure image is always rendered and ready
+              visibility: "visible",
             }}
-          />
-        </Box>
+          >
+            <LazyImage
+              src={category.image}
+              alt={category.name}
+              fill
+              style={{
+                objectFit: "cover",
+              }}
+              priority={isFirst || isSecond}
+              loading={isFirst || isSecond ? "eager" : "lazy"}
+            />
+          </Box>
+        }
       </Box>
 
       {/* White box at bottom left - Only show on first image */}
@@ -200,11 +284,10 @@ const CategoryCard = ({ category, index, animationKey, isTransitioning, previous
             position: "absolute",
             bottom: 0,
             left: 0,
-            backgroundColor: "#fff",
             display: "flex",
             alignItems: "stretch", // Ensure equal height for text box and arrow button
             boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-            maxWidth: "85%",
+            width: "100%",
             minHeight: 60,
             zIndex: 10, // Keep above images during transitions
           }}
@@ -216,33 +299,39 @@ const CategoryCard = ({ category, index, animationKey, isTransitioning, previous
               display: "flex",
               alignItems: "center",
               position: "relative",
-              minWidth: 120, // Prevent layout shift
+              flex: 1, // Make it take full width
+              backgroundColor: "rgba(255, 255, 255, 0.5)", // White with 0.5 opacity
             }}
           >
             {/* Previous label - fade out (overlaps with new label for seamless transition) */}
-            {isTransitioning && previousFirstId && previousFirstId !== category.id && previousFirstName && (
-              <Typography
-                key={`prev-label-${previousFirstId}-${animationKey}`}
-                sx={{
-                  position: "absolute",
-                  fontFamily: "serif",
-                  fontSize: { xs: "18px", md: "24px" },
-                  fontWeight: 600,
-                  color: "#2B2B2B",
-                  lineHeight: 1.2,
-                  opacity: 1,
-                  animation: "fadeOutLabel 0.4s ease-in-out forwards",
-                  "@keyframes fadeOutLabel": {
-                    "0%": { opacity: 1 },
-                    "50%": { opacity: 0.5 },
-                    "100%": { opacity: 0 },
-                  },
-                }}
-              >
-                {previousFirstName}
-              </Typography>
-            )}
-            
+            {isTransitioning &&
+              previousFirstId &&
+              previousFirstId !== category.id &&
+              previousFirstName && (
+                <Typography
+                  key={`prev-label-${previousFirstId}-${animationKey}`}
+                  sx={{
+                    position: "absolute",
+                    fontFamily: "serif",
+                    fontSize: { xs: "18px", md: "24px" },
+                    fontWeight: 600,
+                    color: "#2B2B2B",
+                    textAlign: "center",
+                    width: "100%",
+                    lineHeight: 1.2,
+                    opacity: 1,
+                    animation: "fadeOutLabel 0.4s ease-in-out forwards",
+                    "@keyframes fadeOutLabel": {
+                      "0%": { opacity: 1 },
+                      "50%": { opacity: 0.5 },
+                      "100%": { opacity: 0 },
+                    },
+                  }}
+                >
+                  {previousFirstName}
+                </Typography>
+              )}
+
             {/* Current label - fade in (overlaps with old label for seamless transition) */}
             <Typography
               key={`current-label-${category.id}-${animationKey}`}
@@ -251,17 +340,23 @@ const CategoryCard = ({ category, index, animationKey, isTransitioning, previous
                 fontSize: { xs: "18px", md: "24px" },
                 fontWeight: 600,
                 color: "#2B2B2B",
+                textAlign: "center",
+                width: "100%",
                 lineHeight: 1.2,
-                opacity: isTransitioning && previousFirstId !== category.id ? 0 : 1,
-                animation: isTransitioning && previousFirstId !== category.id 
-                  ? "fadeInLabel 0.4s ease-in-out 0.1s forwards"
-                  : "none",
+                opacity:
+                  isTransitioning && previousFirstId !== category.id ? 0 : 1,
+                animation:
+                  isTransitioning && previousFirstId !== category.id
+                    ? "fadeInLabel 0.4s ease-in-out 0.1s forwards"
+                    : "none",
                 "@keyframes fadeInLabel": {
                   "0%": { opacity: 0 },
                   "50%": { opacity: 0.5 },
                   "100%": { opacity: 1 },
                 },
-                transition: isTransitioning ? "none" : "opacity 0.2s ease-in-out",
+                transition: isTransitioning
+                  ? "none"
+                  : "opacity 0.2s ease-in-out",
               }}
             >
               {category.name}
@@ -284,10 +379,9 @@ const CategoryCard = ({ category, index, animationKey, isTransitioning, previous
               },
             }}
           >
-            <ArrowForwardIcon
+            <LaunchIcon
               fontSize="small"
               sx={{
-                transform: "rotate(0deg)",
                 fontSize: "20px",
               }}
             />
@@ -306,6 +400,10 @@ const responsive = [
 ];
 
 export default function Categoriescarousel() {
+  const DEBUG_CAROUSEL = false;
+  const RIGHT_PEEK_PX = 140; // how much of the next card should be visible on the right
+  const BASE_TRANSITION_MS = 700;
+  const FAST_TRANSITION_MS = 220;
   const [categories, setCategories] = useState(defaultCategories);
   const [isLoading, setIsLoading] = useState(true);
   const carouselRef = useRef(null);
@@ -346,78 +444,76 @@ export default function Categoriescarousel() {
   const [previousFirstName, setPreviousFirstName] = useState(null);
   const [previousSecondId, setPreviousSecondId] = useState(null);
   const [previousSecondImage, setPreviousSecondImage] = useState(null);
+  const [transitionMs, setTransitionMs] = useState(BASE_TRANSITION_MS);
   const autoplayTimerRef = useRef(null);
+  const rotatedCategoriesRef = useRef([]);
+  const dotNavTokenRef = useRef(0);
+  const isDotNavigatingRef = useRef(false);
+  const transitionMsRef = useRef(BASE_TRANSITION_MS);
 
   // Sync rotated categories when categories change
   useEffect(() => {
     setRotatedCategories(categories);
   }, [categories]);
 
-  // Ensure carousel starts at slide 0
+  // Keep a ref to the latest rotatedCategories to avoid stale closures (autoplay + rapid clicks)
   useEffect(() => {
-    if (!isLoading && carouselRef.current && carouselRef.current.slickGoTo) {
+    rotatedCategoriesRef.current = rotatedCategories;
+  }, [rotatedCategories]);
+
+  useEffect(() => {
+    transitionMsRef.current = transitionMs;
+  }, [transitionMs]);
+
+  // Ensure carousel starts at slide 0 (only on initial load, not during transitions)
+  useEffect(() => {
+    if (
+      !isLoading &&
+      !isTransitioning &&
+      carouselRef.current &&
+      carouselRef.current.slickGoTo
+    ) {
       carouselRef.current.slickGoTo(0, false);
     }
   }, [isLoading]);
 
-  // Custom autoplay that rotates array without sliding
-  useEffect(() => {
-    if (isLoading) return;
-
-    // Clear any existing timer
-    if (autoplayTimerRef.current) {
-      clearInterval(autoplayTimerRef.current);
-    }
-
-    // Set up custom autoplay that rotates the array
+  const startAutoplayTimer = () => {
+    if (autoplayTimerRef.current) clearInterval(autoplayTimerRef.current);
     autoplayTimerRef.current = setInterval(() => {
       if (rotationLockRef.current) return;
-      
+      if (isDotNavigatingRef.current) return;
+
       rotationLockRef.current = true;
-      const currentFirst = rotatedCategories[0];
-      const currentSecond = rotatedCategories[1];
+      const current = rotatedCategoriesRef.current || [];
+      const currentFirst = current[0];
+      const currentSecond = current[1];
       setPreviousFirstId(currentFirst?.id);
       setPreviousFirstImage(currentFirst?.image);
       setPreviousFirstName(currentFirst?.name);
       setPreviousSecondId(currentSecond?.id);
       setPreviousSecondImage(currentSecond?.image);
       setIsTransitioning(true);
-      
-      // Ensure carousel is at slide 0 before starting transition
-      if (carouselRef.current && carouselRef.current.slickGoTo) {
-        carouselRef.current.slickGoTo(0, false);
-      }
-      
-      // Small delay to ensure carousel is positioned correctly
-      requestAnimationFrame(() => {
-        setAnimationKey((prev) => prev + 1);
-        
-        setRotatedCategories((prev) => {
-          const rotated = rotateCategoriesForward(prev);
-          // Keep carousel at slide 0 during transition
-          requestAnimationFrame(() => {
-            if (carouselRef.current && carouselRef.current.slickGoTo) {
-              carouselRef.current.slickGoTo(0, false);
-            }
-          });
-          
-          // Reset transition state after animation completes
-          setTimeout(() => {
-            if (carouselRef.current && carouselRef.current.slickGoTo) {
-              carouselRef.current.slickGoTo(0, false);
-            }
-            setIsTransitioning(false);
-            setPreviousFirstId(null);
-            setPreviousFirstImage(null);
-            setPreviousFirstName(null);
-            setPreviousSecondId(null);
-            setPreviousSecondImage(null);
-            rotationLockRef.current = false;
-          }, 700); // Match animation duration
-          return rotated;
-        });
-      });
-    }, 3000); // 3 seconds
+
+      setAnimationKey((prev) => prev + 1);
+      setRotatedCategories((prev) => rotateCategoriesForward(prev));
+
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setPreviousFirstId(null);
+        setPreviousFirstImage(null);
+        setPreviousFirstName(null);
+        setPreviousSecondId(null);
+        setPreviousSecondImage(null);
+        rotationLockRef.current = false;
+      }, transitionMsRef.current + 20);
+    }, 3000);
+  };
+
+  // Custom autoplay that rotates array without sliding
+  useEffect(() => {
+    if (isLoading) return;
+
+    startAutoplayTimer();
 
     return () => {
       if (autoplayTimerRef.current) {
@@ -447,99 +543,119 @@ export default function Categoriescarousel() {
   // Custom next handler - rotate array and reset instantly without sliding
   const handleNext = () => {
     if (rotationLockRef.current) return;
-    
+
     rotationLockRef.current = true;
-    const currentFirst = rotatedCategories[0];
-    const currentSecond = rotatedCategories[1];
+    const current = rotatedCategoriesRef.current || rotatedCategories || [];
+    const currentFirst = current[0];
+    const currentSecond = current[1];
     setPreviousFirstId(currentFirst?.id);
     setPreviousFirstImage(currentFirst?.image);
     setPreviousFirstName(currentFirst?.name);
     setPreviousSecondId(currentSecond?.id);
     setPreviousSecondImage(currentSecond?.image);
     setIsTransitioning(true);
-    
-    // Ensure carousel is at slide 0 before starting transition
-    if (carouselRef.current && carouselRef.current.slickGoTo) {
-      carouselRef.current.slickGoTo(0, false);
-    }
-    
-    // Small delay to ensure carousel is positioned correctly
-    requestAnimationFrame(() => {
-      setAnimationKey((prev) => prev + 1); // Trigger animation
-      
-      setRotatedCategories((prev) => {
-        const rotated = rotateCategoriesForward(prev);
-        // Keep carousel at slide 0 during transition
-        requestAnimationFrame(() => {
-          if (carouselRef.current && carouselRef.current.slickGoTo) {
-            carouselRef.current.slickGoTo(0, false);
-          }
-        });
-        
-        // Reset transition state after animation completes
-        setTimeout(() => {
-          if (carouselRef.current && carouselRef.current.slickGoTo) {
-            carouselRef.current.slickGoTo(0, false);
-          }
-          setIsTransitioning(false);
-          setPreviousFirstId(null);
-          setPreviousFirstImage(null);
-          setPreviousSecondId(null);
-          setPreviousSecondImage(null);
-          rotationLockRef.current = false;
-        }, 700); // Match animation duration
-        return rotated;
-      });
-    });
+
+    // Trigger animation and rotation immediately
+    setAnimationKey((prev) => prev + 1);
+    setRotatedCategories((prev) => rotateCategoriesForward(prev));
+
+    // Reset transition state after animation completes
+    setTimeout(() => {
+      setIsTransitioning(false);
+      setPreviousFirstId(null);
+      setPreviousFirstImage(null);
+      setPreviousFirstName(null);
+      setPreviousSecondId(null);
+      setPreviousSecondImage(null);
+      rotationLockRef.current = false;
+    }, transitionMsRef.current + 20);
   };
 
   // Custom prev handler - rotate array backward and reset instantly
   const handlePrev = () => {
     if (rotationLockRef.current) return;
-    
+
     rotationLockRef.current = true;
-    const currentFirst = rotatedCategories[0];
-    const currentSecond = rotatedCategories[1];
+    const current = rotatedCategoriesRef.current || rotatedCategories || [];
+    const currentFirst = current[0];
+    const currentSecond = current[1];
     setPreviousFirstId(currentFirst?.id);
     setPreviousFirstImage(currentFirst?.image);
     setPreviousFirstName(currentFirst?.name);
     setPreviousSecondId(currentSecond?.id);
     setPreviousSecondImage(currentSecond?.image);
     setIsTransitioning(true);
-    
-    // Ensure carousel is at slide 0 before starting transition
+
+    // Trigger animation and rotation immediately
+    setAnimationKey((prev) => prev + 1);
+    setRotatedCategories((prev) => rotateCategoriesBackward(prev));
+
+    // Reset transition state after animation completes
+    setTimeout(() => {
+      setIsTransitioning(false);
+      setPreviousFirstId(null);
+      setPreviousFirstImage(null);
+      setPreviousFirstName(null);
+      setPreviousSecondId(null);
+      setPreviousSecondImage(null);
+      rotationLockRef.current = false;
+    }, transitionMsRef.current + 20);
+  };
+
+  const activeDotIndex =
+    categories?.length && rotatedCategories?.[0]?.id != null
+      ? Math.max(0, categories.findIndex((c) => c.id === rotatedCategories[0].id))
+      : 0;
+
+  const handleDotClick = (targetIndex) => {
+    if (!categories?.length) return;
+    if (targetIndex === activeDotIndex) return;
+
+    // Cancel any in-flight animations
+    dotNavTokenRef.current += 1;
+    isDotNavigatingRef.current = true;
+    rotationLockRef.current = true;
+
+    // Find the target category
+    const targetCategory = categories[targetIndex];
+    if (!targetCategory) return;
+
+    // Rotate array to put target at position 0 (no animations, instant)
+    setRotatedCategories((prev) => {
+      const targetCurrentIndex = prev.findIndex((c) => c.id === targetCategory.id);
+      if (targetCurrentIndex < 0) return prev; // Category not found
+      // IMPORTANT: do a true circular rotation so autoplay continues from the clicked dot
+      // Example: [2,3,4,5,6,7,8,1] click 7 => [7,8,1,2,3,4,5,6]
+      const rotated = [
+        ...prev.slice(targetCurrentIndex),
+        ...prev.slice(0, targetCurrentIndex),
+      ];
+      // Update ref immediately so autoplay uses the new state
+      rotatedCategoriesRef.current = rotated;
+      return rotated;
+    });
+
+    // Reset all transition states (no animations)
+    setIsTransitioning(false);
+    setPreviousFirstId(null);
+    setPreviousFirstImage(null);
+    setPreviousFirstName(null);
+    setPreviousSecondId(null);
+    setPreviousSecondImage(null);
+    rotationLockRef.current = false;
+    isDotNavigatingRef.current = false;
+
+    // Ensure carousel stays at slide 0
     if (carouselRef.current && carouselRef.current.slickGoTo) {
       carouselRef.current.slickGoTo(0, false);
     }
-    
-    // Small delay to ensure carousel is positioned correctly
-    requestAnimationFrame(() => {
-      setAnimationKey((prev) => prev + 1); // Trigger animation
-      
-      setRotatedCategories((prev) => {
-        const rotated = rotateCategoriesBackward(prev);
-        // Keep carousel at slide 0 during transition
-        requestAnimationFrame(() => {
-          if (carouselRef.current && carouselRef.current.slickGoTo) {
-            carouselRef.current.slickGoTo(0, false);
-          }
-        });
-        
-        // Reset transition state after animation completes
-        setTimeout(() => {
-          if (carouselRef.current && carouselRef.current.slickGoTo) {
-            carouselRef.current.slickGoTo(0, false);
-          }
-          setIsTransitioning(false);
-          setPreviousFirstId(null);
-          setPreviousFirstImage(null);
-          setPreviousSecondId(null);
-          setPreviousSecondImage(null);
-          rotationLockRef.current = false;
-        }, 700); // Match animation duration
-        return rotated;
-      });
-    });
+
+    // Resume autoplay from the *new* position (reset timer so it won't "jump back")
+    setTimeout(() => {
+      rotationLockRef.current = false;
+      isDotNavigatingRef.current = false;
+      startAutoplayTimer();
+    }, 0);
   };
 
   // Custom arrow components that intercept clicks
@@ -549,11 +665,12 @@ export default function Categoriescarousel() {
       e.stopPropagation();
       handleNext();
     };
-    
+
     return (
-      <Box
+      <IconButton
         onClick={handleClick}
         className={className}
+        aria-label="Next"
         sx={{
           ...sx,
           backgroundColor: "white",
@@ -566,12 +683,19 @@ export default function Categoriescarousel() {
           right: -24,
           zIndex: 10,
           cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          // Grid centering avoids SVG baseline/line-height quirks
+          display: "grid",
+          placeItems: "center",
+          lineHeight: 0,
+          p: 0,
           position: "absolute",
           top: "50%",
           transform: "translateY(-50%)",
+          // hide react-slick default arrow glyph
+          "&:before": { display: "none" },
+          "& svg": {
+            display: "block",
+          },
           "&:hover": {
             backgroundColor: "white",
             color: "black",
@@ -579,8 +703,14 @@ export default function Categoriescarousel() {
           },
         }}
       >
-        <KeyboardDoubleArrowRight fontSize="small" />
-      </Box>
+        <ChevronRightIcon
+          sx={{
+            fontSize: 24,
+            // chevron SVGs are sometimes slightly left-heavy; nudge to visual center
+            transform: "translateX(1px)",
+          }}
+        />
+      </IconButton>
     );
   };
 
@@ -590,11 +720,12 @@ export default function Categoriescarousel() {
       e.stopPropagation();
       handlePrev();
     };
-    
+
     return (
-      <Box
+      <IconButton
         onClick={handleClick}
         className={className}
+        aria-label="Previous"
         sx={{
           ...sx,
           backgroundColor: "white",
@@ -607,12 +738,17 @@ export default function Categoriescarousel() {
           left: -24,
           zIndex: 10,
           cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          display: "grid",
+          placeItems: "center",
+          lineHeight: 0,
+          p: 0,
           position: "absolute",
           top: "50%",
           transform: "translateY(-50%)",
+          "&:before": { display: "none" },
+          "& svg": {
+            display: "block",
+          },
           "&:hover": {
             backgroundColor: "white",
             color: "black",
@@ -620,8 +756,13 @@ export default function Categoriescarousel() {
           },
         }}
       >
-        <KeyboardDoubleArrowLeft fontSize="small" />
-      </Box>
+        <ChevronLeftIcon
+          sx={{
+            fontSize: 24,
+            transform: "translateX(-1px)",
+          }}
+        />
+      </IconButton>
     );
   };
 
@@ -634,8 +775,9 @@ export default function Categoriescarousel() {
 
     // Only handle autoplay - manual navigation is handled by custom arrows
     const totalSlides = rotatedCategories.length;
-    const isForward = nextSlideIndex > currentSlideIndex || 
-                     (currentSlideIndex === totalSlides - 1 && nextSlideIndex === 0);
+    const isForward =
+      nextSlideIndex > currentSlideIndex ||
+      (currentSlideIndex === totalSlides - 1 && nextSlideIndex === 0);
 
     // Only rotate if we're moving forward from slide 0
     if (isForward && currentSlideIndex === 0 && nextSlideIndex === 1) {
@@ -649,12 +791,12 @@ export default function Categoriescarousel() {
       setPreviousSecondImage(currentSecond?.image);
       setIsTransitioning(true);
       setAnimationKey((prev) => prev + 1); // Trigger animation
-      
+
       // Immediately prevent the slide by resetting to 0 before rotation completes
       if (carouselRef.current && carouselRef.current.slickGoTo) {
         carouselRef.current.slickGoTo(0, false);
       }
-      
+
       setRotatedCategories((prev) => {
         const rotated = rotateCategoriesForward(prev);
         // Ensure we stay at slide 0 after rotation
@@ -679,10 +821,20 @@ export default function Categoriescarousel() {
   };
 
   return (
-    <section className="mt-4 mb-4" style={{ backgroundColor: "#FFFCF0" }}>
+    <section
+      className="mt-4 mb-4"
+      style={{ backgroundColor: "#FFFCF0", overflowX: 'hidden' }}
+    >
       {" "}
       {/* Light cream bg */}
-      <Container sx={{ py: 8 }}>
+      <Container
+        sx={{
+          py: 8,
+          overflow: "visible",
+          // let the carousel reach the end of the section on desktop
+          pr: { md: 0 },
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -695,6 +847,7 @@ export default function Categoriescarousel() {
           <Box
             sx={{
               width: { xs: "100%", md: "35%" },
+              maxWidth: "422px",
               display: "flex",
               flexDirection: "column",
               gap: 3,
@@ -704,11 +857,13 @@ export default function Categoriescarousel() {
             <Typography
               variant="h2"
               sx={{
-                fontSize: { xs: "40px", md: "56px" },
+                fontSize: { xs: "40px", md: "64px" },
                 fontWeight: 400,
-                fontFamily: "serif",
-                color: "#281D13", // Dark brown
-                lineHeight: 1.1,
+                fontFamily: "Inter, sans-serif",
+                color: "#271E03",
+                lineHeight: "90%",
+                letterSpacing: "0px",
+                textAlign: "left",
               }}
             >
               Categories
@@ -747,7 +902,8 @@ export default function Categoriescarousel() {
                   textTransform: "none",
                   "&:hover": {
                     borderColor: "#2B1F17",
-                    backgroundColor: "rgba(43, 31, 23, 0.05)",
+                    backgroundColor: "primary.main",
+                    color: "white",
                   },
                 }}
               >
@@ -761,12 +917,48 @@ export default function Categoriescarousel() {
             sx={{
               width: { xs: "100%", md: "65%" },
               position: "relative",
+              overflow: "visible",
+              pb: 6, // space for custom dots below
+              // pull the carousel to the very right edge (cancel container padding)
+              mr: { md: -3 },
               // Prevent flickering during transitions
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
               transform: "translateZ(0)", // Force hardware acceleration
+              // Allow next/prev slides to be visible (peek effect)
+              "& .slick-list": {
+                overflow: "visible !important",
+                // Hide slides that appear before the first (left side), but allow peek on the right
+                clipPath: `inset(0px -${RIGHT_PEEK_PX}px 0px 0px)`,
+                WebkitClipPath: `inset(0px -${RIGHT_PEEK_PX}px 0px 0px)`,
+              },
+              "& .slick-track": {
+                overflow: "visible",
+              },
             }}
           >
+            {DEBUG_CAROUSEL && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: -6,
+                  right: -6,
+                  zIndex: 50,
+                  bgcolor: "rgba(0,0,0,0.75)",
+                  color: "#fff",
+                  p: 1,
+                  borderRadius: 1,
+                  fontFamily: "monospace",
+                  fontSize: 11,
+                  lineHeight: 1.25,
+                  maxWidth: 360,
+                }}
+              >
+                <div>{`transition=${isTransitioning} animKey=${animationKey}`}</div>
+                <div>{`curr1=${rotatedCategories?.[0]?.id} curr2=${rotatedCategories?.[1]?.id}`}</div>
+                <div>{`prev1=${previousFirstId} prev2=${previousSecondId}`}</div>
+              </Box>
+            )}
             {isLoading ? (
               <Box
                 sx={{
@@ -785,18 +977,14 @@ export default function Categoriescarousel() {
                 slidesToShow={2}
                 responsive={responsive}
                 spaceBetween={20}
-                dots={true}
+                dots={false}
                 arrows={true}
                 infinite={true}
                 autoplay={false}
-                beforeChange={handleBeforeChange}
+                swipe={false}
+                draggable={false}
                 nextArrow={<CustomNextArrow />}
                 prevArrow={<CustomPrevArrow />}
-                dotColor="#E0E0E0" // Light grey for inactive dots
-                activeDotColor="#2B1F17" // Dark brown for active dot
-                dotStyles={{
-                  mt: 4,
-                }}
               >
                 {rotatedCategories.map((category, index) => (
                   <CategoryCard
@@ -810,9 +998,69 @@ export default function Categoriescarousel() {
                     previousFirstName={previousFirstName}
                     previousSecondId={previousSecondId}
                     previousSecondImage={previousSecondImage}
+                    debug={DEBUG_CAROUSEL}
+                    transitionMs={transitionMs}
                   />
                 ))}
               </Carousel>
+            )}
+
+            {/* Custom dots - positioned like the red line (bottom-right) */}
+            {!isLoading && categories?.length > 1 && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: 0,
+                  bottom: 6,
+                  display: "flex",
+                  gap: 1.25,
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  pr: 1,
+                  zIndex: 20,
+                }}
+              >
+                {categories.map((cat, idx) => {
+                  const isActive = idx === activeDotIndex;
+                  return (
+                    <Box
+                      key={cat.id ?? idx}
+                      onClick={() => handleDotClick(idx)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") handleDotClick(idx);
+                      }}
+                      sx={{
+                        width: isActive ? 27 : 11,
+                        height: isActive ? 27 : 11,
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                        bgcolor: isActive ? "transparent" : "#FAE7AF",
+                        border: isActive ? "1px solid #271E03" : "1px solid transparent",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        "&:hover": {
+                          bgcolor: isActive ? "transparent" : "#EEDB95",
+                        },
+                        outline: "none",
+                      }}
+                    >
+                      {isActive && (
+                        <Box
+                          sx={{
+                            width: 11,
+                            height: 11,
+                            borderRadius: "50%",
+                            bgcolor: "#271E03",
+                          }}
+                        />
+                      )}
+                    </Box>
+                  );
+                })}
+              </Box>
             )}
           </Box>
         </Box>
