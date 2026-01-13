@@ -21,7 +21,11 @@ export default function RootLayout({
 }) {
   return <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/assets/images/new_favIcon.jpeg" type="image/jpeg" />
+        <link rel="icon" href="/assets/images/small-screen-logo.png" type="image/png" sizes="any" />
+        <link rel="icon" href="/assets/images/small-screen-logo.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/assets/images/small-screen-logo.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/assets/images/small-screen-logo.png" />
+        <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="SIFRA - Tools, parts and supplies with fast delivery." />
         <meta property="og:title" content="SIFRA" />
@@ -35,6 +39,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//eseek.s3.us-east-2.amazonaws.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Alice&display=swap" rel="stylesheet" />
         {/* Optional: Preload a known critical CSS chunk */}
         {/* <link rel="preload" as="style" href="/_next/static/css/ef8edee74f693473.css" /> */}
         {/* <title>SIFRA</title> */}

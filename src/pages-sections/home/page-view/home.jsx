@@ -2,10 +2,15 @@
 import { Fragment } from "react";
 import InlineLoader from "components/progress/InlineLoader";
 import dynamic from "next/dynamic";
+import SectionAboutSkeleton from "../section-about/section-about-skeleton";
 
 // LOCAL CUSTOM COMPONENTS (dynamically loaded to reduce initial JS and prevent blocking route render)
 // Keep SSR for above-the-fold content to improve LCP
 const Section1 = dynamic(() => import("../section-1"));
+const SectionAbout = dynamic(() => import("../section-about"), { 
+  ssr: false, 
+  loading: () => <SectionAboutSkeleton />
+});
 const Section2 = dynamic(() => import("../section-2"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section3 = dynamic(() => import("../section-3"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section4 = dynamic(() => import("../section-4"), { ssr: false, loading: () => <InlineLoader size={40} /> });
@@ -24,6 +29,9 @@ export default function GadgetOnePageView() {
 
     {/* MAIN PRODUCT CAROUSEL AND TOP PICK PRODUCTS AREA */}
     <Section1 />
+
+    {/* ABOUT SECTION - QADEEM HANDICRAFT SHOP */}
+    <SectionAbout />
 
     {/* FEATURED CATEGORIES AREA */}
     {/* <Section2 /> */}

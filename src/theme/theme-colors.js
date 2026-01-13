@@ -28,20 +28,20 @@ export const grey = {
   100: "#F6F9FC"
 };
 export const primary = {
-  100: "#FCE9EC",
-  200: "#F8C7CF",
-  300: "#F07D90",
-  400: "#EC6178",
-  500: "#D23F57",
-  600: "#E63E58",
-  700: "#E3364E",
-  800: "#DF2E44",
-  900: "#D91F33",
-  main: "#D23F57",
+  100: "#F5F3E8", // Very light tint
+  200: "#E8E0C4", // Light tint
+  300: "#D4C89A", // Lighter shade
+  400: "#B8A86B", // Light brown
+  500: "#8B7A4A", // Mid-tone brown
+  600: "#6B5D38", // Medium brown
+  700: "#4A3F26", // Dark brown
+  800: "#352D1A", // Darker brown
+  900: "#271E03", // Darkest (main brand color)
+  main: "#271E03", // Primary brand color
   
 // main: "rgba(34, 41, 52, 1)",
-  light: "#FCE9EC",
-  dark: "#E3364E"
+  light: "#8B7A4A", // Lighter variant for light mode
+  dark: "#1A1502" // Darker variant for dark mode
 };
 
 export const secondary = {
@@ -243,7 +243,7 @@ export const themeColors = {
   info: blue,
   divider: grey[200],
   background: {
-    default: "#f2f2f23b"
+    default: "#ffffff"
   },
   text: {
     primary: grey[900],

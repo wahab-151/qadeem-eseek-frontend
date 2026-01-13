@@ -34,19 +34,8 @@ export const RootStyle = styled("div", {
   shouldForwardProp: (prop) => prop !== "space"
 })(({ space, theme }) => ({
   position: "relative",
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: 20,
-  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)", // Elevation
-  padding: theme.spacing(4),
-  margin: theme.spacing(3, 0),
-  overflow: "hidden",
-  transition: "box-shadow 0.3s ease",
-// border:'1px solid red',
-// 
-  // Optional hover effect for depth
-  "&:hover": {
-    boxShadow: "0 12px 35px rgba(0, 0, 0, 0.15)"
-  },
+  backgroundColor: "transparent",
+  overflow: "visible",
 
  ".slick-list": {
   marginInline: -space,
@@ -56,16 +45,15 @@ export const RootStyle = styled("div", {
   ".slick-slide": {
     paddingInline: space
   },
-
-  ":hover .slick-arrow": {
-    opacity: 1,
-    borderRadius: 8,
-    "&.next": {
-      right: 6
-    },
-    "&.prev": {
-      left: 6
-    }
+  
+  // Ensure dots are visible
+  "& .slick-dots": {
+    display: "flex !important",
+    visibility: "visible !important",
+    opacity: "1 !important",
+    position: "relative !important",
+    bottom: "0 !important",
+    marginTop: "16px",
   }
 }));
 
@@ -73,35 +61,39 @@ export const RootStyle = styled("div", {
 
 
 
-export const DotList = styled("ul")(({
-  theme
+export const DotList = styled("ul", {
+  shouldForwardProp: prop => prop !== "activeDotColor"
+})(({
+  theme,
+  activeDotColor
 }) => ({
-  
-// gap: 6,
-  
-// zIndex: 1,
-  
-// margin: 0,
-  
-// padding: 0,
-  display: "flex",
+  display: "flex !important",
   alignItems: "center",
   justifyContent: "center",
-  color: theme.palette.primary.main,
+  gap: "8px",
+  margin: "0 !important",
+  padding: "0 !important",
+  listStyle: "none !important",
+  position: "relative",
+  bottom: "0",
   "& li": {
-    width: 13,
-    height: 7,
+    width: "8px",
+    height: "8px",
     display: "flex",
     cursor: "pointer",
-    transform: "scaleX(1)",
     alignItems: "center",
     justifyContent: "center",
     transition: "all 0.4s",
+    margin: "0 4px",
+    "& button": {
+      display: "none",
+    },
     "&.slick-active span": {
-      backgroundColor: theme.palette.primary.main
+      backgroundColor: activeDotColor || theme.palette.primary.main
     },
     "&.slick-active": {
-      width: 18
+      width: "8px",
+      height: "8px"
     }
   }
 }));
@@ -111,12 +103,16 @@ export const Dot = styled("span", {
   dotColor,
   theme
 }) => ({
-  width: "100%",
-  height: "100%",
-  borderRadius: 12,
+  width: "8px",
+  height: "8px",
+  borderRadius: "50%",
   cursor: "pointer",
-  position: "relative",
-  backgroundColor: dotColor || theme.palette.grey[300]
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: dotColor || "#FFC107",
+  display: "block"
 }));
 export const ArrowButton = styled("div")(({
   theme

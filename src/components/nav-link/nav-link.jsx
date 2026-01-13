@@ -15,6 +15,7 @@ const StyledLink = styled(Link, {
   position: "relative",
   transition: "color 150ms ease-in-out",
   color: active ? theme.palette.primary.main : "inherit",
+  fontWeight: active ? 700 : 400,
   "&:hover": {
     color: `${theme.palette.primary.main} !important`
   }
@@ -38,15 +39,19 @@ export default function NavLink({
   
 // // CHECK CURRENT ROUTE
   const isActive = () => {
-    if (href === "/") return pathname === href;
-    return pathname.includes(href);
+    if (href === "/") return pathname === href || pathname === "/home";
+    if (href === "/home") return pathname === "/home" || pathname === "/";
+    return pathname === href || pathname.startsWith(href + "/");
   };
 
+  const active = isActive();
+  
   return <StyledLink 
     href={href} 
     style={style} 
     className={clsx(className)} 
-    active={isActive() ? 1 : 0} 
+    active={active ? 1 : 0}
+    data-active={active}
     {...props}
   >
      

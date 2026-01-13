@@ -163,7 +163,7 @@ export default function Footer1({ children }) {
     <Card
       component="footer"
       sx={{
-        backgroundColor: "#ffffff",
+        backgroundColor: "#FEFAF0", // Light beige background
         mb: { sm: 0 },
         borderTop: `2px solid ${theme.palette.divider}`,
         width: "100%",
