@@ -1,10 +1,11 @@
 "use client";
 
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography, CircularProgress } from "@mui/material";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { Box } from "@mui/material";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useEffect, useState } from "react";
 import useCart from "hooks/useCart";
+import QadeemButton from "components/QadeemButton";
 
 export default function HeaderCart({ onCartClick, isLoading = false }) {
   const [mounted, setMounted] = useState(false);
@@ -37,120 +38,47 @@ export default function HeaderCart({ onCartClick, isLoading = false }) {
 
   return (
     <Box
-      component="button"
-      onClick={handleClick}
-      display="flex"
-      gap="4px"
-      alignItems="center"
       sx={{
-        px: { xs: 1, sm: 1, md: 1.5 },
-        py: 0.5,
-        borderRadius: "24px",
-        height: 47,
-        border: `1px solid ${theme.palette.grey[300]}`,
-        backgroundColor: "transparent",
-        cursor: "pointer",
-        transition: "all 0.3s ease",
         position: "relative",
-        opacity: isLoading ? 0.7 : 1,
-        pointerEvents: isLoading ? "none" : "auto",
-        "&:hover": {
-          backgroundColor: `${theme.palette.secondary.main}`,
-          "& .hover-white": { color: "#fff" },
-          "& .hover-border-white": { border: `1px solid ${theme.palette.common.white}` },
-          "& .cart-text, & .cart-icon": { color: "#fff" },
-          "& .price-badge": {
-            backgroundColor: "#fff",
-            color: theme.palette.error.main,
-          },
-        },
+        display: "inline-flex",
       }}
     >
-      {isLoading && (
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          zIndex={2}
-          sx={{
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            borderRadius: "24px",
-          }}
-        >
-          <CircularProgress size={18} sx={{ color: theme.palette.secondary.main }} />
-        </Box>
-      )}
-      {/* Cart Icon with Count Badge */}
-      <Box position="relative">
-        <ShoppingCartOutlinedIcon
-          className="cart-icon"
-          sx={{ color: "grey.700", fontSize: 24 }}
-        />
-        {itemCount > 0 && (
-          <Box
-            position="absolute"
-            top={-6}
-            right={-6}
-            width={18}
-            height={18}
-            bgcolor="error.main"
-            color="white"
-            fontSize={12}
-            fontWeight="bold"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius="50%"
-          >
-            {itemCount}
-          </Box>
-        )}
-      </Box>
-
-      <Typography
-        className="cart-text"
-        variant="body2"
+      <QadeemButton
+        iconOnly
+        startIcon={<ShoppingBagOutlinedIcon sx={{ fontSize: 24 }} />}
+        onClick={handleClick}
+        loading={isLoading}
+        disabled={isLoading}
         sx={{
-          ml: 1,
-          color: "grey.800",
-          fontWeight: 500,
-          display: {
-            xs: "none",
-            sm: "none",
-            md: "none",
-            lg: "inline",
+          color: "#424242",
+          padding: "8px",
+          "&:hover": {
+            color: theme.palette.primary.main,
+            backgroundColor: "transparent",
           },
         }}
-      >
-        My cart
-      </Typography>
-
+      />
+      {/* Cart Count Badge */}
       <Box
-        className="price-badge"
-        ml={1}
-        px={1.5}
-        py={0.5}
-        bgcolor="error.main"
+        position="absolute"
+        top={-1}
+        right={-1}
+        minWidth={18}
+        height={18}
+        bgcolor="#424242"
         color="white"
-        borderRadius="999px"
-        fontSize="14px"
+        fontSize={12}
         fontWeight="bold"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        borderRadius="50%"
+        px={itemCount > 9 ? 0.5 : 0}
         sx={{
-          display: {
-            xs: "none",
-            sm: "none",
-            md: "none",
-            lg: "flex",
-          },
-          transition: "all 0.3s ease",
+          pointerEvents: "none",
         }}
       >
-        ${totalPrice.toFixed(2)}
+        {itemCount}
       </Box>
     </Box>
   );

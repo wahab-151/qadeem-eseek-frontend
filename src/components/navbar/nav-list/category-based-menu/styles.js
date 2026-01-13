@@ -9,26 +9,40 @@ import styled from "@mui/material/styles/styled";
 
 
 
-const Wrapper = styled("div")(({ theme }) => ({
+const Wrapper = styled("div", {
+  shouldForwardProp: (prop) => prop !== "active",
+})(({ theme, active }) => ({
   cursor: "pointer",
-  transition: "color 150ms ease-in-out",
+  transition: "color 0.2s ease",
   overflow: "hidden",
   whiteSpace: "nowrap",
   maxWidth: "100%",
+  backgroundColor: active ? "#FFFFFF" : "transparent",
+  borderRadius: "0",
+  padding: active ? "6px 12px" : "0",
+  position: "relative",
+  zIndex: active ? 1 : 0,
  
   ":hover": {
     color: theme.palette.primary.main,
   },
  "& .menu-title": {
-  fontWeight: 700,
+  fontWeight: active ? 700 : 400,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  fontSize: "0.9rem",
-  gap: "16px",
+  fontSize: "0.875rem",
+  fontFamily: "sans-serif",
+  color: active ? "#271E03" : "#424242",
+  padding: "0 20px",
+  transition: "color 0.2s ease",
+
+  "&:hover": {
+    color: theme.palette.primary.main,
+  },
 
   ".icon": {
     fontSize: "1rem",
@@ -38,23 +52,23 @@ const Wrapper = styled("div")(({ theme }) => ({
 
   [theme.breakpoints.down("md")]: {
     fontSize: "0.8rem",
-    gap: "12px",
+    padding: "0 16px",
     ".icon": {
       fontSize: "0.9rem",
     },
   },
 
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.7rem",
-    gap: "8px",
+    fontSize: "0.75rem",
+    padding: "0 12px",
     ".icon": {
       fontSize: "0.8rem",
     },
   },
 
   [theme.breakpoints.down("xs")]: {
-    fontSize: "0.65rem",
-    gap: "6px",
+    fontSize: "0.7rem",
+    padding: "0 8px",
     ".icon": {
       fontSize: "0.75rem",
     },
@@ -64,38 +78,38 @@ const Wrapper = styled("div")(({ theme }) => ({
 const MenusContainer = styled("div")({
   left: "43%", // Start from center
   transform: "translateX(-42%)", // Adjust back by half of width
-  zIndex: 2,
+  zIndex: 0,
   top: "70%",
   width: "96%", // 80% of viewport width
-  height: "100%",
+  height: "fit-content",
   display: "none",
-  minHeight: "500px",
-  maxHeight: "500px",
   position: "absolute",
 });
 
 
 const StyledCard = styled(Card)({
-  marginTop: 12,
-  height: "100%",
+  marginTop: 0,
+  height: "fit-content",
   display: "flex",
   borderRadius: 0,
   overflow: "unset",
+  boxShadow: "none",
+  border: "none",
 });
 
 
 
 const CategoryList = styled(List)(({ theme }) => ({
-  margin:'18px !important',
+  margin:'18px 18px 0 18px !important',
   // border:"2px solid red",
 
   // padding: "0px 10px 0px 0px",
-padding:'10px',
+padding:'10px 10px 0 10px',
   
   // margin:'4px',
-  width: 300,
-  height: "94%",
-  borderRadius: "15px",
+  width: 250,
+  height: "fit-content",
+  borderRadius: "0",
 
   backgroundColor: `${theme.palette.grey[200]}`,
   overflowY: "auto",
@@ -107,11 +121,11 @@ padding:'10px',
   },
   "&::-webkit-scrollbar-track": {
     backgroundColor: theme.palette.grey[200], // same as background
-    borderRadius: "10px",
+    borderRadius: "0",
   },
   "&::-webkit-scrollbar-thumb": {
     backgroundColor: theme.palette.grey[400], // slightly darker so it's visible
-    borderRadius: "10px",
+    borderRadius: "0",
   },
   "&::-webkit-scrollbar-thumb:hover": {
     backgroundColor: theme.palette.grey[500], // on hover, a little more contrast
@@ -130,7 +144,7 @@ const CategoryListItem = styled(ListItem, {
   margin: "auto",
   marginBottom: "10px",
   padding: "10px 16px",
-  borderRadius: "25px",
+  borderRadius: "0",
   justifyContent: "space-between",
   alignItems: "center",
   cursor: "pointer",
@@ -138,23 +152,23 @@ const CategoryListItem = styled(ListItem, {
   transform: "translateX(-20px)",
   animation: "slideIn 0.3s ease forwards",
   transition: "all 0.3s ease",
-  color: active ? theme.palette.primary.main : "#333",
+  color: active ? "#271E03" : "#333",
   backgroundColor: active ? "#fff" : "transparent",
   fontWeight: active ? "600" : "400",
   "& .icon": {
     fontSize: "1.3rem",
-    color: active ? theme.palette.primary.main : "#999", // Default arrow color
+    color: active ? "#271E03" : "#999", // Default arrow color
     transition: "color 0.3s ease",
   },
-  fontSize: "1.1rem", // :white_check_mark: Increased text size for label
+  fontSize: "0.875rem", // Match header font size
   "& span": {
-    fontSize: "1.1rem", // :white_check_mark: Explicitly for label text
+    fontSize: "0.875rem", // Match header font size
   },
   "&:hover": {
     backgroundColor: "#FFFFFF", // :white_check_mark: Deep gray on hover
-    color: "#007AFF", // :white_check_mark: Text primary color on hover
+    color: "#271E03", // Project primary color on hover
     "& .icon": {
-      color: "#007AFF", // :white_check_mark: Arrow primary color on hover
+      color: "#271E03", // Project primary color on hover
     },
   },
   "@keyframes slideIn": {
@@ -233,7 +247,7 @@ const SubCategoryListItem = styled(ListItem)(({ theme }) => ({
     color: theme.palette.primary.main,
   },
   "& .sub-item-avatar": {
-    borderRadius: "4px",
+    borderRadius: "0",
     backgroundColor: theme.palette.grey[100],
   },
 }));

@@ -746,19 +746,18 @@ import {
   FooterLinksWidget,
   FooterSocialLinks,
 } from "components/footer";
-import Sticky from "components/sticky";
 import { CategoryList } from "components/categories";
-import { Navbar, NavigationList } from "components/navbar";
 import { MobileMenu } from "components/navbar/mobile-menu";
 import { MobileNavigationBar } from "components/mobile-navigation";
 import { Header, HeaderCart, HeaderLogin } from "components/header";
+import HeaderWishlist from "components/header/header-wishlist";
+import HeaderLoginButton from "components/header/header-login-button";
+import HeaderNavigation from "components/header/header-navigation";
+import HeaderNavigationSkeleton from "components/header/header-navigation-skeleton";
+import HeaderSearchButton from "components/header/header-search";
+import HeaderSearchDropdown from "components/header/header-search-dropdown";
 import MiniCartDrawer from "components/mini-cart-drawer/MiniCartDrawer";
 import { MobileHeader, HeaderSearch } from "components/header/mobile-header";
-import {
-  Topbar,
-  TopbarLanguageSelector,
-  TopbarSocialLinks,
-} from "components/topbar";
 import { SearchInput, SearchInputWithCategory, MobileSearchInput } from "components/search-box";
 import {
   footer,
@@ -800,9 +799,7 @@ import {
 import useProducts from "hooks/useProducts";
 import {
   languageOptions,
-  topbarSocialLinks,
 } from "data/layout-data";
-import DeliveryCutoffDropdown from "components/DeliveryDropdown/DeliveryDropdown";
 import useCart from "hooks/useCart";
 import useCategoriesMegaMenu from "hooks/useCategoriesMegaMenu";
 import BreadcrumbNav from "components/BreadcrumbsNav";
@@ -816,8 +813,10 @@ import useUser from "hooks/useUser";
 import useWebsiteInfo from "hooks/useWebsiteInfo";
 import useTrackLastVisitedPage from "hooks/useTrackLastVisitedPage";
 import PhoneIcon from "@mui/icons-material/Phone";
-import ContactButton from "components/contactUsButton/contactUsButton";
+import EmailIcon from "@mui/icons-material/Email";
 import FloatingWhatsApp from "components/whatsapp/FloatingWhatsApp";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
 import { prefetchCommonRoutes, setupViewportPrefetching, setupHoverPrefetching } from "utils/prefetch";
 import { setupRscDeduplication } from "utils/rsc-deduplication";
 import performanceMonitor from "utils/performanceMonitor";
@@ -843,6 +842,7 @@ export default function ShopLayout1(props) {
   const [shouldShowBreadcrumb, setShouldShowBreadcrumb] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isMiniCartLoading, setIsMiniCartLoading] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const { state: userState, dispatch: userDispatch } = useUser();
 
@@ -1446,20 +1446,6 @@ export default function ShopLayout1(props) {
   );
   return (
     <Fragment>
-      {/* TOP BAR SECTION */}
-      <Topbar data={{
-        title: websiteInfo?.data?.content?.promotionalDetails?.title || websiteInfo?.data?.content?.tickerTitle,
-        label: websiteInfo?.data?.content?.promotionalDetails?.label || websiteInfo?.data?.content?.tickeLable
-      }}>
-        <Topbar.Right>
-          {/* {/* <TopbarLanguageSelector languages={languageOptions} />  */}
-          {/* delivery dropdown and contact */}
-          <DeliveryCutoffDropdown />
-          <ContactButton />
-
-          {/* <TopbarSocialLinks links={topbarSocialLinks} /> */}
-        </Topbar.Right>
-      </Topbar>
       {/* HEADER (non-sticky) */}
       <Header mobileHeader={MOBILE_VERSION_HEADER}>
         <Header.Logo url={logoUrl} />
@@ -1469,21 +1455,19 @@ export default function ShopLayout1(props) {
           </Header.CategoryDropdown>
         ) : null}
         <Header.Mid>
-          {/* {isLoading ? (
-            <CircularProgress size={24} />
-          ) : categories ? ( */}
-          <SearchInputWithCategory
-            categories={megaMenuState?.categoriesList}
-            refetchMegaMenu={refetchMegaMenu}
-          />
-          {/* ) : (
-            ""
-          )} */}
+          {isLoading ? (
+            <HeaderNavigationSkeleton />
+          ) : megaMenuState?.megaMenuList ? (
+            <HeaderNavigation navigation={megaMenuState?.megaMenuList} />
+          ) : null}
         </Header.Mid>
         <Header.Right>
-          {/* HEADER LOGIN BUTTON */}
-          {/* <HeaderLogin /> */}
-          <AccountPopover />
+          {/* HEADER SEARCH BUTTON */}
+          <HeaderSearchButton 
+            onSearchClick={() => {
+              setIsSearchOpen(true);
+            }} 
+          />
           {/* HEADER CART BUTTON */}
           <HeaderCart 
             onCartClick={() => {
@@ -1494,19 +1478,19 @@ export default function ShopLayout1(props) {
             }} 
             isLoading={isMiniCartLoading}
           />
+          {/* HEADER WISHLIST BUTTON */}
+          <HeaderWishlist />
+          {/* HEADER LOGIN BUTTON */}
+          <HeaderLoginButton />
         </Header.Right>
       </Header>
 
-      {/* NAVIGATION BAR (sticky) */}
-      <Sticky fixedOn={0} onSticky={toggleIsFixed} scrollDistance={300}>
-        <Navbar
-          border={1}
-          elevation={0}
-          navigation={megaMenuState?.megaMenuList}
-          isLoading={isLoading}
-          // categories={<CategoryList categories={header.categoryMenus} />}
-        />
-      </Sticky>
+      {/* HEADER SEARCH DROPDOWN */}
+      <HeaderSearchDropdown 
+        open={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
+
 
       {breadcrumb && shouldShowBreadcrumb && (
         <BreadcrumbNav breadcrumb={breadcrumb} />
@@ -1531,210 +1515,449 @@ export default function ShopLayout1(props) {
      
     {/* FOOTER SECTION  */}
     <Footer1>
-        {/* Wrapper Grid item to take full width */}
-        <Grid item xs={12} sx={{ width: "100%", mb: 0 }}>
-          {/* First Row: Map and Description (md and above) */}
-          <Grid 
-            container 
-            spacing={3} 
-            sx={{ 
-              mb: { xs: 1 },
-              justifyContent: { xs: "stretch", md: "flex-start" } // Left align on md+
-            }}
-          >
-            {/* Map */}
-            <Grid item xs={12} md="auto">
-              <Box
-                sx={{
-                  width: { xs: "100%", md: "250px" },
-                  maxWidth: { xs: "100%", md: "250px" },
-                  height: { xs: 250, md: "auto" },
-                  mt: { xs: 2, md: 0 },
-                  p: 1,
-                  position: "relative",
-                  borderRadius: 1,
-                  overflow: "hidden",
-                  border: `2px solid ${theme.palette.secondary.main}`,
-                  backgroundColor: theme.palette.secondary.main,
-                  aspectRatio: { xs: "16/9", md: "1/1" }, // Square on md+
+      <Grid container spacing={4} sx={{ pb: 4 }}>
+        {/* Column 1: Company Information */}
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            {/* Logo */}
+            <Link href="/" style={{ display: "block", marginBottom: "16px", maxWidth: "100%", width: "fit-content" }}>
+              <Image
+                src="/assets/images/footer-logo.png"
+                alt="logo"
+                width={230}
+                height={94}
+                style={{
+                  objectFit: "contain",
+                  width: "230px",
+                  height: "auto",
+                  maxWidth: "230px",
+                  display: "block",
+                  flexShrink: 0,
                 }}
-              >
-                {(() => {
-                  const mapUrl = generateMapEmbedUrl(finalFooterContact?.address);
-                  return mapUrl ? (
-                    <iframe
-                      src={mapUrl}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="eSeekMap Location"
-                    />
-                  ) : null;
-                })()}
-              </Box>
-            </Grid>
+              />
+            </Link>
 
             {/* Description */}
-            <Grid item xs={12} md="auto">
-              <Box
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#0B090A",
+                mb: 2,
+                fontSize: "0.875rem",
+                lineHeight: 1.6,
+              }}
+            >
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspetristique. Duis n eros elecuenindisse varius enim
+            </Typography>
+
+            {/* Phone */}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+              <PhoneIcon sx={{ color: "#0B090A", fontSize: "1.2rem", mr: 1 }} />
+              <Typography
+                variant="body2"
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: { xs: "flex-start", md: "flex-start" },
-                  width: { xs: "100%", md: "auto" },
-                  maxWidth: { xs: "100%", md: "500px" },
-                  height: "100%",
-                  justifyContent: { xs: "flex-start", md: "flex-start" },
+                  color: "#0B090A",
+                  fontSize: "0.875rem",
                 }}
               >
-                {/* Logo at the top */}
-                <Link href="/" style={{ marginBottom: "16px" }}>
-                  <Image
-                    src={logoUrl}
-                    alt="logo"
-                    width={105}
-                    height={50}
-                    style={{ display: "block" }}
-                  />
-                </Link>
-
-                {/* Description text */}
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "black",
-                    textAlign: "left",
-                  }}
-                >
-                  {finalFooterDescription}
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-
-          {/* Second Row: Widgets (md and above) */}
-          <Grid container spacing={3} sx={{ mb: { xs: 2, md: 3 } , justifyContent: {  md: "space-around" } }}>
-            <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FooterLinksWidget title="About Us" links={footerAboutLinks} />
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <FooterLinksWidget
-                title="Customer Care"
-                links={footerCustomerCareLinks}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={12} md={4} lg={3}>
-              <FooterContact
-                phone={finalFooterContact?.phone}
-                email={finalFooterContact?.email}
-                address={finalFooterContact?.address}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-        {/* Social Media Icons and Copyright - Third Row */}
-        <Grid item xs={12} sx={{ width: "100%" }}>
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: "100%",
-              display: "flex",
-              flexDirection: { xs: "column-reverse", sm: "row" },
-              alignItems: { xs: "flex-start", sm: "center" },
-              justifyContent: "space-between", // This will push items to opposite ends
-              flexWrap: "wrap", // Allow items to wrap on smaller screens
-              gap: { xs: 2, sm: 0 },
-              // pt: 3,
-              borderTop: "1px solid",
-              borderColor: "divider",
-              color: "black",
-              overflowX: "hidden",
-              px: { xs: 2, sm: 0 },
-            }}
-          >
-          {/* Copyright Text - Left Aligned */}
-          <Typography variant="body2" color="secondary">
-            Copyright © {new Date().getFullYear()} SIFRA. All rights
-            reserved.
-          </Typography>
-
-          {/* Right Aligned Group (Privacy Links + Social Icons) */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: { xs: 1.5, sm: 3 }, // Space between privacy links and social icons
-              flexWrap: "wrap",
-              maxWidth: "100%",
-            }}
-          >
-            {/* Privacy Links */}
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Link href="/privacyPolicy" passHref>
-                <Typography
-                  variant="body2"
-                  color="secondary"
-                  sx={{
-                    cursor: "pointer",
-                    transition: "color 0.3s",
-                    "&:hover": {
-                      color: "primary.main",
-                      fontWeight: 700,
-                    },
-                  }}
-                >
-                  Privacy
-                </Typography>
-              </Link>
-              <Typography variant="body2" color="black">
-                |
+                +92 3000000000
               </Typography>
-              <Link href="/t&c" passHref>
+            </Box>
+
+            {/* Email */}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <EmailIcon sx={{ color: "#0B090A", fontSize: "1.2rem", mr: 1 }} />
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "#0B090A",
+                  fontSize: "0.875rem",
+                }}
+              >
+                forexample@gmail.com
+              </Typography>
+            </Box>
+          </Box>
+        </Grid>
+
+        {/* Column 2: Quick Links */}
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#0B090A",
+                fontWeight: 600,
+                fontSize: "1rem",
+                mb: 2,
+              }}
+            >
+              Quick Links
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Link href="/" style={{ textDecoration: "none" }}>
                 <Typography
                   variant="body2"
-                  color="secondary"
                   sx={{
-                    cursor: "pointer",
-                    transition: "color 0.3s",
-                    "&:hover": {
-                      color: "primary.main",
-                      fontWeight: 700,
-                    },
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
                   }}
                 >
-                  Terms & Condition
+                  Home
                 </Typography>
               </Link>
-              {/* <Typography variant="body2" color="black">
-              |
+              <Link href="/shop" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  Shop
+                </Typography>
+              </Link>
+              <Link href="/products" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  Products
+                </Typography>
+              </Link>
+              <Link href="/about" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  About
+                </Typography>
+              </Link>
+              <Link href="/blogs" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  Blogs
+                </Typography>
+              </Link>
+            </Box>
+          </Box>
+        </Grid>
+
+        {/* Column 3: Help & Infor */}
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#0B090A",
+                fontWeight: 600,
+                fontSize: "1rem",
+                mb: 2,
+              }}
+            >
+              Help & Infor
             </Typography>
-            <Typography variant="body2" color="secondary">
-              Cookie
-            </Typography> */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Link href="/orders" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  Track Your Order
+                </Typography>
+              </Link>
+              <Link href="/returns" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  Returns Policies
+                </Typography>
+              </Link>
+              <Link href="/shipping" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  Shipping + Delivery
+                </Typography>
+              </Link>
+              <Link href="/contact" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  Contact Us
+                </Typography>
+              </Link>
+              <Link href="/faqs" style={{ textDecoration: "none" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
+                  }}
+                >
+                  FAQs
+                </Typography>
+              </Link>
+            </Box>
+          </Box>
+        </Grid>
+
+        {/* Column 4: Newsletter */}
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#0B090A",
+                fontWeight: 600,
+                fontSize: "1rem",
+                mb: 1.5,
+              }}
+            >
+              Newsletter
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#0B090A",
+                fontSize: "0.875rem",
+                mb: 2,
+                lineHeight: 1.6,
+              }}
+            >
+              Sign up for newsletter and get 10% cash back offer
+            </Typography>
+
+            {/* Newsletter Subscription Form */}
+            <Box
+              sx={{
+                display: "flex",
+                gap: 0,
+                mb: 3,
+              }}
+            >
+              <TextField
+                placeholder="Email address"
+                variant="outlined"
+                size="small"
+                sx={{
+                  flex: 1,
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "#FEFAF0",
+                    borderRadius: 0,
+                    "& fieldset": {
+                      borderColor: "#0B090A",
+                      borderWidth: "1px",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#0B090A",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0B090A",
+                      borderWidth: "1px",
+                    },
+                    "&.Mui-focused": {
+                      outline: "none",
+                      boxShadow: "none",
+                    },
+                  },
+                  "& input": {
+                    padding: "8px 12px",
+                    fontSize: "0.875rem",
+                    color: "#0B090A",
+                    backgroundColor: "#FEFAF0",
+                    "&:focus": {
+                      outline: "none",
+                    },
+                    "&::placeholder": {
+                      color: "#0B090A",
+                      opacity: 0.6,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#0B090A",
+                  },
+                }}
+              />
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#0B090A",
+                  color: "#fff",
+                  borderRadius: 0,
+                  px: 2,
+                  textTransform: "none",
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                  "&:hover": {
+                    backgroundColor: "#0B090A",
+                    opacity: 0.9,
+                  },
+                }}
+              >
+                Subscribe
+              </Button>
             </Box>
 
             {/* Social Media Icons */}
-            <Box sx={{ display: "flex", gap: 1 }}>
-              {footerData?.paymentLinks.map((item, index) => (
-                <Link
-                  href={item.href}
-                  key={index}
-                  target="_blank"
-                  rel="noopener noreferrer"
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              {/* Facebook Icon */}
+              <Link
+                href={footerSocialLinks?.facebook || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+              >
+                <Box
+                  component="svg"
+                  viewBox="0 0 24 24"
+                  sx={{
+                    width: "1.5rem",
+                    height: "1.5rem",
+                    fill: "#0B090A",
+                    "&:hover": { opacity: 0.7 },
+                    transition: "opacity 0.2s",
+                  }}
                 >
-                  <Image src={item.src} alt={item.alt} width={40} height={40} />
-                </Link>
-              ))}
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </Box>
+              </Link>
+
+              {/* X (Twitter) Icon */}
+              <Link
+                href={footerSocialLinks?.twitter || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+              >
+                <Box
+                  component="svg"
+                  viewBox="0 0 24 24"
+                  sx={{
+                    width: "1.5rem",
+                    height: "1.5rem",
+                    fill: "#0B090A",
+                    "&:hover": { opacity: 0.7 },
+                    transition: "opacity 0.2s",
+                  }}
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </Box>
+              </Link>
+
+              {/* Instagram Icon */}
+              <Link
+                href={footerSocialLinks?.instagram || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+              >
+                <Box
+                  component="svg"
+                  viewBox="0 0 24 24"
+                  sx={{
+                    width: "1.5rem",
+                    height: "1.5rem",
+                    fill: "none",
+                    stroke: "#0B090A",
+                    strokeWidth: 1.5,
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round",
+                    "&:hover": { opacity: 0.7 },
+                    transition: "opacity 0.2s",
+                  }}
+                >
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </Box>
+              </Link>
+
+              {/* LinkedIn Icon */}
+              <Link
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+              >
+                <Box
+                  component="svg"
+                  viewBox="0 0 24 24"
+                  sx={{
+                    width: "1.5rem",
+                    height: "1.5rem",
+                    fill: "#0B090A",
+                    "&:hover": { opacity: 0.7 },
+                    transition: "opacity 0.2s",
+                  }}
+                >
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </Box>
+              </Link>
             </Box>
           </Box>
-          </Box>
         </Grid>
-      </Footer1>
+      </Grid>
+
+      {/* Copyright Section */}
+      <Box
+        sx={{
+          width: "100%",
+          borderTop: "1px solid #D7CCC8",
+          pt: 2,
+          pb: 2,
+          textAlign: "center",
+          px: { xs: 2, sm: 3 },
+          mx: { xs: -2, sm: -3 },
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: "#0B090A",
+            fontSize: "0.875rem",
+          }}
+        >
+          Copyright © 2025 Qadeem handicraft | All Rights Reserved
+        </Typography>
+      </Box>
+    </Footer1>
      
     </Fragment>
   );

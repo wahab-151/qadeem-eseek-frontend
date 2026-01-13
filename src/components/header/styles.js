@@ -10,7 +10,8 @@ export const HeaderWrapper = styled("div")(({
   position: "relative",
   height: layoutConstant.headerHeight,
   transition: "height 250ms ease-in-out",
-  background: theme.palette.background.paper,
+  background: "#FEFAF0", // Background color
+  borderTop: "none",
   [theme.breakpoints.down("sm")]: {
     height: layoutConstant.mobileHeaderHeight,
     position: "sticky",
@@ -30,6 +31,13 @@ export const StyledContainer = styled(Container)(({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between"
+  },
+  "& .main-header": {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    gap: 2,
   },
   "& .mobile-header": {
     display: "none"

@@ -29,6 +29,7 @@ import { RootStyle } from "./styles";
 const Carousel = forwardRef((props, ref) => {
   const {
     dotColor,
+    activeDotColor,
     children,
     arrowStyles,
     dots = false,
@@ -72,6 +73,7 @@ const Carousel = forwardRef((props, ref) => {
   }),
   ...CarouselDots({
     dotColor,
+    activeDotColor,
     sx: dotStyles
   }),
   ...others
@@ -94,6 +96,7 @@ Carousel.displayName = 'Carousel';
 export const CarouselEager = forwardRef((props, ref) => {
   const {
     dotColor,
+    activeDotColor,
     children,
     arrowStyles,
     dots = false,
@@ -101,6 +104,10 @@ export const CarouselEager = forwardRef((props, ref) => {
     slidesToShow = 4,
     spaceBetween = 10,
     dotStyles = { mt: 4 },
+    autoplay = true,
+    infinite = true,
+    swipe = true,
+    draggable = true,
     ...others
   } = props;
   const theme = useTheme();
@@ -109,12 +116,14 @@ export const CarouselEager = forwardRef((props, ref) => {
     arrows,
     slidesToShow,
     rtl: theme.direction === "rtl",
-    autoplay: true,
+    autoplay,
     autoplaySpeed: 3000,
-    infinite: true,
+    infinite,
     pauseOnHover: true,
+    swipe,
+    draggable,
     ...CarouselArrows({ sx: arrowStyles }),
-    ...CarouselDots({ dotColor, sx: dotStyles }),
+    ...CarouselDots({ dotColor, activeDotColor, sx: dotStyles }),
     ...others
   };
   return <RootStyle space={spaceBetween}>

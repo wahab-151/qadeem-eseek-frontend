@@ -10,8 +10,6 @@ import TabContext from "@mui/lab/TabContext";
 import styled from "@mui/material/styles/styled";
 
 // LOCAL CUSTOM COMPONENTS
-import TopbarForm from "../topbar-form";
-
 import GeneralForm from "../general-form";
 import BannerSlider from "../banner-slider";
 import ShippingVatForm from "../shipping-vat-form";
@@ -119,9 +117,6 @@ useEffect(() => {
             <GeneralForm contentData={contentData}  description={description} contact={contact} uploadInfo={uploadInfo} uploadInfoLoading={uploadInfoLoading} uploadInfoError={uploadInfoError} websiteInfoLoading={websiteInfoLoading} />
           </StyledTabPanel>
 
-          {/* <StyledTabPanel value="topbar">
-            <TopbarForm />
-          </StyledTabPanel> */}
 
           <StyledTabPanel value="promotional-details">
             <PromotionalDetailsForm contentData={contentData} uploadInfo={uploadInfo} uploadInfoLoading={uploadInfoLoading} uploadInfoError={uploadInfoError} websiteInfoLoading={websiteInfoLoading} />

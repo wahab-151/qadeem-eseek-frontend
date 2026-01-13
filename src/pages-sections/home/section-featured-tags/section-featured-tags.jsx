@@ -30,10 +30,12 @@ export default function SectionFeaturedTags() {
         <Typography
           variant="h2"
           sx={{
-            mb: "2rem",
-            lineHeight: 1,
-            color: (theme) => theme.palette.secondary.main,
-            textShadow: "3px 3px 8px rgba(0,0,0,0.2)",
+            fontSize: { xs: "32px", md: "48px" },
+            fontWeight: 400,
+            fontFamily: "serif",
+            lineHeight: 1.2,
+            color: "#5D4037",
+            mb: 1,
           }}
         >
           Featured Tags

@@ -5,3 +5,8 @@ body > div[style*="bottom: 0px"][style*="left: 0px"],
 #__next-route-announcer {
   display: none !important;
 }
+
+/* Set body background to white */
+body {
+  background-color: white !important;
+}
