@@ -35,11 +35,15 @@ export const RootStyle = styled("div", {
 })(({ space, theme }) => ({
   position: "relative",
   backgroundColor: "transparent",
-  overflow: "visible",
+  // Prevent horizontal overflow on mobile while allowing visible on desktop
+  overflow: { xs: "hidden", md: "visible" },
+  width: "100%",
+  maxWidth: "100%",
 
  ".slick-list": {
   marginInline: -space,
   overflow: "hidden",
+  width: "100%",
 },
 
   ".slick-slide": {
@@ -77,8 +81,8 @@ export const DotList = styled("ul", {
   position: "relative",
   bottom: "0",
   "& li": {
-    width: "8px",
-    height: "8px",
+    width: "14px",
+    height: "14px",
     display: "flex",
     cursor: "pointer",
     alignItems: "center",
@@ -92,8 +96,8 @@ export const DotList = styled("ul", {
       backgroundColor: activeDotColor || theme.palette.primary.main
     },
     "&.slick-active": {
-      width: "8px",
-      height: "8px"
+      width: "14px",
+      height: "14px"
     }
   }
 }));
@@ -103,8 +107,8 @@ export const Dot = styled("span", {
   dotColor,
   theme
 }) => ({
-  width: "8px",
-  height: "8px",
+  width: "14px",
+  height: "14px",
   borderRadius: "50%",
   cursor: "pointer",
   position: "absolute",

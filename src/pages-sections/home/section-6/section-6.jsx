@@ -24,7 +24,15 @@ export default function Section6() {
   const videos = videosResponse?.data || [];
 
   return (
-    <Container className="mt-4">
+    <Container
+      className="mt-4"
+      maxWidth={false}
+      sx={{
+        maxWidth: 1240,
+        mx: "auto",
+        px: { xs: 2, sm: 3 },
+      }}
+    >
       {!loading && videos.length > 0 && (
         <Box sx={{ mt: 4 }}>
           <VideoGrid 

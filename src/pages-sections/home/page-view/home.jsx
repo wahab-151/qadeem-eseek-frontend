@@ -20,6 +20,7 @@ const Section6 = dynamic(() => import("../section-6"), { ssr: false, loading: ()
 const Section7 = dynamic(() => import("../section-7"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section8 = dynamic(() => import("../section-8"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Categoriescarousel = dynamic(() => import("../Categoriescarousel"), { ssr: false, loading: () => <InlineLoader size={40} /> });
+const Testimonials = dynamic(() => import("../Testimonials"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 import useProducts from "hooks/useProducts";
 
 // import { useSelector } from "react-redux";
@@ -57,6 +58,9 @@ export default function GadgetOnePageView() {
 
     {/* CATEGORIES CAROUSEL AREA */}
     <Categoriescarousel />
+
+    {/* TESTIMONIALS AREA */}
+    <Testimonials />
 
     {/* OUR BLOG AREA */}
     <Section7 />

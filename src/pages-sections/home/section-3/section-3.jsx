@@ -12,7 +12,7 @@ import { BannerRoot, BannerWrapper } from "./styles";
 import bannerIphone from "../../../../public/assets/images/banners/banner-59.jpg";
 import bannerIpod from "../../../../public/assets/images/banners/banner-60.jpg";
 export default async function Section3() {
-  return <Container className="mt-4">
+  return <Container className="mt-4" sx={{ maxWidth: "1240px" }}>
       <Grid container spacing={3}>
         <Grid size={{
         xs: 12,

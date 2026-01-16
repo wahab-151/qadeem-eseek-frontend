@@ -58,7 +58,7 @@ export default function Section1() {
         <Box
           sx={{
             width: "100%",
-            height: { xs: 500, sm: 600, md: 717 },
+            height: { xs: 420, sm: 560, md: 717 },
             position: "relative",
             borderRadius: 0,
             backgroundColor: '#000000',
@@ -67,8 +67,11 @@ export default function Section1() {
           }}
         >
           <Container
-            maxWidth="lg"
+            maxWidth={false}
             sx={{
+              maxWidth: 1240,
+              mx: "auto",
+              px: { xs: 2, sm: 3 },
               height: '100%',
               display: 'flex',
               alignItems: 'center',
@@ -92,22 +95,22 @@ export default function Section1() {
               // Target RootStyle wrapper - override padding and margin for banner carousel
               padding: "0 !important",
               margin: "0 !important",
-              height: { xs: 500, sm: 600, md: 717 },
+              height: { xs: 420, sm: 560, md: 717 },
               overflow: "hidden",
               boxShadow: "none !important",
               borderRadius: "0px !important",
             },
             "& .slick-list": {
-              height: { xs: 500, sm: 600, md: 717 },
+              height: { xs: 420, sm: 560, md: 717 },
               overflow: "hidden",
             },
             "& .slick-track": {
-              height: { xs: 500, sm: 600, md: 717 },
+              height: { xs: 420, sm: 560, md: 717 },
               display: "flex",
               alignItems: "center",
             },
             "& .slick-slide": {
-              height: { xs: 500, sm: 600, md: 717 },
+              height: { xs: 420, sm: 560, md: 717 },
               "& > div": {
                 height: "100%",
               },

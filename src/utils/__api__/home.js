@@ -20,12 +20,17 @@ const getTopPicksList = cache(async () => {
   const response = await axios.get("/api/home/products?tag=top-picks");
   return response.data;
 });
+const getTestimonials = cache(async () => {
+  const response = await axios.get("/api/home/testimonials");
+  return response.data;
+});
 const homeApi = {
   getBlogLists,
   getSaleBanner,
   getTopPicksList,
   getMostViewedList,
-  getFeaturedCategories
+  getFeaturedCategories,
+  getTestimonials
 };
 
 export default homeApi;
