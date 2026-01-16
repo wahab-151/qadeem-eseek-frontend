@@ -15,7 +15,9 @@ export const HeaderWrapper = styled("div")(({
   [theme.breakpoints.down("sm")]: {
     height: layoutConstant.mobileHeaderHeight,
     position: "sticky",
-    top: layoutConstant.topbarHeight,
+    // Topbar is not currently rendered in the public layout,
+    // so sticking below `topbarHeight` creates a visible gap on mobile.
+    top: 0,
     zIndex: 1200,
     boxShadow: theme.shadows[2]
   }

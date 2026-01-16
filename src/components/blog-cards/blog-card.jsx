@@ -56,8 +56,7 @@ export default function BlogCard({ blog = {} }) {
         display: 'flex',
         flexDirection: 'column',
         "&:hover": {
-          border: (theme) => `2px solid ${theme.palette.secondary[500]}`,
-          boxShadow: (theme) => `0 4px 20px ${theme.palette.grey[300]}`,
+          boxShadow: "0px 4px 20px rgba(39, 30, 3, 0.12)",
         },
       }}
     >

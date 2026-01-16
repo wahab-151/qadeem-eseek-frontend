@@ -67,11 +67,11 @@ export default function CarouselCard1({ src, index = 0 }) {
 
       {/* Text content - wrapped in Container to align with other sections */}
       <Container
-        maxWidth={false}
         sx={{
-          maxWidth: '1244px',
+          // Match the same content width as other homepage sections (e.g. New Arrival)
+          maxWidth: '1240px',
           width: '100%',
-          margin: '0 auto',
+          margin: 'auto',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
@@ -79,7 +79,8 @@ export default function CarouselCard1({ src, index = 0 }) {
           zIndex: 2,
         }}
       >
-        <Grid container spacing={3} sx={{ height: '100%', alignItems: 'center' }}>
+        {/* IMPORTANT: no Grid spacing here; spacing adds left padding even with a single item and misaligns content */}
+        <Grid container spacing={0} sx={{ height: '100%', alignItems: 'center' }}>
           <Grid item xs={12} md={6} sx={{ 
             display: 'flex', 
             flexDirection: 'column', 

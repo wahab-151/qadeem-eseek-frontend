@@ -828,9 +828,13 @@ export default function Categoriescarousel() {
       {" "}
       {/* Light cream bg */}
       <Container
+        maxWidth={false}
         sx={{
-          py: 8,
+          py: { xs: 4, md: 8 },
+          px: { xs: 2, sm: 3 },
           overflow: "visible",
+          maxWidth: 1240,
+          mx: "auto",
           // let the carousel reach the end of the section on desktop
           pr: { md: 0 },
         }}
@@ -857,7 +861,7 @@ export default function Categoriescarousel() {
             <Typography
               variant="h2"
               sx={{
-                fontSize: { xs: "40px", md: "64px" },
+                fontSize: { xs: "40px", sm: "46px", md: "52px" },
                 fontWeight: 400,
                 fontFamily: "Inter, sans-serif",
                 color: "#271E03",
@@ -874,9 +878,11 @@ export default function Categoriescarousel() {
               variant="body1"
               sx={{
                 fontSize: "16px",
-                lineHeight: 1.6,
-                color: "#4A4A4A",
-                fontFamily: "sans-serif",
+                lineHeight: "26px",
+                color: "#271E03",
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 400,
+                letterSpacing: "0%",
               }}
             >
               Explore our exquisite collection of authentic gemstones, each rich
@@ -917,7 +923,7 @@ export default function Categoriescarousel() {
             sx={{
               width: { xs: "100%", md: "65%" },
               position: "relative",
-              overflow: "visible",
+              overflow: { xs: "hidden", md: "visible" },
               pb: 6, // space for custom dots below
               // pull the carousel to the very right edge (cancel container padding)
               mr: { md: -3 },
@@ -927,10 +933,16 @@ export default function Categoriescarousel() {
               transform: "translateZ(0)", // Force hardware acceleration
               // Allow next/prev slides to be visible (peek effect)
               "& .slick-list": {
-                overflow: "visible !important",
+                overflow: { xs: "hidden !important", md: "visible !important" },
                 // Hide slides that appear before the first (left side), but allow peek on the right
-                clipPath: `inset(0px -${RIGHT_PEEK_PX}px 0px 0px)`,
-                WebkitClipPath: `inset(0px -${RIGHT_PEEK_PX}px 0px 0px)`,
+                clipPath: {
+                  xs: "none",
+                  md: `inset(0px -${RIGHT_PEEK_PX}px 0px 0px)`,
+                },
+                WebkitClipPath: {
+                  xs: "none",
+                  md: `inset(0px -${RIGHT_PEEK_PX}px 0px 0px)`,
+                },
               },
               "& .slick-track": {
                 overflow: "visible",

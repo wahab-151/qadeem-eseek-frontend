@@ -1,28 +1,28 @@
-'use client';
+"use client";
 import { Fragment } from "react";
 import Grid from "@mui/material/Grid2";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
 
 // LOCAL CUSTOM COMPONENT
 import BlogCard from "components/blog-cards/blog-card";
+import HomeSectionHeader from "components/section-header/home-section-header";
 import { useGetAllBlogsQuery } from "app/store/services";
 
 export default function Section7() {
   const router = useRouter();
-  
+
   // RTK Query hook - Get at least 3 blogs
-  const { 
-    data: blogsData, 
-    isLoading: loading, 
-    error: blogsError 
+  const {
+    data: blogsData,
+    isLoading: loading,
+    error: blogsError,
   } = useGetAllBlogsQuery({
     limit: 6, // Get more to ensure we have at least 3
-    status: 'published'
+    status: "published",
   });
 
   // Get blogs from RTK Query and ensure we have at least 3
@@ -30,68 +30,70 @@ export default function Section7() {
   const blogs = allBlogs.slice(0, Math.max(3, allBlogs.length)); // Show at least 3 blogs
 
   const handleViewAllPosts = () => {
-    router.push('/blog');
+    router.push("/blog");
   };
 
   return (
-    <Container className="mt-4 mb-4">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography
-          variant="h2"
-          sx={{
-            fontSize: { xs: "32px", md: "48px" },
-            fontWeight: 400,
-            fontFamily: "serif",
-            lineHeight: 1.2,
-            color: "#5D4037",
-            mb: 1,
-          }}
-        >
-          Get Ideas from our Blog
-        </Typography>
-        <Button 
-          variant="outlined" 
-          onClick={handleViewAllPosts}
-          sx={{ 
-            textTransform: 'none',
-            px: 3,
-            py: 1.5,
-            borderRadius: 2,
-            borderColor: 'primary.main',
-            color: 'primary.main',
-            '&:hover': {
-              borderColor: 'primary.dark',
-              bgcolor: 'primary.light',
-              color: 'primary.dark'
-            }
-          }}
-        >
-          View All Posts
-        </Button>
-      </Box>
+    <section
+      className="mt-4 mb-4"
+      style={{ backgroundColor: "#FFFFFF", overflow: "visible" }}
+    >
+      <Container
+        maxWidth={false}
+        sx={{
+          py: { xs: 4, md: 8 },
+          px: { xs: 2, sm: 3 },
+          overflow: "visible",
+          maxWidth: 1240,
+          mx: "auto",
+        }}
+      >
+        <HomeSectionHeader
+          subtitle="BLOG"
+          title="Get Ideas from our Blog"
+          description="Discover inspiration, tips, and stories from our blog. Stay updated with the latest trends, guides, and insights."
+          actionLabel="VIEW ALL POSTS"
+          actionHref="/blog"
+        />
 
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : blogs.length > 0 ? (
-        <Grid container spacing={3}>
-          {blogs.map(blog => (
-            <Grid size={{ md: 4, sm: 6, xs: 12 }} key={blog._id}>
-              <BlogCard blog={blog} />
+        {/* Blog Cards Section */}
+        <Box
+          sx={{
+            width: "100%",
+          }}
+        >
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : blogs.length > 0 ? (
+            <Grid container spacing={3} sx={{ alignItems: "flex-start" }}>
+              {blogs.map((blog) => (
+                <Grid size={{ md: 4, sm: 6, xs: 12 }} key={blog._id}>
+                  <BlogCard blog={blog} />
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="h6" color="text.secondary">
-            No blog posts available at the moment
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Check back later for new content
-          </Typography>
+          ) : (
+            <Box sx={{ textAlign: "left", py: 4 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: "16px",
+                  lineHeight: "26px",
+                  color: "#271E03",
+                  fontFamily: "Inter, sans-serif",
+                  fontWeight: 400,
+                  letterSpacing: "0%",
+                }}
+              >
+                No blog posts available at the moment. Check back later for new
+                content.
+              </Typography>
+            </Box>
+          )}
         </Box>
-      )}
-    </Container>
+      </Container>
+    </section>
   );
 }

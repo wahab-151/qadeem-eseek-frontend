@@ -139,7 +139,6 @@ function ProductCard2({
       sx={{
         border: "none",
         boxShadow: "none",
-        width: "288px",
         height: "532px",
         borderRadius: 0,
         padding: 0,

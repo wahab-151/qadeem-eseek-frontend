@@ -33,7 +33,7 @@ export default async function Section2() {
 
   const categories = await api.getFeaturedCategories();
   if (!categories || !categories.length) return null;
-  return <Container className="mt-4">
+  return <Container className="mt-4" sx={{ maxWidth: "1240px" }}>
       <Title>Featured Categories</Title>
 
       <Grid container spacing={3}>

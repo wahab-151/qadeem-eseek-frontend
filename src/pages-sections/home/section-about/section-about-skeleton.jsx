@@ -10,7 +10,14 @@ export default function SectionAboutSkeleton() {
       className="mt-4 mb-4"
       aria-label="Loading Qadeem Handicraft Shop Introduction"
     >
-      <Container>
+      <Container
+        maxWidth={false}
+        sx={{
+          maxWidth: 1240,
+          mx: "auto",
+          px: { xs: 2, sm: 3 },
+        }}
+      >
         <Grid container spacing={4} alignItems="center">
           {/* Left side - Text content skeleton */}
           <Grid size={{ xs: 12, md: 6 }}>
@@ -62,7 +69,11 @@ export default function SectionAboutSkeleton() {
           </Grid>
 
           {/* Right side - Banner skeleton */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            // Match the real section: remove right-side gutter from Grid spacing
+            sx={{ pr: 0 }}
+          >
             <Skeleton
               variant="rectangular"
               sx={{
@@ -77,6 +88,8 @@ export default function SectionAboutSkeleton() {
     </section>
   );
 }
+
+
 
 
 

@@ -25,11 +25,11 @@ MobileHeader.Logo = ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '10px',
         flex: 1,
         maxWidth: '100%',
         overflow: 'hidden',
-        px: { xs: 1, sm: 2 }
+        px: { xs: 1, sm: 2 },
+        py: 0.5
       }}
     >
       <Link 
@@ -42,12 +42,13 @@ MobileHeader.Logo = ({
       >
         <Image 
           width={110} 
-          height={94} 
+          height={44} 
           src={logoUrl} 
           alt="logo"
           style={{
             maxWidth: '100%',
-            height: 'auto',
+            height: 44,
+            width: 'auto',
             objectFit: 'contain'
           }}
           sizes="(max-width: 600px) 90px, 110px"
@@ -59,7 +60,7 @@ MobileHeader.Logo = ({
 MobileHeader.Right = ({
   children
 }) => {
-  return <FlexBox justifyContent="end" sx={{ width: 'auto', minWidth: 'fit-content' }}>
+  return <FlexBox justifyContent="end" sx={{ width: 'auto', minWidth: 'fit-content', alignItems: 'center', gap: 0.5 }}>
       {children}
     </FlexBox>;
 };
