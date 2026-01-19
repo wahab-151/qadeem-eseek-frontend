@@ -1,11 +1,12 @@
 'use client';
 
-import { Box, Button, Typography, TextField } from '@mui/material';
+import { Box, Button, Typography, TextField, useTheme } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 import FlexBox from "components/flex-box/flex-box";
 import React, { useState, useEffect } from 'react';
 
 const  OrderQuantity = ({ quantity, onChange, min = 1, max = 99, fullWidth = false }) => {
+  const theme = useTheme();
   const [inputValue, setInputValue] = useState(quantity.toString());
 
   // Sync local state when quantity prop changes
@@ -78,13 +79,13 @@ const  OrderQuantity = ({ quantity, onChange, min = 1, max = 99, fullWidth = fal
      <Box
       display="flex"
       alignItems="center"
-      border="1px solid #ccc"
-      borderRadius="999px"
       overflow="hidden"
       sx={{
         width: '100%',
         minWidth: fullWidth ? '100%' : '100px',
-        maxWidth: fullWidth ? '100%' : '140px'
+        maxWidth: fullWidth ? '100%' : '140px',
+        border: `1px solid ${theme.palette.primary.main}`,
+        height: '48px',
       }}
     >
       <Button
@@ -94,9 +95,7 @@ const  OrderQuantity = ({ quantity, onChange, min = 1, max = 99, fullWidth = fal
           minWidth: 37,
           height: '-webkit-fill-available',
           borderRadius: 0,
-          backgroundColor: '#f5f5f5',
-          color: '#000',
-          '&:hover': { backgroundColor: '#e0e0e0' },
+          '&:hover': { backgroundColor: '#271E03', color: '#fff' },
         }}
       >
         <Remove sx={{ fontSize: 28, fontWeight: 'bold' }}/>
@@ -172,9 +171,7 @@ const  OrderQuantity = ({ quantity, onChange, min = 1, max = 99, fullWidth = fal
           minWidth: 37,
           height: '-webkit-fill-available',
           borderRadius: 0,
-          backgroundColor: '#f5f5f5',
-          color: '#000',
-          '&:hover': { backgroundColor: '#e0e0e0' },
+          '&:hover': { backgroundColor: '#271E03', color: '#fff' },
         }}
       >
         <Add sx={{ fontSize: 28, fontWeight: 'bold' }} />

@@ -29,6 +29,12 @@ Cursor must act as a **senior long-term engineer**, not a code generator.
 
 Consistency, security, and maintainability are higher priority than speed.
 
+**⚠️ CRITICAL: Base Component Modification Policy**
+- **NEVER modify base/reusable components** (e.g., `QadeemButton`, `BaseButton`, components in `components/ui/` or `components/common/`) without explicit permission
+- Base components are shared across the entire application - modifications can break other features
+- Use `sx` prop or wrapper components for custom styling instead
+- See `Code_Best_Practices.md` for detailed guidelines
+
 Only after reading all guides:
 ➡️ Analyze the codebase  
 ➡️ Then implement changes

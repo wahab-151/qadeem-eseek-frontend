@@ -46,10 +46,10 @@ export default function ProductPrice({
       <FlexBox alignItems="center" gap={1} mt={0.5} ml={0.5}>
         <Typography
           variant="h3"
-          color="primary"
           sx={{
-            fontWeight: 600,
-            fontSize: fontSizeIncrease ? "2rem" : "1.5rem",
+            color: "#9F9F9F",
+            fontWeight: 500,
+            fontSize: "24px",
           }}
         >
           {currency(Number(effectivePrice) || 0)}
@@ -73,10 +73,10 @@ export default function ProductPrice({
     <FlexBox alignItems="center" gap={1} mt={0.5} ml={0.5}>
       <Typography
         variant="h3"
-        color="primary"
         sx={{
-          fontWeight: 600,
-          fontSize: fontSizeIncrease ? "2rem" : "1.5rem",
+          color: "#9F9F9F",
+          fontWeight: 500,
+          fontSize: "24px",
         }}
       >
         {currency(Number(price) || 0)}
