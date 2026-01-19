@@ -5,17 +5,19 @@ import { useSnackbar } from "notistack";
 
 // PAGE VIEW COMPONENT
 import { useEffect, useState, useMemo } from "react";
-import {Container, Box} from "@mui/material";
+import {Container, Box, Typography, Divider} from "@mui/material";
+import { useRouter } from "next/navigation";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 // LOCAL CUSTOM COMPONENTS (lazy-load heavy below-the-fold sections)
 import dynamic from "next/dynamic";
 import ProductIntro from "../product-intro";
-const ProductTabs = dynamic(() => import("../product-tabs"), { ssr: false });
 const RelatedProducts = dynamic(() => import("../related-products"), { ssr: false });
-const FrequentlyBought = dynamic(() => import("../frequently-bought"), { ssr: false });
-const ProductReviews = dynamic(() => import("../product-reviews"), { ssr: false });
-const AvailableShops = dynamic(() => import("../available-shops"), { ssr: false });
-import ProductDescription from "../product-description";
+const ProductDescriptionSection = dynamic(() => import("../product-description-section"), { ssr: false });
+const ProductMaterialSection = dynamic(() => import("../product-material-section"), { ssr: false });
+const ProductReviewsSection = dynamic(() => import("../product-reviews-section"), { ssr: false });
+const ProductTestimonialsSection = dynamic(() => import("../product-testimonials-section"), { ssr: false });
+const ProductReviewFormSection = dynamic(() => import("../product-review-form-section"), { ssr: false });
 import { CircularProgress } from "@mui/material";
 import useProducts from "hooks/useProducts";
 import { useLoading } from "contexts/LoadingContext";
@@ -31,6 +33,7 @@ export default function ProductDetailsPageView(slug) {
   const { enqueueSnackbar } = useSnackbar();
   const { hideProductCardLoader, hideProductDetailLoader } = useLoading();
   const { state: authState } = useUser();
+  const router = useRouter();
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -192,25 +195,130 @@ useEffect(() => {
     }
   }, [relatedByCategoryResponse, relatedByCategoryLoading, product, shouldFetchRelatedByCategory]);
   return (
-    <Container className="mt-2 mb-2">
-      {/* While loading, render ProductIntro in skeleton mode instead of a spinner */}
-      {isLoading || product === null ? (
-        <ProductIntro isLoading={true} product={null} />
-      ) : (
-        <>
-          {/* PRODUCT DETAILS INFO AREA */}
-          <ProductIntro
-            isLoading={false}
-            product={product}
-          />
+    <>
+      {/* BREADCRUMB NAVIGATION */}
+      <Container maxWidth="lg" sx={{ py: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            color: "#424242",
+            fontSize: "0.875rem",
+          }}
+        >
+          <Typography
+            component="span"
+            onClick={() => router.push("/home")}
+            sx={{
+              color: "#424242",
+              cursor: "pointer",
+              fontSize: "0.875rem",
+              fontWeight: "bold",
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            Home
+          </Typography>
+          <ChevronRightIcon sx={{ color: "#424242", fontSize: "1rem" }} />
+          <Typography
+            component="span"
+            onClick={() => router.push("/allProducts")}
+            sx={{
+              color: "#424242",
+              cursor: "pointer",
+              fontSize: "0.875rem",
+              fontWeight: "bold",
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            Shop
+          </Typography>
+          <ChevronRightIcon sx={{ color: "#424242", fontSize: "1rem" }} />
+          <Typography component="span" sx={{ color: "#424242", mx: 1 }}>
+            |
+          </Typography>
+          <Typography
+            component="span"
+            sx={{
+              color: "#424242",
+              fontSize: "0.875rem",
+            }}
+          >
+            {product?.name || "Product"}
+          </Typography>
+        </Box>
+      </Container>
 
-          {/* FREQUENTLY BOUGHT PRODUCTS AREA */}
-          <FrequentlyBought products={frequentlyBought} />
+      <Container className="mt-2 mb-2">
+        {/* While loading, render ProductIntro in skeleton mode instead of a spinner */}
+        {isLoading || product === null ? (
+          <ProductIntro isLoading={true} product={null} />
+        ) : (
+          <>
+            {/* PRODUCT DETAILS INFO AREA */}
+            <ProductIntro
+              isLoading={false}
+              product={product}
+            />
+          </>
+        )}
+      </Container>
 
-          {/* RELATED PRODUCTS AREA */}
-          <RelatedProducts products={relatedByCategoryLoading ? null : relatedProducts} />
-        </>
+      {/* DIVIDER BEFORE DESCRIPTION */}
+      {!isLoading && product && (
+        <Container maxWidth="lg">
+          <Divider sx={{ my: 0, borderColor: 'primary.main' }} />
+        </Container>
       )}
-    </Container>
+
+      {/* DESCRIPTION SECTION */}
+      {!isLoading && product && (
+        <ProductDescriptionSection product={product} />
+      )}
+
+      {/* DIVIDER BETWEEN DESCRIPTION AND MATERIAL */}
+      {!isLoading && product && (
+        <Container maxWidth="lg">
+          <Divider sx={{ my: 0, borderColor: 'primary.main' }} />
+        </Container>
+      )}
+
+      {/* MATERIAL SECTION */}
+      {!isLoading && product && (
+        <ProductMaterialSection product={product} />
+      )}
+
+      {/* DIVIDER BEFORE REVIEWS */}
+      {!isLoading && product && (
+        <Container maxWidth="lg">
+          <Divider sx={{ my: 0, borderColor: 'primary.main' }} />
+        </Container>
+      )}
+
+      {/* CUSTOMER REVIEWS SECTION */}
+      {!isLoading && product && (
+        <ProductReviewsSection product={product} />
+      )}
+
+      {/* TESTIMONIALS SECTION */}
+      {!isLoading && product && (
+        <ProductTestimonialsSection />
+      )}
+
+      {/* REVIEW FORM SECTION */}
+      {!isLoading && product && (
+        <ProductReviewFormSection productName={product?.name} />
+      )}
+
+      {/* RELATED PRODUCTS AREA */}
+      {!isLoading && product && (
+        <RelatedProducts products={relatedByCategoryLoading ? null : relatedProducts} />
+      )}
+    </>
   );
 }

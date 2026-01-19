@@ -34,7 +34,7 @@ const defaultTestimonials = [
   },
 ];
 
-export default function Testimonials() {
+export default function Testimonials({ backgroundColor = "#FFFFFF" }) {
   const [testimonials, setTestimonials] = useState(defaultTestimonials);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,7 +121,7 @@ export default function Testimonials() {
   return (
     <section
       className="mt-4 mb-4"
-      style={{ backgroundColor: "#FFFFFF", overflow: "visible" }}
+      style={{ backgroundColor: backgroundColor, overflow: "visible" }}
     >
       <Container
         maxWidth={false}

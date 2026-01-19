@@ -77,8 +77,12 @@ export default function ClientProviders({ children, modal }) {
                           <GlobalLoader />
                           <ProgressBar />
                           <SnackbarProvider>
-                          {React.Children.toArray(modal)}
-                          {React.Children.toArray(children)}
+                          {React.Children.toArray(modal).map((child, index) => 
+                            React.isValidElement(child) ? React.cloneElement(child, { key: `modal-${index}` }) : child
+                          )}
+                          {React.Children.toArray(children).map((child, index) => 
+                            React.isValidElement(child) ? React.cloneElement(child, { key: `child-${index}` }) : child
+                          )}
                           </SnackbarProvider>
                         </LoadingProvider>
                       </NavigationProvider>

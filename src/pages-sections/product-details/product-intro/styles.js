@@ -61,20 +61,17 @@ export const StyledRoot = styled("div")(({
 // }));
 
 export const ProductImageWrapper = styled("div")(({ theme }) => ({
-  height: 500,
   width: "100%",
+  aspectRatio: "1 / 1",
   display: "flex",
   overflow: "hidden",
   position: "relative",
   justifyContent: "center",
-  borderRadius: theme.spacing(3),
+  borderRadius: 0,
   marginBottom: theme.spacing(6),
   border: `1px solid ${theme.palette.grey[300]}`,
   "& img": {
     objectFit: "cover"
-  },
-  [theme.breakpoints.down("sm")]: {
-    height: 300
   },
   "& + .preview-images": {
     overflow: "auto",
@@ -89,18 +86,22 @@ export const PreviewImage = styled("div", {
   theme,
   selected
 }) => ({
-  marginBottom:'8px',
+  marginBottom: '8px',
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  borderRadius: "10px",
+  borderRadius: 0,
   overflow: "hidden",
   width: 64,
   height: 64,
   cursor: "pointer",
   position: "relative",
   backgroundColor: "white",
-  opacity: selected ? 1 : 0.5,
+  opacity: selected ? 1 : 0.7,
   transition: "all 0.2s ease-in-out",
-  border: `1px solid ${selected ? theme.palette.primary.main : theme.palette.grey[400]}`
+  border: `2px solid ${selected ? "#271E03" : "transparent"}`,
+  "&:hover": {
+    opacity: 1,
+    borderColor: "#271E03",
+  }
 }));

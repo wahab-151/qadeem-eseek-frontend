@@ -30,15 +30,66 @@ import { styled } from "@mui/material/styles";
  * @param {boolean} props.disableElevation - Disables elevation shadow
  */
 
-const StyledButton = styled(Button)(({ theme }) => ({
-  textTransform: "none",
-  fontWeight: 500,
-  borderRadius: 0,
-  transition: "all 0.2s ease-in-out",
-  "&.Mui-disabled": {
-    opacity: 0.6,
-  },
-}));
+const StyledButton = styled(Button)(({ theme, ownerState }) => {
+  const { variant, customColor } = ownerState;
+  
+  // Default styles for all buttons
+  const baseStyles = {
+    textTransform: "none",
+    fontWeight: 600,
+    borderRadius: 0,
+    transition: "all 0.2s ease-in-out",
+    "&.Mui-disabled": {
+      opacity: 0.6,
+    },
+  };
+
+  // Custom dark brown color (#5D4037) styles
+  if (customColor === "darkBrown") {
+    if (variant === "contained") {
+      return {
+        ...baseStyles,
+        backgroundColor: "#5D4037",
+        color: "#fff",
+        "&:hover": {
+          backgroundColor: "#422f24",
+        },
+        "&.Mui-disabled": {
+          backgroundColor: "#9E9E9E",
+          opacity: 0.6,
+        },
+      };
+    }
+    if (variant === "outlined") {
+      return {
+        ...baseStyles,
+        borderColor: "#5D4037",
+        color: "#5D4037",
+        "&:hover": {
+          borderColor: "#422f24",
+          backgroundColor: "rgba(93, 64, 55, 0.04)",
+        },
+        "&.Mui-disabled": {
+          borderColor: "#9E9E9E",
+          color: "#9E9E9E",
+          opacity: 0.6,
+        },
+      };
+    }
+  }
+
+  // For contained variant without customColor, ensure it uses theme primary
+  // MUI Button already handles this via color="primary", but we ensure it's applied
+  if (variant === "contained" && !customColor) {
+    return {
+      ...baseStyles,
+      // MUI will apply theme.palette.primary.main via color prop
+      // We just ensure our base styles are applied
+    };
+  }
+
+  return baseStyles;
+});
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   transition: "all 0.2s ease-in-out",
@@ -60,6 +111,7 @@ export default function QadeemButton({
   disabled = false,
   variant = "contained",
   color = "primary",
+  customColor, // Custom color prop for brand-specific colors like darkBrown
   size = "medium",
   fullWidth = false,
   href,
@@ -115,10 +167,13 @@ export default function QadeemButton({
     startIcon
   ) : null;
 
+  // Ensure color defaults to "primary" if not specified and no customColor
+  const buttonColor = customColor ? undefined : (color || "primary");
+
   return (
     <StyledButton
       variant={variant}
-      color={color}
+      color={buttonColor} // Use MUI color prop (defaults to "primary") which applies theme.palette.primary.main
       size={size}
       fullWidth={fullWidth}
       disabled={disabled || loading}
@@ -131,6 +186,7 @@ export default function QadeemButton({
       className={className}
       disableRipple={disableRipple}
       disableElevation={disableElevation}
+      ownerState={{ variant, customColor }}
       sx={sx}
       {...otherProps}
     >

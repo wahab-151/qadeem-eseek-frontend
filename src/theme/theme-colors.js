@@ -38,8 +38,6 @@ export const primary = {
   800: "#352D1A", // Darker brown
   900: "#271E03", // Darkest (main brand color)
   main: "#271E03", // Primary brand color
-  
-// main: "rgba(34, 41, 52, 1)",
   light: "#8B7A4A", // Lighter variant for light mode
   dark: "#1A1502" // Darker variant for dark mode
 };
@@ -54,7 +52,7 @@ export const secondary = {
   700: "#104674", // slightly darker
   800: "#0c3455", // dark
   900: "#09243b", // very dark
-  main: "#155a97",
+  main: "#705D27",
   dark: "#09243b",
   light: "#3275bf"
 };
@@ -246,9 +244,10 @@ export const themeColors = {
     default: "#ffffff"
   },
   text: {
-    primary: grey[900],
-    secondary: grey[700],
-    disabled: grey[400]
+    primary: "#271E03",
+    secondary: "#705D27",
+    disabled: grey[400],
+    green: "#74A12E"
   },
   action: {
     focus: alpha(grey[700], 0.12),
