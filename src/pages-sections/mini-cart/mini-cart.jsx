@@ -169,8 +169,8 @@ export default function MiniCart({ onClose }) {
     }
   };
 
-  const handleProductClick = async (id, categoryId) => {
-    await push(`/products/${id}?category=${categoryId}`);
+  const handleProductClick = async (slugOrId, categoryId) => {
+    await push(`/products/${slugOrId}?category=${categoryId}`);
   };
 
   const handleCheckoutClick = async () => {

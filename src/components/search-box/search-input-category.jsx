@@ -449,7 +449,8 @@ export default function SearchBar() {
     event.preventDefault();
     event.stopPropagation();
     
-    if (!product?._id) {
+    const productKey = product?.slug || product?._id;
+    if (!productKey) {
       
       return;
     }
@@ -461,13 +462,13 @@ export default function SearchBar() {
     }
     
     // Store the full product object in sessionStorage for instant loading
-    sessionStorage.setItem(`product_${product._id}`, JSON.stringify(product));
+    sessionStorage.setItem(`product_${productKey}`, JSON.stringify(product));
     
     
     
     // Small delay to ensure loader is visible before navigation
     setTimeout(async () => {
-      await push(`/products/${product._id}?category=${product?.category?._id || product?.category}`);
+      await push(`/products/${productKey}?category=${product?.category?._id || product?.category}`);
       
       setOpen(false);
     }, 50);

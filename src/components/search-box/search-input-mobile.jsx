@@ -248,7 +248,8 @@ export default function MobileSearchInput({ onClose }) {
     event.preventDefault();
     event.stopPropagation();
     
-    if (!product?._id) {
+    const productKey = product?.slug || product?._id;
+    if (!productKey) {
       
       return;
     }
@@ -260,12 +261,12 @@ export default function MobileSearchInput({ onClose }) {
     }
     
     // Store the full product object in sessionStorage for instant loading
-    sessionStorage.setItem(`product_${product._id}`, JSON.stringify(product));
+    sessionStorage.setItem(`product_${productKey}`, JSON.stringify(product));
     
     // Small delay to ensure loader is visible before navigation
     setTimeout(async () => {
       if (push) {
-        await push(`/products/${product._id}?category=${product?.category?._id || product?.category}`);
+        await push(`/products/${productKey}?category=${product?.category?._id || product?.category}`);
         setOpen(false);
         if (typeof onClose === 'function') onClose();
       }

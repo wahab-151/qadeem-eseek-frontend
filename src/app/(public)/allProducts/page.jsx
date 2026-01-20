@@ -1,10 +1,31 @@
 // PAGE VIEW COMPONENT
 import { ProductSearchPageView } from "pages-sections/product-details/page-view";
 
-// Optimized: Use static metadata to avoid blocking server-side rendering
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sifrausa.com';
+
+// Optimized: Use static metadata with proper SEO
 export const metadata = {
-  title: "Search - Wholesale & Retail Store with Personalized Pricing",
-  description: "Search for products in our wholesale and retail e-commerce platform."
+  title: "All Products - SIFRA | Wholesale & Retail Store",
+  description: "Browse all products at SIFRA. Quality tools, parts, and supplies with personalized wholesale and retail pricing. Fast delivery available.",
+  keywords: [
+    'all products',
+    'wholesale products',
+    'retail products',
+    'tools',
+    'parts',
+    'supplies',
+    'SIFRA',
+  ],
+  openGraph: {
+    title: 'All Products - SIFRA',
+    description: 'Browse all products at SIFRA. Quality tools, parts, and supplies with personalized pricing.',
+    type: 'website',
+    url: `${SITE_URL}/allProducts`,
+    siteName: 'SIFRA',
+  },
+  alternates: {
+    canonical: `${SITE_URL}/allProducts`,
+  },
 };
 
 // Force dynamic rendering but optimize for client-side rendering

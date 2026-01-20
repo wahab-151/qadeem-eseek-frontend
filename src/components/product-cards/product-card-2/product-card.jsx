@@ -92,20 +92,24 @@ function ProductCard2({
     try { showProductDetailLoader(); } catch {}
     setIsNavigating(true);
     
+    // Use slug for SEO-friendly URLs, fallback to _id for backward compatibility
+    const productSlug = slug || _id;
+    
     // Store the full product object in sessionStorage for instant loading
-    sessionStorage.setItem(`product_${_id}`, JSON.stringify(product));
+    sessionStorage.setItem(`product_${productSlug}`, JSON.stringify(product));
     
     // Prefetch route and navigate immediately
-    try { router.prefetch(`/products/${_id}`); } catch (_) {}
+    try { router.prefetch(`/products/${productSlug}`); } catch (_) {}
     // Small timeout to ensure the overlay renders before navigation starts
     setTimeout(() => {
-      router.push(`/products/${_id}`);
+      router.push(`/products/${productSlug}`);
     }, 60);
-  }, [_id, router, product, showProductDetailLoader]);
+  }, [_id, slug, router, product, showProductDetailLoader]);
 
   const handleMouseEnter = useCallback(() => {
-    try { router.prefetch(`/products/${_id}`); } catch (_) {}
-  }, [_id, router]);
+    const productSlug = slug || _id;
+    try { router.prefetch(`/products/${productSlug}`); } catch (_) {}
+  }, [_id, slug, router]);
 
   const handleAddToCartClick = useCallback(async (e) => {
     e.preventDefault();

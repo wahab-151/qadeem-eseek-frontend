@@ -17,6 +17,7 @@ import SnackbarProvider from "components/SnackbarProvider";
 import GlobalLoader from "components/progress/GlobalLoader";
 import ProgressBar from "components/progress";
 import InlineLoader from "components/progress/InlineLoader";
+import ErrorBoundary from "components/ErrorBoundary";
 
 export default function ClientProviders({ children, modal }) {
   useEffect(() => {
@@ -77,12 +78,14 @@ export default function ClientProviders({ children, modal }) {
                           <GlobalLoader />
                           <ProgressBar />
                           <SnackbarProvider>
-                          {React.Children.toArray(modal).map((child, index) => 
-                            React.isValidElement(child) ? React.cloneElement(child, { key: `modal-${index}` }) : child
-                          )}
-                          {React.Children.toArray(children).map((child, index) => 
-                            React.isValidElement(child) ? React.cloneElement(child, { key: `child-${index}` }) : child
-                          )}
+                            <ErrorBoundary>
+                              {React.Children.toArray(modal).map((child, index) => 
+                                React.isValidElement(child) ? React.cloneElement(child, { key: `modal-${index}` }) : child
+                              )}
+                              {React.Children.toArray(children).map((child, index) => 
+                                React.isValidElement(child) ? React.cloneElement(child, { key: `child-${index}` }) : child
+                              )}
+                            </ErrorBoundary>
                           </SnackbarProvider>
                         </LoadingProvider>
                       </NavigationProvider>

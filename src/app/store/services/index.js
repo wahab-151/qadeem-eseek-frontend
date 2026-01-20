@@ -13,6 +13,7 @@ import {
   addSubCategory,
   deleteCategory,
   updateCategory,
+  getCategoriesPaginated,
 } from "./adminCategoriesService";
 import { deleteImage, uploadImage, deleteImageCompletely } from "./s3Service";
 import {
@@ -150,6 +151,7 @@ const appSlice = createApi({
     getMegaMenuCategories: getMegaMenuCategories(build),
     listAllCategories: listAllCategories(build),
     getAdminCategories: getAdminCategories(build),
+    getCategoriesPaginated: getCategoriesPaginated(build),
     //s3
     uploadImage: uploadImage(build),
     deleteImage: deleteImage(build),
@@ -273,6 +275,7 @@ export const {
   useListAllCategoriesQuery,
   useGetMegaMenuCategoriesQuery,
   useGetAdminCategoriesQuery,
+  useGetCategoriesPaginatedQuery,
   //s3
   useUploadImageMutation,
   useDeleteImageMutation,

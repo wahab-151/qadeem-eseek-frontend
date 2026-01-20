@@ -412,17 +412,23 @@ export default function Categoriescarousel() {
     // Try to fetch categories from API
     const fetchCategories = async () => {
       try {
-        const data = await api.getFeaturedCategories();
-        if (data && data.length > 0) {
+        const response = await api.getFeaturedCategories();
+        // API returns { success, message, data: categories[] }
+        const data = response?.data?.data || response?.data || response;
+        if (data && Array.isArray(data) && data.length > 0) {
+          // Filter to only show parent categories (level 1) that have images
+          const parentCategories = data.filter(cat => cat.level === 1 && cat.image);
           // Transform API data to match our structure
-          const transformed = data.map((cat, index) => ({
-            id: cat.id || index,
+          const transformed = parentCategories.map((cat, index) => ({
+            id: cat._id || cat.id || index,
             name: cat.name || "Category",
             image:
               cat.image ||
               defaultCategories[index % defaultCategories.length].image,
           }));
-          setCategories(transformed);
+          if (transformed.length > 0) {
+            setCategories(transformed);
+          }
         }
       } catch (error) {
         console.error("Error fetching categories:", error);

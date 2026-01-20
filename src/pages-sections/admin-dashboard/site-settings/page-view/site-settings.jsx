@@ -71,19 +71,20 @@ const policiesData={
 const [contentData, setContentData] = useState({})
 
 useEffect(() => {
-  if (websiteInfo) {
+  if (websiteInfo?.data?.content) {
+    const content = websiteInfo.data.content;
     setContentData({
-      description: websiteInfo.data.content.description || "",
-      contact: websiteInfo.data.content.contact || {},
-      aboutUs: websiteInfo.data.content.aboutUs || {},
-      shippingAndReturnPolicy: websiteInfo.data.content.shippingAndReturnPolicy || {},
-      privacyPolicy: websiteInfo.data.content.privacyPolicy || {},
-      termsAndConditions: websiteInfo.data.content.termsAndConditions || {},
-      bulkPurchasing: websiteInfo.data.content.bulkPurchasing || {},
-      homepageBanners: websiteInfo.data.content.homepageBanners || [],
-      promotionalDetails: websiteInfo.data.content.promotionalDetails || { title: "", label: "" },
-      tickerTitle: websiteInfo.data.content.tickerTitle || "",
-      tickeLable: websiteInfo.data.content.tickeLable || "",
+      description: content.description || "",
+      contact: content.contact || {},
+      aboutUs: content.aboutUs || {},
+      shippingAndReturnPolicy: content.shippingAndReturnPolicy || {},
+      privacyPolicy: content.privacyPolicy || {},
+      termsAndConditions: content.termsAndConditions || {},
+      bulkPurchasing: content.bulkPurchasing || {},
+      homepageBanners: content.homepageBanners || [],
+      promotionalDetails: content.promotionalDetails || { title: "", label: "" },
+      tickerTitle: content.tickerTitle || "",
+      tickeLable: content.tickeLable || "",
     });
   }
 }, [websiteInfo]);

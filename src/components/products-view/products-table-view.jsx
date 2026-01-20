@@ -89,6 +89,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
   const MobileProductCard = ({ product }) => {
     const {
       _id,
+      slug,
       name,
       price,
       images: rawImages,
@@ -100,6 +101,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
       ? rawImages
       : [{ preview: "/assets/images/logo.jpeg" }];
 
+    const productKey = slug || _id;
     const handleProductClick = () => {
       if (typeof window !== 'undefined' && window.NProgress) {
         window.NProgress.start();
@@ -107,12 +109,12 @@ const ProductsTableView = memo(({ products, onSort }) => {
       const worker = getJsonWorker();
       if (worker) {
         worker.onmessage = (e) => {
-          try { sessionStorage.setItem(`product_${_id}`, e.data); } catch {}
+          try { sessionStorage.setItem(`product_${productKey}`, e.data); } catch {}
         };
         worker.postMessage(product);
       } else {
         // Fallback if worker not available
-        try { sessionStorage.setItem(`product_${_id}`, JSON.stringify(product)); } catch {}
+        try { sessionStorage.setItem(`product_${productKey}`, JSON.stringify(product)); } catch {}
       }
     };
 
@@ -128,9 +130,9 @@ const ProductsTableView = memo(({ products, onSort }) => {
             />
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Link 
-                href={`/products/${_id}`} 
+                href={`/products/${slug || _id}`} 
                 onClick={(e) => { handleProductClick(e); }}
-                onMouseEnter={() => { try { router.prefetch(`/products/${_id}`); } catch (_) {} }}
+                onMouseEnter={() => { try { router.prefetch(`/products/${slug || _id}`); } catch (_) {} }}
                 style={{ textDecoration: "none" }}
               >
                 <Typography
@@ -261,6 +263,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
           {products?.map((product) => {
             const {
               _id,
+              slug,
               name,
               price,
               images: rawImages,
@@ -284,6 +287,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
               ? rawImages
               : [{ preview: "/assets/images/logo.jpeg" }];
 
+            const productKey = slug || _id;
             const handleProductClick = () => {
               if (typeof window !== 'undefined' && window.NProgress) {
                 window.NProgress.start();
@@ -291,11 +295,11 @@ const ProductsTableView = memo(({ products, onSort }) => {
               const worker = getJsonWorker();
               if (worker) {
                 worker.onmessage = (e) => {
-                  try { sessionStorage.setItem(`product_${_id}`, e.data); } catch {}
+                  try { sessionStorage.setItem(`product_${productKey}`, e.data); } catch {}
                 };
                 worker.postMessage(product);
               } else {
-                try { sessionStorage.setItem(`product_${_id}`, JSON.stringify(product)); } catch {}
+                try { sessionStorage.setItem(`product_${productKey}`, JSON.stringify(product)); } catch {}
               }
             };
 
@@ -319,9 +323,9 @@ const ProductsTableView = memo(({ products, onSort }) => {
                 </TableCell>
                 <TableCell>
                   <Link 
-                    href={`/products/${_id}`} 
+                    href={`/products/${slug || _id}`} 
                     onClick={(e) => { handleProductClick(e); }}
-                    onMouseEnter={() => { try { router.prefetch(`/products/${_id}`); } catch (_) {} }}
+                    onMouseEnter={() => { try { router.prefetch(`/products/${slug || _id}`); } catch (_) {} }}
                     style={{ textDecoration: "none" }}
                   >
                     <Typography

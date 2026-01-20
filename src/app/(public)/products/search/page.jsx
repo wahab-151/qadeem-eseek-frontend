@@ -6,15 +6,81 @@ import { getFilters, getProducts } from "utils/__api__/product-search";
 import { Suspense } from "react";
 import InlineLoader from "components/progress/InlineLoader";
 
-export const metadata = {
-  title: "Product Search - Bazaar Next.js E-commerce Template",
-  description: "Bazaar is a React Next.js E-commerce template. Build SEO friendly Online store, delivery app and Multi vendor store",
-  authors: [{
-    name: "UI-LIB",
-    url: "https://ui-lib.com"
-  }],
-  keywords: ["e-commerce", "e-commerce template", "next.js", "react"]
-};
+const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_BASE_URL || 'http://localhost:5000';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sifrausa.com';
+
+// Helper to fetch category by ID for metadata
+async function getCategoryById(categoryId) {
+  if (!categoryId) return null;
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/categories/${categoryId}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.data || data || null;
+  } catch {
+    return null;
+  }
+}
+
+// Dynamic metadata for product search/category pages
+export async function generateMetadata({ searchParams }) {
+  const params = await searchParams;
+  const { q, category, brand, tag } = params;
+  
+  let title = 'Product Search - SIFRA';
+  let description = 'Search and browse products at SIFRA. Find tools, parts, and supplies with personalized wholesale and retail pricing.';
+  let canonicalUrl = `${SITE_URL}/products/search`;
+  
+  // If filtering by category, get category info
+  if (category) {
+    const categoryData = await getCategoryById(category);
+    if (categoryData) {
+      title = `${categoryData.name || categoryData.title} Products - SIFRA`;
+      description = categoryData.description || 
+        `Browse ${categoryData.name} products at SIFRA. Quality tools, parts, and supplies with personalized pricing.`;
+      canonicalUrl = `${SITE_URL}/products/search?category=${category}`;
+    }
+  }
+  
+  // If search query is present
+  if (q) {
+    title = `Search: "${q}" - SIFRA`;
+    description = `Search results for "${q}" at SIFRA. Find quality tools, parts, and supplies.`;
+  }
+  
+  // If filtering by tag
+  if (tag) {
+    title = `${tag} Products - SIFRA`;
+    description = `Browse ${tag} products at SIFRA. Quality tools, parts, and supplies with personalized pricing.`;
+  }
+
+  return {
+    title,
+    description,
+    keywords: [
+      q,
+      tag,
+      'product search',
+      'wholesale',
+      'retail',
+      'tools',
+      'parts',
+      'SIFRA',
+    ].filter(Boolean),
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: canonicalUrl,
+      siteName: 'SIFRA',
+    },
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  };
+}
 
 // ==============================================================
 

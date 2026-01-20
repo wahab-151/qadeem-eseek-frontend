@@ -101,7 +101,8 @@ export default function MiniCartItem({
   // console.log("item", item)
   const handleClick = () => {
     if (onProductClick) {
-      onProductClick(item?.id, item?.category);
+      // Use slug for SEO-friendly URLs, fallback to id
+      onProductClick(item?.slug || item?.id, item?.category);
     }
   };
 

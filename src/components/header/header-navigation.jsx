@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import FlexBox from "components/flex-box/flex-box";
 import { NavLink } from "components/nav-link";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
@@ -10,7 +11,7 @@ import HeaderDropdown from "./header-dropdown";
 // Standard navigation items
 const standardNavItems = [
   { title: "Home", url: "/home" },
-  { title: "Categories", url: "/allProducts", hasDropdown: true },
+  { title: "Categories", url: "/categories", hasDropdown: true },
   { title: "Product", url: "/allProducts" },
   { title: "Blogs", url: "/blog" },
   { title: "About", url: "/aboutUs" },
@@ -18,6 +19,7 @@ const standardNavItems = [
 ];
 
 export default function HeaderNavigation({ navigation }) {
+  const router = useRouter();
   const [hoveredItem, setHoveredItem] = useState(null);
   const timeoutRef = useRef(null);
 
@@ -134,12 +136,13 @@ export default function HeaderNavigation({ navigation }) {
               }}
             >
               <Box
-                className="nav-link"
+                component="a"
+                href={item.url}
                 onClick={(e) => {
                   e.preventDefault();
-                  e.stopPropagation();
-                  // Don't navigate, just show dropdown
+                  router.push(item.url);
                 }}
+                className="nav-link"
                 sx={{
                   color: "#424242",
                   fontFamily: "sans-serif",

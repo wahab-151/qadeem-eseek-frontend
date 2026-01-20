@@ -3,6 +3,9 @@ import { useGetProductByIdQuery, useGetAllProductsQuery } from "app/store/servic
 import { notFound } from "next/navigation";
 import { useSnackbar } from "notistack";
 
+// SEO Components
+import { ProductJsonLd, BreadcrumbJsonLd } from "components/seo";
+
 // PAGE VIEW COMPONENT
 import { useEffect, useState, useMemo } from "react";
 import {Container, Box, Typography, Divider} from "@mui/material";
@@ -194,8 +197,27 @@ useEffect(() => {
       setRelatedProducts([]);
     }
   }, [relatedByCategoryResponse, relatedByCategoryLoading, product, shouldFetchRelatedByCategory]);
+
+  // Prepare breadcrumb items for SEO
+  const breadcrumbItems = [
+    { name: 'Home', url: '/home' },
+    { name: 'Shop', url: '/allProducts' },
+    ...(product?.category?.name ? [{ 
+      name: product.category.name, 
+      url: `/products/search?category=${product.category._id}` 
+    }] : []),
+    ...(product?.name ? [{ 
+      name: product.name, 
+      url: `/products/${product.slug || product._id}` 
+    }] : []),
+  ];
+
   return (
     <>
+      {/* SEO: Structured Data */}
+      {product && <ProductJsonLd product={product} />}
+      {product && <BreadcrumbJsonLd items={breadcrumbItems} />}
+
       {/* BREADCRUMB NAVIGATION */}
       <Container maxWidth="lg" sx={{ py: 2 }}>
         <Box

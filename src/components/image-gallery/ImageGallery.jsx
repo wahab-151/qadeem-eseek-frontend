@@ -214,7 +214,7 @@ const ImageGallery = ({
       const sampleImages = [
         {
           id: 'sample-1',
-          url: 'https://eseek.s3.us-east-2.amazonaws.com/eseek/1757533166464-4b4a8b71-d23a-46cc-b7f1-8d787d724229-We%2520Carry%2520wide%2520range%2520of%2520products...%2520%282%29.png',
+          url: 'https://qadeem.s3.eu-west-2.amazonaws.com/qadeem/1757533166464-4b4a8b71-d23a-46cc-b7f1-8d787d724229-We%2520Carry%2520wide%2520range%2520of%2520products...%2520%282%29.png',
           fileName: 'sample-product-1.png',
           type: 'product',
           isExisting: true,

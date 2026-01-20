@@ -6,7 +6,7 @@ import NProgress from "nprogress";
 
 // Axios instance
 const axiosInstance = axios.create({
-  
+  baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL || "http://localhost:5000",
 
 // Axios configuration options here
 });

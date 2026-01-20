@@ -11,7 +11,22 @@
 //   });
 // };
 
-
+// Get paginated categories with search for public listing page
+export const getCategoriesPaginated = (build) => {
+  return build.query({
+    query: ({ page = 1, limit = 12, search = "", level = 1, sortBy = "displayOrder", sortOrder = "asc" } = {}) => ({
+      url: `/api/categories/paginated?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&level=${level}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
+      method: "GET",
+    }),
+    providesTags: (result) =>
+      result?.data?.categories
+        ? [
+            ...result.data.categories.map(({ _id }) => ({ type: "Categories", id: _id })),
+            { type: "Categories", id: "LIST" },
+          ]
+        : [{ type: "Categories", id: "LIST" }],
+  });
+};
 
 
 export const addSubCategory = (build) => {

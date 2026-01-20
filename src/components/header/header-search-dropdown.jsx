@@ -151,7 +151,8 @@ export default function HeaderSearchDropdown({ open, onClose }) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!product?._id) {
+    const productKey = product?.slug || product?._id;
+    if (!productKey) {
       return;
     }
 
@@ -160,12 +161,12 @@ export default function HeaderSearchDropdown({ open, onClose }) {
       window.NProgress.start();
     }
 
-    sessionStorage.setItem(`product_${product._id}`, JSON.stringify(product));
+    sessionStorage.setItem(`product_${productKey}`, JSON.stringify(product));
 
     setTimeout(async () => {
       if (push) {
         await push(
-          `/products/${product._id}?category=${product?.category?._id || product?.category}`
+          `/products/${productKey}?category=${product?.category?._id || product?.category}`
         );
         handleClose();
       }

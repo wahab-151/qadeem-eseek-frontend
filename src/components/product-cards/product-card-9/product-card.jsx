@@ -56,12 +56,15 @@ export default function ProductCard9({
     // Show loader immediately on card click
     showProductCardLoader();
     
+    // Use slug for SEO-friendly URLs, fallback to _id
+    const productKey = slug || _id;
+    
     // Store the full product object in sessionStorage for instant loading
-    sessionStorage.setItem(`product_${_id}`, JSON.stringify(product));
+    sessionStorage.setItem(`product_${productKey}`, JSON.stringify(product));
     
     // Navigate after small delay to let loader render
     setTimeout(() => {
-      router.push(`/products/${_id}`);
+      router.push(`/products/${productKey}`);
     }, 50);
   };
 

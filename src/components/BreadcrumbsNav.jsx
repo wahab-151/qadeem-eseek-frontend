@@ -159,9 +159,10 @@ export default function BreadcrumbNav({ breadcrumb, setBreadcrumb }) {
         {breadcrumb?.map((item, index) => {
           const isLast = index === breadcrumb.length - 1;
           const hasChild = !!item.child;
+          // Use slug for SEO-friendly product URLs, fallback to id
           const href = hasChild
             ? `/allProducts?category=${item.id}`
-            : `/products/${item.id}`;
+            : `/products/${item.slug || item.id}`;
 
           if (isLast) {
             return (

@@ -3,7 +3,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "example.com" },
-      { protocol: "https", hostname: "eseek.s3.us-east-2.amazonaws.com" },
+      { protocol: "https", hostname: "qadeem.s3.eu-west-2.amazonaws.com" },
+      { protocol: "https", hostname: "s3.eu-west-2.amazonaws.com", pathname: "/**" },
       { protocol: "https", hostname: "your-bucket.com" },
       { protocol: "https", hostname: "s3.us-east-2.amazonaws.com", pathname: "/**" },
       { protocol: "https", hostname: "picsum.photos" },

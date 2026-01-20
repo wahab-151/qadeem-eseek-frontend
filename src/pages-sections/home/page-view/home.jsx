@@ -15,11 +15,12 @@ const Section2 = dynamic(() => import("../section-2"), { ssr: false, loading: ()
 const Section3 = dynamic(() => import("../section-3"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section4 = dynamic(() => import("../section-4"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section5 = dynamic(() => import("../section-5"), { ssr: false, loading: () => <InlineLoader size={40} /> });
-const SectionFeaturedTags = dynamic(() => import("../section-featured-tags/section-featured-tags"), { ssr: false, loading: () => <InlineLoader size={40} /> });
+// const SectionFeaturedTags = dynamic(() => import("../section-featured-tags/section-featured-tags"), { ssr: false, loading: () => <InlineLoader size={40} /> });
+const SectionCategories = dynamic(() => import("../section-categories"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section6 = dynamic(() => import("../section-6"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section7 = dynamic(() => import("../section-7"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Section8 = dynamic(() => import("../section-8"), { ssr: false, loading: () => <InlineLoader size={40} /> });
-const Categoriescarousel = dynamic(() => import("../Categoriescarousel"), { ssr: false, loading: () => <InlineLoader size={40} /> });
+// const Categoriescarousel = dynamic(() => import("../Categoriescarousel"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 const Testimonials = dynamic(() => import("../Testimonials"), { ssr: false, loading: () => <InlineLoader size={40} /> });
 import useProducts from "hooks/useProducts";
 
@@ -32,20 +33,23 @@ export default function GadgetOnePageView() {
     {/* MAIN PRODUCT CAROUSEL AND TOP PICK PRODUCTS AREA */}
     <Section1 />
 
-    {/* ABOUT SECTION - QADEEM HANDICRAFT SHOP */}
-    <SectionAbout />
-
     {/* FEATURED CATEGORIES AREA */}
     {/* <Section2 /> */}
 
     {/* DISCOUNT BANNER AREA */}
     {/* <Section3 /> */}
 
+    {/* ABOUT SECTION - QADEEM HANDICRAFT SHOP */}
+    <SectionAbout />
+
+    {/* SHOP BY CATEGORIES AREA */}
+    <SectionCategories />
+
     {/* MOST VIEWED PRODUCTS AREA */}
     <Section4 />
 
     {/* FEATURED TAGS AREA */}
-    <SectionFeaturedTags />
+    {/* <SectionFeaturedTags /> */}
 
     {/* PROMOTION PRODUCTS */}
     <Section5 />
@@ -56,8 +60,8 @@ export default function GadgetOnePageView() {
     {/* BEST SELLING PRODUCTS AREA */}
     <Section8 />
 
-    {/* CATEGORIES CAROUSEL AREA */}
-    <Categoriescarousel />
+    {/* CATEGORIES CAROUSEL AREA - COMMENTED OUT */}
+    {/* <Categoriescarousel /> */}
 
     {/* TESTIMONIALS AREA */}
     <Testimonials />

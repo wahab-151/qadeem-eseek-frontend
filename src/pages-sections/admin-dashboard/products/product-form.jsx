@@ -313,17 +313,6 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
     onChange(result ? parseFloat(result) : "");
   };
 
-  const checkDuplicateImage = async (filename) => {
-    try {
-      const { data: imagesData } = await listImages({ imageType: "product", page: 1, limit: 50 });
-      const existingImages = imagesData?.images || [];
-      return existingImages.some((image) => image.fileName.toLowerCase() === filename.toLowerCase());
-    } catch (error) {
-      console.error("Error checking for duplicate images:", error);
-      return false;
-    }
-  };
-
   const handleChangeDropZone = async (files) => {
     setImageProcessing(true);
     for (const file of files) {
@@ -333,11 +322,6 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
       }
       if (file.size > 20 * 1024 * 1024) {
         enqueueSnackbar(`${file.name} exceeds the maximum size of 20 MB.`, { variant: "error" });
-        continue;
-      }
-      const isDuplicate = await checkDuplicateImage(file.name);
-      if (isDuplicate) {
-        enqueueSnackbar(`Image "${file.name}" already exists.`, { variant: "warning" });
         continue;
       }
       try {
@@ -444,87 +428,94 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
     enqueueSnackbar(`${images.length} image${images.length !== 1 ? "s" : ""} selected from gallery!`, { variant: "success" });
   };
 
-  const handleSubmitForm = handleSubmit(async (values) => {
-    const isValid = await trigger();
-    if (!isValid) {
-      enqueueSnackbar("Please fix the validation errors before submitting.", { variant: "error" });
-      return;
-    }
-    const payload = {
-      price: Number(values.tier4Price),
-      pricing: {
-        Franchise: { price: Number(values.tier4Sale) },
-        Retailer: { price: Number(values.tier3Sale) },
-        ChainStore: { price: Number(values.tier2Sale) },
-        Wholesale: { price: Number(values.tier1Sale) },
-      },
-      name: values.name,
-      tags: values.tags,
-      stock: Number(values.stock),
-      sku: values.skuCode,
-      description: values.description,
-      category: values.category,
-      subCategory: values.subCategory,
-      mostPopular: values.mostPopular,
-      mostSold: values.mostSold,
-      featured: values.featured,
-      published: values.published,
-      images: files,
-      costPrice: Number(values.costPrice),
-      id: mode === "duplicate" ? null : product?.id || null,
-    };
-    if (adminSetDisplayOrder) {
-      payload.displayOrder = Number(values.displayOrder);
-    }
-    try {
-      if (product && mode !== "duplicate") {
-        const res = await updateProduct(payload);
-        if (res?.data?.success) {
-          enqueueSnackbar("Product updated successfully!", { variant: "success" });
-          refetchCategoryCount();
-          refetch();
-          onSuccess();
-          reset();
-          setFiles([]);
-          return;
-        } else if (res?.error?.data?.message) {
-          const msg = res?.error?.data?.message || "Update failed";
-          enqueueSnackbar(
-            msg.toLowerCase().includes("sku")
-              ? "Duplicate SKU: another product already uses this SKU. Please enter a unique SKU."
-              : msg,
-            { variant: "error" }
-          );
-        }
-      } else {
-        const res = await addProduct(payload);
-        if (res?.data?._id) {
-          enqueueSnackbar("Product added successfully!", { variant: "success" });
-          refetchCategoryCount();
-          reset();
-          setFiles([]);
-          if (mode === "duplicate") {
-            refetch && refetch();
-            onSuccess && onSuccess();
-          } else {
-            router.push("/admin/products");
-          }
-          return;
-        } else if (res?.error?.data?.message) {
-          const msg = res?.error?.data?.message || "Creation failed";
-          enqueueSnackbar(
-            msg.toLowerCase().includes("sku")
-              ? "Duplicate SKU: another product already uses this SKU. Please enter a unique SKU."
-              : msg,
-            { variant: "error" }
-          );
-        }
+  const handleSubmitForm = handleSubmit(
+    async (values) => {
+      // handleSubmit already validates, so if we're here, form is valid
+      const payload = {
+        price: Number(values.tier4Price),
+        pricing: {
+          Franchise: { price: Number(values.tier4Sale) },
+          Retailer: { price: Number(values.tier3Sale) },
+          ChainStore: { price: Number(values.tier2Sale) },
+          Wholesale: { price: Number(values.tier1Sale) },
+        },
+        name: values.name,
+        tags: values.tags,
+        stock: Number(values.stock),
+        sku: values.skuCode,
+        description: values.description,
+        category: values.category,
+        subCategory: values.subCategory,
+        mostPopular: values.mostPopular,
+        mostSold: values.mostSold,
+        featured: values.featured,
+        published: values.published,
+        images: files,
+        costPrice: Number(values.costPrice),
+        id: mode === "duplicate" ? null : product?.id || null,
+      };
+      if (adminSetDisplayOrder) {
+        payload.displayOrder = Number(values.displayOrder);
       }
-    } catch (err) {
-      console.error("❌ Error in product", err);
-      enqueueSnackbar("An error occurred while saving the product.", { variant: "error" });
+      try {
+        if (product && mode !== "duplicate") {
+          const res = await updateProduct(payload);
+          if (res?.data?.success) {
+            enqueueSnackbar("Product updated successfully!", { variant: "success" });
+            refetchCategoryCount();
+            refetch();
+            onSuccess();
+            reset();
+            setFiles([]);
+            return;
+          } else if (res?.error?.data?.message) {
+            const msg = res?.error?.data?.message || "Update failed";
+            enqueueSnackbar(
+              msg.toLowerCase().includes("sku")
+                ? "Duplicate SKU: another product already uses this SKU. Please enter a unique SKU."
+                : msg,
+              { variant: "error" }
+            );
+          }
+        } else {
+          const res = await addProduct(payload);
+          if (res?.data?._id) {
+            enqueueSnackbar("Product added successfully!", { variant: "success" });
+            refetchCategoryCount();
+            reset();
+            setFiles([]);
+            if (mode === "duplicate") {
+              refetch && refetch();
+              onSuccess && onSuccess();
+            } else {
+              router.push("/admin/products");
+            }
+            return;
+          } else if (res?.error?.data?.message) {
+            const msg = res?.error?.data?.message || "Creation failed";
+            enqueueSnackbar(
+              msg.toLowerCase().includes("sku")
+                ? "Duplicate SKU: another product already uses this SKU. Please enter a unique SKU."
+                : msg,
+              { variant: "error" }
+            );
+          }
+        }
+      } catch (err) {
+        console.error("❌ Error in product", err);
+        enqueueSnackbar("An error occurred while saving the product.", { variant: "error" });
+      }
+    },
+    (formErrors) => {
+      // This callback runs when validation fails
+      const errorMessages = Object.values(formErrors).map((err) => err.message).filter(Boolean);
+      if (errorMessages.length > 0) {
+        enqueueSnackbar(`Validation errors: ${errorMessages[0]}`, { variant: "error" });
+      } else {
+        enqueueSnackbar("Please fix the validation errors before submitting.", { variant: "error" });
+      }
     }
-  });
+  );
 
   return (
     <Card className="p-3">

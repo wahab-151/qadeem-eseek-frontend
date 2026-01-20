@@ -1,7 +1,7 @@
 import { cache } from "react";
 import axios from "utils/axiosInstance";
 const getFeaturedCategories = cache(async () => {
-  const response = await axios.get("/api/home/featured-categories");
+  const response = await axios.get("/api/categories");
   return response.data;
 });
 const getMostViewedList = cache(async () => {

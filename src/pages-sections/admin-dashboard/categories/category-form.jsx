@@ -233,25 +233,6 @@ export default function CategoryForm({ initialValues, onSuccess, mode }) {
     }
   });
 
-  // Check if image filename already exists in database
-  const checkDuplicateImage = async (filename) => {
-    try {
-      // Get all existing images from S3 (first page only for duplicate check)
-      const { data: imagesData } = await listImages({ imageType: 'category', page: 1, limit: 50 });
-      const existingImages = imagesData?.images || [];
-      
-      // Check if any existing image has the same filename
-      const isDuplicate = existingImages.some(image => 
-        image.fileName.toLowerCase() === filename.toLowerCase()
-      );
-      
-      return isDuplicate;
-    } catch (error) {
-      console.error('Error checking for duplicate images:', error);
-      return false; // Allow upload if check fails
-    }
-  };
-
   const handleChangeDropZone = async (files) => {
     // console.log("FILES RECEIVED:", files);
     const file = files[0];
@@ -262,15 +243,6 @@ export default function CategoryForm({ initialValues, onSuccess, mode }) {
 
     if (file.size > 20 * 1024 * 1024) {
       console.error(`${file.name} exceeds the maximum size of 20 MB.`);
-      return;
-    }
-
-    // Check for duplicate filename
-    const isDuplicate = await checkDuplicateImage(file.name);
-    if (isDuplicate) {
-      enqueueSnackbar(`Image "${file.name}" already exists. Please choose a different image or use the gallery to select the existing one.`, {
-        variant: "warning",
-      });
       return;
     }
 

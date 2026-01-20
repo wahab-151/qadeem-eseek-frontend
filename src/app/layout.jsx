@@ -35,8 +35,8 @@ export default function RootLayout({
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <link rel="robots" href="/robots.txt" />
         {/* Resource hints for faster connections to image CDN and fonts */}
-        <link rel="preconnect" href="https://eseek.s3.us-east-2.amazonaws.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="//eseek.s3.us-east-2.amazonaws.com" />
+        <link rel="preconnect" href="https://qadeem.s3.eu-west-2.amazonaws.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//qadeem.s3.eu-west-2.amazonaws.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Alice&display=swap" rel="stylesheet" />

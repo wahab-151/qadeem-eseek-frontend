@@ -1,42 +1,100 @@
 // API FUNCTIONS
-// import api from "utils/__api__/products";
-// import { getFrequentlyBought, getRelatedProducts } from "utils/__api__/related-products";
 import { ProductDetailsPageView } from "pages-sections/product-details/page-view";
-import { generateMetadata } from "utils/helpers";
 
-// CUSTOM DATA MODEL
-export const metadata = generateMetadata("Product");
+const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_BASE_URL || 'http://localhost:5000';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sifrausa.com';
+
+// Helper function to fetch product for metadata (server-side)
+async function getProductForMetadata(slug) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/products/${slug}`, {
+      next: { revalidate: 60 }, // Cache metadata fetch for 60 seconds
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.data || null;
+  } catch (error) {
+    console.error('Error fetching product for metadata:', error.message);
+    return null;
+  }
+}
+
+// Dynamic metadata generation for SEO
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const product = await getProductForMetadata(slug);
+
+  // Default metadata if product not found
+  if (!product) {
+    return {
+      title: 'Product Not Found - SIFRA',
+      description: 'The requested product could not be found.',
+    };
+  }
+
+  const title = product.metaTitle || `${product.name} - SIFRA`;
+  const description = product.metaDescription || 
+    product.description?.slice(0, 160) || 
+    `Buy ${product.name} at SIFRA. Quality products with personalized pricing.`;
+  
+  const imageUrl = product.images?.[0]?.preview || 
+    product.images?.[0]?.url || 
+    `${SITE_URL}/assets/images/logo.jpeg`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      product.name,
+      product.brand?.name,
+      product.category?.name,
+      ...(product.tags || []),
+      'wholesale',
+      'retail',
+      'SIFRA'
+    ].filter(Boolean),
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `${SITE_URL}/products/${slug}`,
+      images: [
+        {
+          url: imageUrl,
+          width: 800,
+          height: 600,
+          alt: product.name,
+        },
+      ],
+      siteName: 'SIFRA',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
+    },
+    alternates: {
+      canonical: `${SITE_URL}/products/${slug}`,
+    },
+    robots: {
+      index: product.published !== false,
+      follow: true,
+    },
+  };
+}
 
 // Force dynamic rendering for product pages (products change frequently)
 // This prevents Next.js from attempting static generation which causes delays
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
-export const revalidate = 0; // Disable caching for product pages
-
-export async function generateStaticParams() {
-  // This is still called at build time for static optimization
-  // But runtime requests will use dynamic rendering
-  try {
-    const data = await import("__server__/__db__/products/data");
-    const list = data.uniqueProducts || [];
-    return list.map(item => ({ slug: item?.slug }));
-  } catch {
-    return []; // Fallback if data not available
-  }
-}
 
 export default async function ProductDetails({ params }) {
   const { slug } = await params;
 
-  // console.log("paramssss", slug);
-  // const [product, relatedProducts, frequentlyBought] = await Promise.all([api.getProduct(slug), getRelatedProducts(), getFrequentlyBought()]);
-  // if (!product) notFound();
   return (
     <ProductDetailsPageView
-    slug={slug}
-      // product={product}
-      // relatedProducts={relatedProducts}
-      // frequentlyBought={frequentlyBought}
+      slug={slug}
     />
   );
 }
