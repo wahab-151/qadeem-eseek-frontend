@@ -23,7 +23,7 @@ This document tracks which pages have been updated to the **new UI design** and 
 |------------|--------|-------|
 | `/home` | ✅ **New Design** | Home page has been updated to new UI |
 | `/` (root/index) | ✅ **New Design** | Redirects to home, uses new design |
-| `/aboutUs` | ❌ **Old Design** | Needs update to new design |
+| `/aboutUs` | ✅ **New Design** | Updated to match About page design (hero, features, video, testimonials, stats, trusted by) |
 | `/allProducts` | ❌ **Old Design** | Needs update to new design |
 | `/allProducts/[slug]` | ❌ **Old Design** | Category product listing - needs update |
 | `/allProducts/[slug]/view` | ❌ **Old Design** | Product quick view - needs update |

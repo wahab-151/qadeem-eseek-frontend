@@ -1,18 +1,20 @@
 "use client";
-import Image from "next/image";
 import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
 
 // GLOBAL CUSTOM COMPONENTS
 import FlexBox from "components/flex-box/flex-box";
 import useUser from "hooks/useUser";
-import { LoadingButton } from "@mui/lab";
-import { Button } from "@mui/material";
+import QadeemButton from "components/QadeemButton";
 import { useRouter } from "next/navigation";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CartBag from "icons/CartBag";
 
 export default function EmptyCartView({ onClose }) {
   const { state } = useUser();
   const router = useRouter();
+  const theme = useTheme();
 
   return (
     <FlexBox
@@ -21,12 +23,16 @@ export default function EmptyCartView({ onClose }) {
       justifyContent="center"
       height="calc(100% - 74px)"
     >
-      <Image
-        width={90}
-        height={100}
-        alt="shopping cart"
-        src="/assets/images/icons/bag.svg"
-      />
+      <Box
+        sx={{
+          color: "#271E03",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CartBag sx={{ fontSize: 100 }} />
+      </Box>
 
       <Typography
         variant="body1"
@@ -41,32 +47,24 @@ export default function EmptyCartView({ onClose }) {
         Your shopping bag is empty.
       </Typography>
       {state?.user?.id ? (
-        <LoadingButton
+        <QadeemButton
           variant="contained"
-          // loading={isLoading}
           onClick={() => router.push("/allProducts")}
-          startIcon={<ShoppingCartIcon />} // <-- This adds the trolley icon
-          sx={(theme) => ({
-            borderRadius: "34px",
+          startIcon={<ShoppingCartIcon />}
+          sx={{
             mx: "auto",
             mb: 0,
             height: 40,
-            textTransform: "none",
-            backgroundColor: theme.palette.secondary.main,
             width: "70%",
             color: "#fff",
-            "&:hover": {
-              backgroundColor: theme.palette.primary.main,
-            },
-          })}
+          }}
         >
           Start Shopping
-        </LoadingButton>
+        </QadeemButton>
       ) : (
-        <Button
+        <QadeemButton
           variant="contained"
           color="secondary"
-          // mt={2}
           onClick={() => {
             // Start loader on login navigation
             try {
@@ -85,7 +83,7 @@ export default function EmptyCartView({ onClose }) {
           }}
         >
           Login
-        </Button>
+        </QadeemButton>
       )}
     </FlexBox>
   );

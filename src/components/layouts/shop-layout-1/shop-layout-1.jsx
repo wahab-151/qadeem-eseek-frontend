@@ -1638,7 +1638,7 @@ export default function ShopLayout1(props) {
                   Products
                 </Typography>
               </Link>
-              <Link href="/about" style={{ textDecoration: "none" }}>
+              <Link href="/aboutUs" style={{ textDecoration: "none" }}>
                 <Typography
                   variant="body2"
                   sx={{

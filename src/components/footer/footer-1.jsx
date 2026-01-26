@@ -152,8 +152,6 @@
 // Footer1.Contact.displayName = 'Footer1.Contact';
 // MUI
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";     // ✅ stable Grid
-import Container from "@mui/material/Container";
 import { Card, useTheme } from "@mui/material";
 
 export default function Footer1({ children }) {
@@ -171,19 +169,20 @@ export default function Footer1({ children }) {
         overflowX: "hidden",
       }}
     >
-      <Container
+      <Box
         sx={{
           color: "black",
           overflow: "hidden",
           pt: { xs: 4, sm: 10 },
+          pb: { xs: 2, sm: 4 },
           px: { xs: 2, sm: 3 },
+          width: "100%",
           maxWidth: "100%",
+          boxSizing: "border-box",
         }}
       >
-        <Grid container spacing={3}>
-          {children}
-        </Grid>
-      </Container>
+        {children}
+      </Box>
     </Card>
   );
 }

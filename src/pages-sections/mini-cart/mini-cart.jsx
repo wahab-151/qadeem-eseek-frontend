@@ -4,11 +4,9 @@ import useGuardedRouter from "hooks/useGuardedRouter";
 
 // MUI
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
 import Clear from "@mui/icons-material/Clear";
 
 // GLOBAL CUSTOM HOOK
@@ -23,12 +21,9 @@ import EmptyCartView from "./components/empty-view";
 // GLOBAL CUSTOM COMPONENT
 import { FlexBetween, FlexBox } from "components/flex-box";
 import OverlayScrollbar from "components/overlay-scrollbar";
-
-// CUSTOM ICON COMPONENT
-import CartBag from "icons/CartBag";
+import QadeemButton from "components/QadeemButton";
 
 // CUSTOM UTILS LIBRARY FUNCTION
-import { currency } from "lib";
 import { useUpdateCartMutation } from "app/store/services";
 import { useEffect, useState } from "react";
 
@@ -217,24 +212,61 @@ export default function MiniCart({ onClose }) {
 
 
   return (
-    <Box height="100vh" width="100%">
+    <Box 
+      height="100vh" 
+      width="100%" 
+      sx={{ 
+        backgroundColor: "#FFFFFF",
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
       {/* HEADING SECTION */}
-      <FlexBetween ml={3} mr={2} height={74}>
-        <FlexBox gap={1} alignItems="center" color="secondary.main">
-          <CartBag color="inherit" />
-          <Typography variant="h6">{CART_LENGTH} item(s)</Typography>
-        </FlexBox>
+      <Box sx={{ px: 3, py: 2.5 }}>
+        <FlexBetween>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              color: "#211E1F",
+              fontSize: "18px",
+              fontFamily: "sans-serif",
+            }}
+          >
+            Shopping Cart
+          </Typography>
 
-        <IconButton onClick={handleClose}>
-          
-          <Clear />
-        </IconButton>
-      </FlexBetween>
+          <IconButton 
+            onClick={handleClose}
+            sx={{
+              color: "#211E1F",
+              padding: "4px",
+              "&:hover": {
+                backgroundColor: "rgba(33, 30, 31, 0.04)",
+              },
+            }}
+          >
+            <Clear sx={{ fontSize: "20px" }} />
+          </IconButton>
+        </FlexBetween>
+      </Box>
 
-      <Divider />
+      {/* Separator */}
+      <Box
+        sx={{
+          height: "1px",
+          backgroundColor: "#D1D5DB",
+          width: "100%",
+        }}
+      />
 
       {/* CART ITEM LIST */}
-      <Box height={`calc(100% - ${CART_LENGTH ? "207px" : "75px"})`}>
+      <Box 
+        sx={{ 
+          flex: 1,
+          overflow: "hidden",
+        }}
+      >
         {CART_LENGTH > 0 ? (
           <OverlayScrollbar>
             {state.cart.map((item) => (
@@ -253,49 +285,107 @@ export default function MiniCart({ onClose }) {
 
       {/* CART BOTTOM ACTION BUTTONS */}
       {CART_LENGTH > 0 ? (
-        <Box p={2.5}>
-          <Button
-            fullWidth
-            color="primary"
-            variant="contained"
+        <Box 
+          sx={{ 
+            px: 3,
+            py: 2.5,
+            borderTop: "1px solid #D1D5DB",
+          }}
+        >
+          {/* Total Section */}
+          <FlexBetween sx={{ mb: 1.5 }}>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                color: "#211E1F",
+                fontSize: "16px",
+                fontFamily: "sans-serif",
+              }}
+            >
+              Total :
+            </Typography>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                color: "#211E1F",
+                fontSize: "18px",
+                fontFamily: "sans-serif",
+              }}
+            >
+              {Math.round(getTotalPrice()).toLocaleString('en-US', { maximumFractionDigits: 0 })} Rs
+            </Typography>
+          </FlexBetween>
+
+          {/* Taxes Note */}
+          <Typography
             sx={{
-              mb: "0.75rem",
-              height: 40,
+              fontSize: "12px",
+              color: "#6B7280",
+              mb: 2,
+              fontFamily: "sans-serif",
             }}
+          >
+            Taxes and shipping calculated at checkout
+          </Typography>
+
+          {/* Check out Button */}
+          <QadeemButton
+            fullWidth
             onClick={handleCheckoutClick}
             disabled={isNavigating}
-            startIcon={
-              isNavigating && navigationType === 'checkout' ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : null
-            }
+            loading={isNavigating && navigationType === 'checkout'}
+            variant="contained"
+            sx={{
+              backgroundColor: "#3B2C05",
+              color: "#FFFFFF",
+              height: "44px",
+              mb: 1.5,
+              fontSize: "16px",
+              fontWeight: 500,
+              fontFamily: "sans-serif",
+              "&:hover": {
+                backgroundColor: "#2A1F03",
+              },
+              "&:disabled": {
+                backgroundColor: "#3B2C05",
+                opacity: 0.6,
+              },
+            }}
           >
             {isNavigating && navigationType === 'checkout' 
               ? 'Processing...' 
-              : `Checkout Now (${currency(getTotalPrice())})`
+              : 'Check out'
             }
-          </Button>
+          </QadeemButton>
 
-          <Button
+          {/* View cart Button */}
+          <QadeemButton
             fullWidth
-            color="primary"
-            variant="outlined"
-            sx={{
-              height: 40,
-            }}
             onClick={handleViewCartClick}
             disabled={isNavigating}
-            startIcon={
-              isNavigating && navigationType === 'cart' ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : null
-            }
+            loading={isNavigating && navigationType === 'cart'}
+            variant="contained"
+            sx={{
+              backgroundColor: "#F8E7B1",
+              color: "#3B2C05",
+              height: "44px",
+              fontSize: "16px",
+              fontWeight: 500,
+              fontFamily: "sans-serif",
+              "&:hover": {
+                backgroundColor: "#F5DF9D",
+              },
+              "&:disabled": {
+                backgroundColor: "#F8E7B1",
+                opacity: 0.6,
+              },
+            }}
           >
             {isNavigating && navigationType === 'cart' 
               ? 'Loading...' 
-              : 'View Cart'
+              : 'View cart'
             }
-          </Button>
+          </QadeemButton>
         </Box>
       ) : null}
     </Box>
