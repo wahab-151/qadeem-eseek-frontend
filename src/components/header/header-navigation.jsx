@@ -47,19 +47,17 @@ export default function HeaderNavigation({ navigation }) {
     };
   }, []);
 
-  // Find General menu item from navigation to use its data for Shop dropdown
-  const foundGeneralItem = navigation?.find((nav) => 
-    nav?.title?.toLowerCase() === "general"
-  );
-  
-  // Only use General item if it has children, otherwise null (no dropdown)
-  // Check both 'child' and 'children' properties for compatibility
-  const shopMenuData = foundGeneralItem && (
-    (foundGeneralItem.child && foundGeneralItem.child.length > 0) ||
-    (foundGeneralItem.children && foundGeneralItem.children.length > 0)
-  )
-    ? foundGeneralItem
+  // Use all categories from navigation for the Categories dropdown
+  // The navigation prop contains the full category tree from megaMenuList
+  const categoriesMenuData = (navigation && Array.isArray(navigation) && navigation.length > 0)
+    ? navigation
     : null;
+
+  // Debug: Log navigation data
+  useEffect(() => {
+    console.log("[HeaderNavigation] Navigation data:", navigation);
+    console.log("[HeaderNavigation] Categories menu data:", categoriesMenuData);
+  }, [navigation, categoriesMenuData]);
 
   return (
     <FlexBox
@@ -196,14 +194,11 @@ export default function HeaderNavigation({ navigation }) {
                     },
                   }}
                 >
-                  {shopMenuData && (
-                    (shopMenuData.child && shopMenuData.child.length > 0) ||
-                    (shopMenuData.children && shopMenuData.children.length > 0)
-                  ) ? (
+                  {categoriesMenuData && categoriesMenuData.length > 0 ? (
                     <HeaderDropdown
-                      title={shopMenuData.title}
-                      menuList={shopMenuData.child || shopMenuData.children || []}
-                      nav={shopMenuData}
+                      title="Categories"
+                      menuList={categoriesMenuData}
+                      nav={{ title: "Categories", child: categoriesMenuData }}
                     />
                   ) : (
                     <Box sx={{ 
@@ -226,7 +221,7 @@ export default function HeaderNavigation({ navigation }) {
         return (
           <NavLink key={item.title} href={item.url} className="nav-link">
             <Box component="span">{item.title}</Box>
-            {item.hasDropdown && !shopMenuData && (
+            {item.hasDropdown && !categoriesMenuData && (
               <KeyboardArrowDown sx={{ fontSize: "0.875rem" }} />
             )}
           </NavLink>

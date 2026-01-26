@@ -99,7 +99,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
 
     const images = Array.isArray(rawImages) && rawImages.length > 0
       ? rawImages
-      : [{ preview: "/assets/images/logo.jpeg" }];
+      : [{ preview: "/assets/images/small-screen-logo.png" }];
 
     const productKey = slug || _id;
     const handleProductClick = () => {
@@ -125,7 +125,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
             <Avatar
               variant="rounded"
               sx={{ width: 80, height: 80, flexShrink: 0 }}
-              src={images[0]?.preview || "/assets/images/logo.jpeg"}
+              src={images[0]?.preview || "/assets/images/small-screen-logo.png"}
               alt={name}
             />
             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -285,7 +285,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
 
             const images = Array.isArray(rawImages) && rawImages.length > 0
               ? rawImages
-              : [{ preview: "/assets/images/logo.jpeg" }];
+              : [{ preview: "/assets/images/small-screen-logo.png" }];
 
             const productKey = slug || _id;
             const handleProductClick = () => {
@@ -316,7 +316,7 @@ const ProductsTableView = memo(({ products, onSort }) => {
                     <Avatar
                       variant="rounded"
                       sx={{ width: 100, height: 100 }}
-                      src={images[0]?.preview || "/assets/images/logo.jpeg"}
+                      src={images[0]?.preview || "/assets/images/small-screen-logo.png"}
                       alt={name}
                     />
                   </Box>

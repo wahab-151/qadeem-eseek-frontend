@@ -957,7 +957,8 @@ export default function ShopLayout1(props) {
   useEffect(() => {
     const isProductPage = pathname.startsWith("/products/");
     const isAllProductsPage = pathname === "/allProducts";
-    setShouldShowBreadcrumb(breadcrumb && (isProductPage || isAllProductsPage));
+    const isCategoriesPage = pathname === "/categories";
+    setShouldShowBreadcrumb(breadcrumb && (isProductPage || isAllProductsPage || isCategoriesPage));
   }, [pathname, breadcrumb]);
 
   // Only call the query if user is logged in
@@ -1048,8 +1049,14 @@ export default function ShopLayout1(props) {
       const path = findBreadcrumbPath(menu, productId);
       // console.log("📂 Breadcrumb for product", path);
       setBreadcrumb(path);
+    } else if (pathname === "/categories") {
+      // Set breadcrumb for categories page
+      setBreadcrumb([{ id: "categories", title: "All Categories", child: null }]);
+    } else {
+      // Clear breadcrumb for other pages
+      setBreadcrumb([]);
     }
-  }, [searchParams, params, megaMenuState?.megaMenuList]);
+  }, [searchParams, params, pathname, megaMenuState?.megaMenuList]);
 
   // useEffect(() => {
   //     if (typeof window !== "undefined" && router.isReady)

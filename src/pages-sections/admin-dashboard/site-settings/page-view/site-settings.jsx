@@ -30,11 +30,21 @@ const StyledTabPanel = styled(TabPanel)({
 const StyledTabList = styled(TabList)(({
   theme
 }) => ({
+  "& .MuiTab-root": {
+    color: "#6B5D4F", // Medium brown for inactive tabs
+    fontWeight: 500,
+    fontSize: "14px",
+    textTransform: "capitalize",
+    transition: "color 0.2s ease",
+  },
   "& .MuiTab-root.Mui-selected": {
-    color: theme.palette.info.main
+    color: "#8B7548", // Heritage bronze for active tab
+    fontWeight: 600,
   },
   "& .MuiTabs-indicator": {
-    background: theme.palette.info.main
+    background: "#8B7548", // Heritage bronze indicator
+    height: 3,
+    borderRadius: "3px 3px 0 0"
   }
 }));
 export default function SiteSettingsPageView() {
@@ -100,7 +110,7 @@ useEffect(() => {
         <TabContext value={selectTab}>
           <Box sx={{
           borderBottom: 1,
-          borderColor: "grey.300"
+          borderColor: "#EFE6D5" // Light heritage border
         }}>
             <StyledTabList onChange={(_, value) => setSelectTab(value)} variant="scrollable">
               <Tab label="General" value="general" disableRipple />

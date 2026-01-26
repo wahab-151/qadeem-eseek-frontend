@@ -27,9 +27,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/assets/images/small-screen-logo.png" />
         <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="SIFRA - Tools, parts and supplies with fast delivery." />
-        <meta property="og:title" content="SIFRA" />
-        <meta property="og:description" content="Explore top products, tools and parts at SIFRA." />
+        <meta name="description" content="QADEEM - Tools, parts and supplies with fast delivery." />
+        <meta property="og:title" content="QADEEM" />
+        <meta property="og:description" content="Explore top products, tools and parts at QADEEM." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/assets/images/logo.jpeg" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />

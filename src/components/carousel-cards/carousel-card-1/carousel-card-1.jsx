@@ -81,7 +81,7 @@ export default function CarouselCard1({ src, index = 0 }) {
       >
         {/* IMPORTANT: no Grid spacing here; spacing adds left padding even with a single item and misaligns content */}
         <Grid container spacing={0} sx={{ height: '100%', alignItems: 'center' }}>
-          <Grid item xs={12} md={6} sx={{ 
+          <Grid size={{ xs: 12, md: 6 }} sx={{ 
             display: 'flex', 
             flexDirection: 'column', 
             justifyContent: 'center',

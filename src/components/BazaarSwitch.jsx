@@ -13,7 +13,7 @@ const StyledSwitch = styled(Switch)(({
   "& .MuiSwitch-track": {
     opacity: 1,
     borderRadius: 22 / 2,
-    backgroundColor: theme.palette.grey[400],
+    backgroundColor: "#D4C4A0", // Light heritage gold
     "&:before, &:after": {
       width: 16,
       height: 16,
@@ -28,10 +28,14 @@ const StyledSwitch = styled(Switch)(({
     height: 16,
     margin: "2px",
     boxShadow: "none",
-    backgroundColor: theme.palette.grey[600]
+    backgroundColor: "#6B5D4F" // Medium brown
   },
   "& .MuiSwitch-switchBase.Mui-checked .MuiSwitch-thumb": {
-    backgroundColor: theme.palette.info.main
+    backgroundColor: "#8B7548" // Heritage bronze when checked
+  },
+  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+    backgroundColor: "rgba(139, 117, 72, 0.3)", // Light bronze track when checked
+    opacity: 1,
   }
 }));
 export default function EseekGoSwitch(props) {

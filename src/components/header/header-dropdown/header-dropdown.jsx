@@ -338,7 +338,7 @@ function SubChildList({ subChildren, title }) {
                       }}
                     >
                       <img
-                        src={item?.icon || "/assets/images/logo.jpeg"}
+                        src={item?.icon || "/assets/images/small-screen-logo.png"}
                         alt={item.title || "Product"}
                         style={{
                           width: "60%",

@@ -38,7 +38,7 @@ const AboutUsView = ({ content }) => {
       <>
       <Box sx={{ px: 4, py: 6, maxWidth: '1200px', mx: 'auto' }}>
         <Typography variant="h4" color="primary" gutterBottom fontWeight="bold">
-          About SIFRA
+          About QADEEM
         </Typography>
 
         <Box

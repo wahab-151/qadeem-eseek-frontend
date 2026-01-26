@@ -128,7 +128,7 @@ export default function MiniCartItem({
         >
           <Image
             alt={item.title}
-            src={item.thumbnail || "/assets/images/logo.jpeg"}
+            src={item.thumbnail || "/assets/images/small-screen-logo.png"}
             fill
             sizes="(75px, 75px)"
           />

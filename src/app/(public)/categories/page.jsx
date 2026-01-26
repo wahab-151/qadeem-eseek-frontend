@@ -5,8 +5,8 @@ import InlineLoader from "components/progress/InlineLoader";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sifrausa.com';
 
 export const metadata = {
-  title: 'All Categories - SIFRA | Browse Product Categories',
-  description: 'Browse all product categories at SIFRA. Find tools, parts, and supplies organized by category. Wholesale and retail with personalized pricing.',
+  title: 'All Categories - QADEEM | Browse Product Categories',
+  description: 'Browse all product categories at QADEEM. Find tools, parts, and supplies organized by category. Wholesale and retail with personalized pricing.',
   keywords: [
     'product categories',
     'wholesale categories',
@@ -14,7 +14,7 @@ export const metadata = {
     'tools',
     'parts',
     'supplies',
-    'SIFRA',
+    'QADEEM',
   ],
   openGraph: {
     title: 'All Categories - SIFRA',

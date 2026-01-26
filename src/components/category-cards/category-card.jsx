@@ -10,7 +10,7 @@ import LazyImage from "components/LazyImage";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 
 function CategoryCard({ category = {} }) {
-  const { _id, name, image, productCount = 0 } = category;
+  const { _id, name, image, productCount = 0, isRecentlyAdded = false, createdAt } = category;
   const theme = useTheme();
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
@@ -49,6 +49,7 @@ function CategoryCard({ category = {} }) {
         transition: "all 0.3s ease",
         cursor: "pointer",
         position: "relative",
+        zIndex: 1, // Lower z-index to prevent overlapping with navigation dropdown
         "&:hover .category-image img": {
           transform: "scale(1.1)",
         },
@@ -102,25 +103,35 @@ function CategoryCard({ category = {} }) {
           width: "100%",
         }}
       >
-        {/* Category Badge */}
-        <Chip
-          className="category-badge"
-          label="Category"
-          size="small"
-          sx={{
-            position: "absolute",
-            top: 8,
-            left: 8,
-            zIndex: 3,
-            pointerEvents: "none",
-            bgcolor: theme.palette.primary.main,
-            color: "white",
-            fontWeight: 600,
-            borderRadius: 1,
-            opacity: 1,
-            transition: "opacity 0.3s ease",
-          }}
-        />
+        {/* New Badge - Only show if category is marked as recently added */}
+        {isRecentlyAdded && (
+          <Chip
+            className="category-badge"
+            label="New"
+            size="small"
+            sx={{
+              position: "absolute",
+              top: 8,
+              left: 8,
+              zIndex: 1,
+              pointerEvents: "none",
+              bgcolor: "#2EC1AC",
+              color: "white",
+              fontWeight: 600,
+              borderRadius: "50%",
+              width: 48,
+              height: 48,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: 1,
+              transition: "opacity 0.3s ease",
+              "& .MuiChip-label": {
+                padding: 0,
+              },
+            }}
+          />
+        )}
 
         {/* Category Image */}
         <Box sx={{ 

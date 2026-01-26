@@ -11,8 +11,8 @@ const StyledTableCell = styled(TableCell)(({
   paddingTop: 10,
   fontWeight: 500,
   paddingBottom: 10,
-  color: theme.palette.grey[900],
-  borderBottom: `1px solid ${theme.palette.grey[300]}`
+  color: "#2C2416", // Deep warm brown text
+  borderBottom: `1px solid #EFE6D5` // Light heritage border
 }));
 const CategoryWrapper = styled(Box)(({
   theme
@@ -21,29 +21,40 @@ const CategoryWrapper = styled(Box)(({
   padding: "3px 12px",
   borderRadius: "16px",
   display: "inline-block",
-  color: theme.palette.grey[900],
-  backgroundColor: theme.palette.grey[200]
+  color: "#2C2416", // Deep warm brown text
+  backgroundColor: "#EFE6D5" // Light heritage beige
 }));
 const StyledTableRow = styled(TableRow)({
+  transition: "background-color 0.2s ease",
   ":last-child .MuiTableCell-root": {
     border: 0
   },
+  "&:hover": {
+    backgroundColor: "rgba(139, 117, 72, 0.04)", // Very subtle bronze tint on hover
+  },
+  "&:nth-of-type(even)": {
+    backgroundColor: "rgba(239, 230, 213, 0.3)", // Very light beige for alternating rows
+  },
+  "&:nth-of-type(even):hover": {
+    backgroundColor: "rgba(139, 117, 72, 0.06)", // Slightly darker on hover for even rows
+  },
   "&.Mui-selected": {
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(139, 117, 72, 0.1)",
     ":hover": {
-      backgroundColor: "transparent"
+      backgroundColor: "rgba(139, 117, 72, 0.15)"
     }
   }
 });
 const StyledIconButton = styled(IconButton)(({
   theme
 }) => ({
-  color: theme.palette.grey[600],
+  color: "#6B5D4F", // Medium brown
   "& .MuiSvgIcon-root": {
     fontSize: 19
   },
   ":hover": {
-    color: theme.palette.info.main
+    color: "#8B7548", // Heritage bronze
+    backgroundColor: "rgba(139, 117, 72, 0.08)"
   }
 }));
 const StatusWrapper = styled(Box, {
@@ -91,7 +102,7 @@ const UploadImageBox = styled(Box)(({
   position: "relative",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: alpha(theme.palette.info.light, 0.1)
+  backgroundColor: "rgba(139, 117, 72, 0.1)" // Light heritage bronze
 }));
 const StyledClear = styled(Clear)({
   top: 5,

@@ -986,16 +986,17 @@ export default function ProductSearchPageView() {
           <Box
             sx={{
               width: "100%",
-              margin: "0px auto", // centers horizontally
-              marginBottom:1,
-              borderRadius: "22px",
-              backgroundColor: "#F3F5F9",
-              border: "1px solid #F3F5F9",
-              height: "43px",
+              margin: "0px auto",
+              marginBottom: 3,
+              borderRadius: 0,
+              backgroundColor: "#FEFAF0",
+              border: "2px solid #E2C572",
+              height: "auto",
+              minHeight: "60px",
               display: "flex",
               alignItems: "center",
               justifyContent: "start",
-              padding: "14px",
+              padding: "16px 24px",
               position: "relative",
               overflow: "unset",
               [theme.breakpoints.down(1150)]: {
@@ -1006,21 +1007,23 @@ export default function ProductSearchPageView() {
             <Box
               component="img"
               src="/assets/images/title_list.png"
-              alt="Heading Icon"
-              sx={{ width: 50, height: 40, ml: "1rem" }}
+              alt="Category Icon"
+              sx={{ 
+                width: 50, 
+                height: 40, 
+                mr: 2,
+                filter: "brightness(0.7) sepia(1) saturate(2) hue-rotate(20deg)",
+              }}
             />
             <Typography
               fontWeight={600}
-              color="text.primary"
-              sx={{ fontSize: "24px", ml: "8px" }}
+              sx={{ 
+                fontSize: "28px",
+                color: "#271E03",
+                letterSpacing: "0.5px",
+              }}
             >
               {selectedCategory?.title || "Loading..."}
-              {/* Debug info */}
-              {/* {process.env.NODE_ENV === 'development' && (
-                <span style={{ fontSize: '12px', color: 'red', marginLeft: '10px' }}>
-                  (ID: {categoryFilter})
-                </span>
-              )} */}
             </Typography>
           </Box>
         )}

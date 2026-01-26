@@ -4,7 +4,7 @@ import { Box, Card, CardMedia, Typography, IconButton } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
 const CarouselSlide = ({ content, onImageClick, onClose }) => {
-const { imgSrc = "/assets/images/logo.jpeg", title = "SIFRA" } = content || {};
+const { imgSrc = "/assets/images/small-screen-logo.png", title = "QADEEM" } = content || {};
 
   return (
     <Card

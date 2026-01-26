@@ -64,6 +64,8 @@ const validationSchema = yup.object().shape({
   mostSold: yup.boolean().required("Most Sold Status is required"),
   featured: yup.boolean().required("Featured Status is required"),
   displayOrder: yup.number().min(1, "Display Order must be at least 1").required("Display Order is required!"),
+  width: yup.number().nullable().min(0, "Width cannot be negative"),
+  height: yup.number().nullable().min(0, "Height cannot be negative"),
 });
 
 export default function ProductForm({ onSuccess, mode, product, refetch }) {
@@ -123,16 +125,30 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
       mostSold: false,
       featured: false,
       displayOrder: 1,
+      width: null,
+      height: null,
+      areaSqM: null,
     },
     resolver: yupResolver(validationSchema),
   });
 
+  const { handleSubmit, formState: { errors }, reset, setValue, watch, trigger } = methods;
+
+  const costPrice = watch("costPrice");
+  const retailInput = watch("retailInput");
+  const tier4Input = watch("tier4Input");
+  const tier3Input = watch("tier3Input");
+  const tier2Input = watch("tier2Input");
+  const tier1Input = watch("tier1Input");
+  const categoryValue = watch("category");
+  const subCategoryValue = watch("subCategory");
+
   const { data: categoryCountData, refetch: refetchCategoryCount } = useGetCategoryProductCountQuery(
     {
-      categoryId: methods.watch("category"),
-      subCategoryId: methods.watch("subCategory"),
+      categoryId: categoryValue,
+      subCategoryId: subCategoryValue,
     },
-    { skip: !methods.watch("category") }
+    { skip: !categoryValue }
   );
 
   useEffect(() => {
@@ -145,18 +161,9 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
     }
   }, [data?.data, isLoading, error]);
 
-  const { handleSubmit, formState: { errors }, reset, setValue, watch, trigger } = methods;
-
-  const costPrice = watch("costPrice");
-  const retailInput = watch("retailInput");
-  const tier4Input = watch("tier4Input");
-  const tier3Input = watch("tier3Input");
-  const tier2Input = watch("tier2Input");
-  const tier1Input = watch("tier1Input");
-
   useEffect(() => {
-    setSubCategories(categories.filter((cat) => cat.parentId === watch("category")));
-  }, [watch("category"), categories]);
+    setSubCategories(categories.filter((cat) => cat.parentId === categoryValue));
+  }, [categoryValue, categories]);
 
   useEffect(() => {
     if (categoryCountData?.data) {
@@ -164,7 +171,12 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
       setCategoryProductCount(productCount);
       const options = [];
       const upper = productCount; // 1..N
-      for (let i = 1; i <= upper; i++) {
+      
+      // Get current displayOrder value to ensure it's included
+      const currentDisplayOrder = methods.getValues("displayOrder");
+      const maxValue = Math.max(upper, currentDisplayOrder || 0);
+      
+      for (let i = 1; i <= maxValue; i++) {
         options.push({ value: i, label: `Position ${i}` });
       }
       setDisplayOrderOptions(options);
@@ -174,24 +186,13 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
       // reset the flag on load of new counts
       setAdminSetDisplayOrder(false);
     }
-  }, [categoryCountData, mode, setValue]);
+  }, [categoryCountData, mode, setValue, methods]);
 
   useEffect(() => {
     if (product && mode === "edit" && product.category?._id && categories.length > 0) {
       // Category is set in form reset
     }
   }, [product, mode, categories]);
-
-  useEffect(() => {
-    // When category/subcategory changes or becomes available, refetch count
-    if (watch("category") && refetchCategoryCount) {
-      try {
-        refetchCategoryCount();
-      } catch (error) {
-        console.warn("Failed to refetch category count:", error);
-      }
-    }
-  }, [watch("category"), watch("subCategory"), refetchCategoryCount]);
 
   useEffect(() => {
     if (product) {
@@ -230,6 +231,9 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
         featured: product.featured || false,
         displayOrder: product.displayOrder || 1,
         models: Array.isArray(product.models) ? product.models : (product.models ? [product.models] : []),
+        width: product.width || null,
+        height: product.height || null,
+        areaSqM: product.areaSqM || null,
       });
 
       // Set toggle states based on product data
@@ -453,6 +457,9 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
         images: files,
         costPrice: Number(values.costPrice),
         id: mode === "duplicate" ? null : product?.id || null,
+        width: values.width ? Number(values.width) : null,
+        height: values.height ? Number(values.height) : null,
+        areaSqM: values.areaSqM ? Number(values.areaSqM) : null,
       };
       if (adminSetDisplayOrder) {
         payload.displayOrder = Number(values.displayOrder);
@@ -553,6 +560,7 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
                   label="Select Category"
                   placeholder="Category"
                   {...field}
+                  value={field.value || ""}
                   onChange={(e) => {
                     field.onChange(e);
                     methods.setValue("subCategory", "");
@@ -561,6 +569,7 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
                   }}
                   error={Boolean(error)}
                   helperText={error?.message}
+                  disabled={mode === "view"}
                 >
                   {isLoading ? (
                     <MenuItem disabled>Loading categories...</MenuItem>
@@ -590,8 +599,10 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
                   label="Select Sub Category"
                   placeholder="Sub Category"
                   {...field}
+                  value={field.value || ""}
                   error={Boolean(error)}
                   helperText={error?.message}
+                  disabled={mode === "view"}
                 >
                   {isLoading ? (
                     <MenuItem disabled>Loading subcategories...</MenuItem>
@@ -674,11 +685,64 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
           </Grid>
           <Grid size={{ md: 4, sm: 12 }}>
             <Controller
+              name="width"
+              control={methods.control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  value={field.value ?? ""}
+                  onChange={(e) => {
+                    const value = e.target.value === "" ? null : Number(e.target.value);
+                    field.onChange(value);
+                  }}
+                  fullWidth
+                  color="info"
+                  size="medium"
+                  label="Width (m)"
+                  type="number"
+                  placeholder="Width in meters"
+                  inputProps={{ min: 0, step: "0.01" }}
+                  error={Boolean(error)}
+                  helperText={error?.message}
+                  disabled={mode === "view"}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={{ md: 4, sm: 12 }}>
+            <Controller
+              name="height"
+              control={methods.control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  value={field.value ?? ""}
+                  onChange={(e) => {
+                    const value = e.target.value === "" ? null : Number(e.target.value);
+                    field.onChange(value);
+                  }}
+                  fullWidth
+                  color="info"
+                  size="medium"
+                  label="Height (m)"
+                  type="number"
+                  placeholder="Height in meters"
+                  inputProps={{ min: 0, step: "0.01" }}
+                  error={Boolean(error)}
+                  helperText={error?.message}
+                  disabled={mode === "view"}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={{ md: 4, sm: 12 }}>
+            <Controller
               name="displayOrder"
               control={methods.control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
                   {...field}
+                  value={field.value || 1}
                   fullWidth
                   color="info"
                   size="medium"
@@ -686,7 +750,7 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
                   select
                   error={Boolean(error)}
                   helperText={error?.message || `Choose position 1-${categoryProductCount} in this category`}
-                  disabled={!watch("category")}
+                  disabled={!categoryValue || mode === "view"}
                   onChange={(e) => {
                     field.onChange(e);
                     setAdminSetDisplayOrder(true);
@@ -976,7 +1040,7 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
               Product Status
             </Typography>
           </Grid>
-          <Grid item size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="published"
               control={methods.control}
@@ -988,7 +1052,7 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
               )}
             />
           </Grid>
-          <Grid item size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="mostSold"
               control={methods.control}
@@ -1000,7 +1064,7 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
               )}
             />
           </Grid>
-          <Grid item size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="featured"
               control={methods.control}
@@ -1012,7 +1076,7 @@ export default function ProductForm({ onSuccess, mode, product, refetch }) {
               )}
             />
           </Grid>
-          <Grid item size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="mostPopular"
               control={methods.control}

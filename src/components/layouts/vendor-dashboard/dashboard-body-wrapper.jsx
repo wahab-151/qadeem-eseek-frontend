@@ -13,6 +13,8 @@ const RootStyle = styled("div", {
 }) => ({
   transition: "margin-left 0.3s",
   marginLeft: compact ? 86 : 280,
+  backgroundColor: "#FEFAF0", // Warm cream background to match theme
+  minHeight: "100vh",
   [theme.breakpoints.down("lg")]: {
     marginLeft: 0
   }

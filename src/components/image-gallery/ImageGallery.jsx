@@ -30,7 +30,6 @@ import {
   FilterList as FilterIcon,
 } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
-import Image from "next/image";
 import { logoUrl } from "utils/constants";
 
 const ImageGallery = ({ 
@@ -240,6 +239,17 @@ const ImageGallery = ({
       setImages(allImages);
       setFilteredImages(allImages);
       setTotalPages(Math.ceil(allImages.length / imagesPerPage));
+      
+      // Debug logging
+      console.log('[ImageGallery] Fetched images:', {
+        total: allImages.length,
+        sample: allImages.slice(0, 3).map(img => ({
+          id: img.id,
+          url: img.url,
+          fileName: img.fileName,
+          type: img.type
+        }))
+      });
     } catch (error) {
       console.error('Error fetching images:', error);
       enqueueSnackbar("Error loading images", { variant: "error" });
@@ -387,6 +397,17 @@ const ImageGallery = ({
   };
 
   const handleImageError = (imageId, event) => {
+    // Log the error for debugging
+    const imgElement = event?.target;
+    if (imgElement) {
+      console.error('Image failed to load:', {
+        imageId,
+        src: imgElement.src,
+        naturalWidth: imgElement.naturalWidth,
+        naturalHeight: imgElement.naturalHeight
+      });
+    }
+    
     const currentCount = retryCountsRef.current.get(imageId) || 0;
     if (currentCount < 2 && event?.target) {
       // Retry with cache-busting query param to avoid transient/cached 403/404
@@ -544,36 +565,64 @@ const ImageGallery = ({
                   }}
                 >
                   <CardActionArea onClick={() => handleImageSelect(image)}>
-                      {imageErrors.has(image.id) ? (
-                      <Box
-                        sx={{
-                          height: 140,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: 'grey.200',
-                          flexDirection: 'column',
-                          gap: 1
-                        }}
-                      >
-                        <Typography variant="caption" color="text.secondary">
-                          Image failed to load
-                        </Typography>
+                      <Box sx={{ position: "relative", height: 140, width: "100%", overflow: "hidden" }}>
+                        {imageErrors.has(image.id) ? (
+                          <Box
+                            sx={{
+                              height: '100%',
+                              width: '100%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: '#f5f5f5',
+                              flexDirection: 'column',
+                              gap: 0.5,
+                              border: '1px dashed',
+                              borderColor: 'grey.400',
+                              p: 1
+                            }}
+                          >
+                            <Typography 
+                              variant="body2" 
+                              color="error.main" 
+                              fontWeight={600}
+                              textAlign="center"
+                            >
+                              Not Found
+                            </Typography>
+                            <Typography 
+                              variant="caption" 
+                              color="text.secondary" 
+                              textAlign="center"
+                              sx={{ 
+                                fontSize: '0.7rem',
+                                maxWidth: '90%',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical'
+                              }}
+                            >
+                              {image.categoryName || image.productName || image.fileName}
+                            </Typography>
+                          </Box>
+                        ) : (
+                          <img
+                            src={getSafeUrl(image.url)}
+                            alt={image.fileName}
+                            onLoad={() => handleImageLoad(image.id)}
+                            onError={(e) => handleImageError(image.id, e)}
+                            loading="lazy"
+                            style={{ 
+                              width: '100%',
+                              height: '100%',
+                              objectFit: "cover",
+                              display: 'block'
+                            }}
+                          />
+                        )}
                       </Box>
-                    ) : (
-                      <Box sx={{ position: "relative", height: 140, width: "100%" }}>
-                        <Image
-                          src={imageErrors.has(image.id) ? logoUrl : getSafeUrl(image.url)}
-                          alt={image.fileName}
-                          fill
-                          sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                          priority={false}
-                          onLoad={() => handleImageLoad(image.id)}
-                          onError={(e) => handleImageError(image.id, e)}
-                          style={{ objectFit: "cover" }}
-                        />
-                      </Box>
-                    )}
                       
                       {(isMultiSelect ? selectedImages.some(selected => selected.id === image.id) : selectedImage === image.url) && (
                       <Box

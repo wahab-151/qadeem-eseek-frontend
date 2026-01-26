@@ -219,62 +219,122 @@ useEffect(() => {
       {product && <BreadcrumbJsonLd items={breadcrumbItems} />}
 
       {/* BREADCRUMB NAVIGATION */}
-      <Container maxWidth="lg" sx={{ py: 2 }}>
+      <Box sx={{ 
+        maxWidth: "1523px", 
+        mx: "auto", 
+        py: 1,
+        backgroundColor: "#FFFFFF",
+      }}>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             gap: 1,
-            color: "#424242",
-            fontSize: "0.875rem",
+            pl: { xs: "5vw", md: "2vw" },
+            py: 1,
           }}
         >
           <Typography
-            component="span"
-            onClick={() => router.push("/home")}
             sx={{
-              color: "#424242",
+              color: "#8B7548",
+              fontWeight: 500,
+              fontSize: ".875rem",
               cursor: "pointer",
-              fontSize: "0.875rem",
-              fontWeight: "bold",
+              transition: "color 0.2s ease",
               "&:hover": {
+                color: "#6B5D4F",
                 textDecoration: "underline",
               },
+            }}
+            onClick={() => {
+              try {
+                if (typeof window !== 'undefined' && window.NProgress) {
+                  window.NProgress.start();
+                }
+              } catch {}
+              router.push("/home");
             }}
           >
             Home
           </Typography>
-          <ChevronRightIcon sx={{ color: "#424242", fontSize: "1rem" }} />
+          
+          <ChevronRightIcon sx={{ color: "#8B7548", fontSize: "1rem" }} />
+          
           <Typography
-            component="span"
-            onClick={() => router.push("/allProducts")}
             sx={{
-              color: "#424242",
+              color: "#8B7548",
+              fontWeight: 500,
+              fontSize: ".875rem",
               cursor: "pointer",
-              fontSize: "0.875rem",
-              fontWeight: "bold",
+              transition: "color 0.2s ease",
               "&:hover": {
+                color: "#6B5D4F",
                 textDecoration: "underline",
               },
+            }}
+            onClick={() => {
+              try {
+                if (typeof window !== 'undefined' && window.NProgress) {
+                  window.NProgress.start();
+                }
+              } catch {}
+              router.push("/allProducts");
             }}
           >
             Shop
           </Typography>
-          <ChevronRightIcon sx={{ color: "#424242", fontSize: "1rem" }} />
-          <Typography component="span" sx={{ color: "#424242", mx: 1 }}>
-            |
-          </Typography>
+
+          {product?.category?.name && (
+            <>
+              <ChevronRightIcon sx={{ color: "#8B7548", fontSize: "1rem" }} />
+              <Typography
+                sx={{
+                  color: "#8B7548",
+                  fontWeight: 500,
+                  fontSize: ".875rem",
+                  cursor: "pointer",
+                  transition: "color 0.2s ease",
+                  "&:hover": {
+                    color: "#6B5D4F",
+                    textDecoration: "underline",
+                  },
+                }}
+                onClick={() => {
+                  try {
+                    if (typeof window !== 'undefined' && window.NProgress) {
+                      window.NProgress.start();
+                    }
+                  } catch {}
+                  router.push(`/allProducts?category=${product.category._id}`);
+                }}
+              >
+                {product.category.name}
+              </Typography>
+            </>
+          )}
+
           <Typography
             component="span"
+            sx={{ 
+              color: "#8B7548", 
+              mx: 0.5,
+              fontSize: "1rem",
+            }}
+          >
+            |
+          </Typography>
+
+          <Typography
             sx={{
-              color: "#424242",
-              fontSize: "0.875rem",
+              fontWeight: 600,
+              fontSize: ".875rem",
+              color: "#271E03",
             }}
           >
             {product?.name || "Product"}
           </Typography>
         </Box>
-      </Container>
+      </Box>
 
       <Container className="mt-2 mb-2">
         {/* While loading, render ProductIntro in skeleton mode instead of a spinner */}

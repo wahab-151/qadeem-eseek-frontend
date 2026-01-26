@@ -1,10 +1,10 @@
 import { CreateCategoryPageView } from "pages-sections/admin-dashboard/categories/page-view";
 import { Suspense } from "react";
 export const metadata = {
-  title: "SIFRA - Wholesale & Retail Store with Personalized Pricing",
-  description: `SIFRA is a wholesale and retail e-commerce platform built with Next.js and React. Enjoy personalized pricing, exclusive discounts based on your profile, and bigger savings the more you shop. Perfect for bulk buyers, resellers, and smart shoppers.`,
+  title: "QADEEM - Wholesale & Retail Store with Personalized Pricing",
+  description: `QADEEM is a wholesale and retail e-commerce platform built with Next.js and React. Enjoy personalized pricing, exclusive discounts based on your profile, and bigger savings the more you shop. Perfect for bulk buyers, resellers, and smart shoppers.`,
   authors: [{
-    name: "SIFRA",
+    name: "QADEEM",
     url: "https://www.sifrausa.com"
   }],
   keywords: [

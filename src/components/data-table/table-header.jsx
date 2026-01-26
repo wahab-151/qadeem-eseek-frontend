@@ -14,10 +14,13 @@ import UpDown from "icons/UpDown";
 const StyledTableCell = styled(TableCell)(({
   theme
 }) => ({
-  fontWeight: 500,
+  fontWeight: 600,
   padding: "16px 20px",
-  color: theme.palette.grey[900],
-  maxWidth:'300px'
+  color: "#2C2416", // Deep warm brown
+  maxWidth:'300px',
+  fontSize: "14px",
+  letterSpacing: "0.5px",
+  fontFamily: '"Times New Roman", Times, serif', // Elegant font for headers
 }));
 
 
@@ -34,7 +37,8 @@ export default function TableHeader({
   isSorting = false
 }) {
   return <TableHead sx={{
-    backgroundColor: "grey.200"
+    backgroundColor: "#EFE6D5", // Light heritage beige
+    borderBottom: "2px solid #8B7548" // Heritage bronze border
   }}>
       <TableRow >
         {heading.map(headCell => <StyledTableCell key={headCell.id} align={headCell.align} sortDirection={orderBy === headCell.id ? order : false}>

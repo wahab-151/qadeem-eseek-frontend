@@ -39,7 +39,7 @@ export default function GadgetOnePageView() {
     {/* DISCOUNT BANNER AREA */}
     {/* <Section3 /> */}
 
-    {/* ABOUT SECTION - QADEEM HANDICRAFT SHOP */}
+    {/* ABOUT SECTION - QADEEM CRAFTS */}
     <SectionAbout />
 
     {/* SHOP BY CATEGORIES AREA */}

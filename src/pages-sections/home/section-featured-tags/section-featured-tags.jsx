@@ -166,13 +166,13 @@ export default function SectionFeaturedTags() {
                           <Box
                             className="tag-image"
                             component="img"
-                            src={tag.image || "/assets/images/logo.jpeg"}
+                            src={tag.image || "/assets/images/small-screen-logo.png"}
                             alt={tag.name}
                             loading="lazy"
                             onError={(e) => {
                               // Fallback to logo if image fails to load
-                              if (e.target.src !== "/assets/images/logo.jpeg") {
-                                e.target.src = "/assets/images/logo.jpeg";
+                              if (e.target.src !== "/assets/images/small-screen-logo.png") {
+                                e.target.src = "/assets/images/small-screen-logo.png";
                               }
                             }}
                             sx={{

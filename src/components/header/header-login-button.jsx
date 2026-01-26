@@ -2,6 +2,7 @@
 
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import useUser from "hooks/useUser";
 import QadeemButton from "components/QadeemButton";
 
@@ -10,6 +11,12 @@ export default function HeaderLoginButton() {
   const theme = useTheme();
   const { state } = useUser();
   const user = state?.user;
+  const [mounted, setMounted] = useState(false);
+
+  // Fix hydration mismatch by only showing content after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleClick = () => {
     if (user?.id) {
@@ -36,6 +43,25 @@ export default function HeaderLoginButton() {
       router.push("/login");
     }
   };
+
+  // Show placeholder during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <QadeemButton
+        variant="contained"
+        color="primary"
+        onClick={() => {}}
+        sx={{
+          color: "#F5F5F0",
+          px: 2.5,
+          py: 1,
+          fontSize: "0.875rem",
+        }}
+      >
+        Log in
+      </QadeemButton>
+    );
+  }
 
   return (
     <QadeemButton

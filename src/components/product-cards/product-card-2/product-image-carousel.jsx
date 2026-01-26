@@ -15,7 +15,7 @@ export default function ProductImageCarousel({ images = [], alt = "Product", hei
   // If no images, use default
   const displayImages = validImages.length > 0 
     ? validImages 
-    : [{ preview: "/assets/images/logo3.jpeg" }];
+    : [{ preview: "/assets/images/small-screen-logo.png" }];
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => {

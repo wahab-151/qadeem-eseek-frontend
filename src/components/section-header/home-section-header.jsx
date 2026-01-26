@@ -85,27 +85,27 @@ export default function HomeSectionHeader({
       </Box>
 
       {actionHref ? (
-        <Link href={actionHref} passHref legacyBehavior>
-          <MuiLink
-            underline="none"
-            sx={{
-              fontSize: "14px",
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 500,
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              color: "#271E03",
-              mt: { xs: 0, md: 1.5 },
-              pb: "2px",
-              borderBottom: "2px solid #E2C572",
-              "&:hover": {
-                borderBottomColor: "#271E03",
-              },
-            }}
-          >
-            {actionLabel}
-          </MuiLink>
-        </Link>
+        <MuiLink
+          component={Link}
+          href={actionHref}
+          underline="none"
+          sx={{
+            fontSize: "14px",
+            fontFamily: "Inter, sans-serif",
+            fontWeight: 500,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            color: "#271E03",
+            mt: { xs: 0, md: 1.5 },
+            pb: "2px",
+            borderBottom: "2px solid #E2C572",
+            "&:hover": {
+              borderBottomColor: "#271E03",
+            },
+          }}
+        >
+          {actionLabel}
+        </MuiLink>
       ) : null}
     </Box>
   );

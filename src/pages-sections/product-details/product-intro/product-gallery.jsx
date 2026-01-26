@@ -9,7 +9,7 @@ import { Box } from "@mui/material";
 import CarouselModal from "./carousel-model";
 
 export default function YourComponent({
-  images = [{ preview: "/assets/images/logo3.jpeg" }],
+  images = [{ preview: "/assets/images/small-screen-logo.png" }],
 }) {
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -26,7 +26,7 @@ export default function YourComponent({
   const mainSrc =
     Array.isArray(images) && images[currentImage]?.preview
       ? images[currentImage].preview
-      : "/assets/images/logo3.jpeg";
+      : "/assets/images/small-screen-logo.png";
 
   // Calculate image dimensions and set appropriate style
   useEffect(() => {
@@ -94,7 +94,7 @@ export default function YourComponent({
                   width={64}
                   height={64}
                   alt="product"
-                  src={url?.preview || "/assets/images/logo3.jpeg"}
+                  src={url?.preview || "/assets/images/small-screen-logo.png"}
                   sizes="64px"
                   quality={75}
                   style={{ objectFit: "cover", borderRadius: 0 }}

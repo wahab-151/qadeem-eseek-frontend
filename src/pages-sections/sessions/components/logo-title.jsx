@@ -12,7 +12,7 @@ export default function LogoWithTitle() {
      <Link href="/home" style={{ display: 'block', maxWidth: '100%', width: 'fit-content' }}>
        <Image 
          src={logo} 
-         alt="SIFRA" 
+         alt="QADEEM" 
          height={100} 
          width={200}
          style={{

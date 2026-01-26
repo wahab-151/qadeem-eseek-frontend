@@ -41,7 +41,7 @@ const PrivacyPolicyView = () => {
       <>
     <Container maxWidth="md" sx={{ py: 6 }}>
           <Typography variant="h4" color="primary" gutterBottom fontWeight="bold">
-        Privacy Policy – SIFRA
+        Privacy Policy – QADEEM
       </Typography>
 
       <Box
@@ -81,7 +81,7 @@ const PrivacyPolicyView = () => {
 
       <Box mt={6}>
         <Typography variant="h5" gutterBottom mb={2}>
-          Why Shop With SIFRA ?
+          Why Shop With QADEEM ?
         </Typography>
         <Grid container spacing={2} sx={{ mb: 4 }}>
           <Grid item xs={12} md={3}>

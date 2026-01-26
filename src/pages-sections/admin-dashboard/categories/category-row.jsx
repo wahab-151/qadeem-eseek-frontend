@@ -179,7 +179,7 @@ export default function CategoryRow({
             gap={1} 
             sx={{ 
               pl: level * 3,
-              borderLeft: level > 0 ? `2px solid ${level === 4 ? 'warning.main' : 'info.main'}` : 'none',
+              borderLeft: level > 0 ? `2px solid ${level === 4 ? '#D97706' : '#8B7548'}` : 'none', // Heritage colors
               ml: level > 0 ? 1 : 0,
               position: 'relative',
               opacity: category.parentId === EXCLUDED_CATEGORY_ID ? 0.6 : 1
@@ -200,7 +200,7 @@ export default function CategoryRow({
             <Image
               fill
               alt={name}
-              src={image || "/assets/images/logo.jpeg"}
+              src={image || "/assets/images/small-screen-logo.png"}
               sizes="(100% 100%)"
               style={{ objectFit: "contain" }}
             />
@@ -374,6 +374,7 @@ export default function CategoryRow({
           refetchCategories={refetchCategories}
           childCategories={childCategory.childCategories || []}
           isParent={childCategory.hasChildren}
+          image={childCategory.image}
           level={level + 1}
         />
       ))}

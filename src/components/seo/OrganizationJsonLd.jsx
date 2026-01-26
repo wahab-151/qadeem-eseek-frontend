@@ -8,10 +8,10 @@ export default function OrganizationJsonLd({ baseUrl = 'https://www.sifrausa.com
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'SIFRA',
+    name: 'QADEEM',
     url: baseUrl,
     logo: `${baseUrl}/assets/images/logo.jpeg`,
-    description: 'SIFRA - Wholesale & Retail Store with Personalized Pricing. Tools, parts and supplies with fast delivery.',
+    description: 'QADEEM - Wholesale & Retail Store with Personalized Pricing. Tools, parts and supplies with fast delivery.',
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',

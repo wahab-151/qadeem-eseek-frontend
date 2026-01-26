@@ -85,7 +85,7 @@ export default function SectionAbout() {
               QADEEM
             </Typography>
 
-            {/* Subtitle - HANDICRAFT SHOP */}
+            {/* Subtitle - CRAFTS */}
             <Typography
               component="h2"
               variant="h6"
@@ -99,7 +99,7 @@ export default function SectionAbout() {
                 mt: { xs: -1, md: -2 },
               }}
             >
-              HANDICRAFT SHOP
+              CRAFTS
             </Typography>
 
             {/* Description Paragraph */}

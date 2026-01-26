@@ -57,7 +57,7 @@ export default function AddToCart({
         title: product.name,
         price: product.price,
         pricing: product?.pricing,
-        thumbnail: product?.images?.[0]?.preview || "/assets/images/logo.jpeg",
+        thumbnail: product?.images?.[0]?.preview || "/assets/images/small-screen-logo.png",
         slug: product.name,
         stock: product?.stock,
         category: product?.category,

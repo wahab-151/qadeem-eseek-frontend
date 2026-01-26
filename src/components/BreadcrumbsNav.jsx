@@ -94,8 +94,9 @@
 "use client";
 
 import Link from "next/link";
-import { Box, Breadcrumbs, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 export default function BreadcrumbNav({ breadcrumb, setBreadcrumb }) {
   const router = useRouter();
@@ -131,29 +132,36 @@ export default function BreadcrumbNav({ breadcrumb, setBreadcrumb }) {
   };
 
   return (
-    <Box sx={{ maxWidth: "1523px", mx: "auto" }}>
-      <Breadcrumbs
-        aria-label="breadcrumb"
+    <Box sx={{ 
+      maxWidth: "1523px", 
+      mx: "auto", 
+      py: 1,
+      backgroundColor: "#FFFFFF",
+    }}>
+      <Box
         sx={{
-          backgroundColor: "#F3F5F9",
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
           pl: { xs: "5vw", md: "2vw" },
+          py: 1,
         }}
       >
         <Typography
           sx={{
-            color: "#1976d2",
+            color: "#8B7548",
             fontWeight: 500,
-            fontSize: ".75rem",
+            fontSize: ".875rem",
             cursor: "pointer",
             transition: "color 0.2s ease",
             "&:hover": {
-              color: "#0045a5",
+              color: "#6B5D4F",
               textDecoration: "underline",
             },
           }}
           onClick={handleHomeClick}
         >
-          home
+          Home
         </Typography>
 
         {breadcrumb?.map((item, index) => {
@@ -166,42 +174,57 @@ export default function BreadcrumbNav({ breadcrumb, setBreadcrumb }) {
 
           if (isLast) {
             return (
-              <Typography
-                key={item.id}
-                color="text.primary"
-                sx={{ fontWeight: 600, fontSize: ".75rem" }}
-              >
-                {item.title}
-              </Typography>
+              <Box key={item.id} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography
+                  component="span"
+                  sx={{ 
+                    color: "#8B7548", 
+                    fontSize: "1rem",
+                  }}
+                >
+                  |
+                </Typography>
+                <Typography
+                  sx={{ 
+                    fontWeight: 600, 
+                    fontSize: ".875rem",
+                    color: "#271E03",
+                  }}
+                >
+                  {item.title}
+                </Typography>
+              </Box>
             );
           }
 
           return (
-            <Link
-              key={item.id}
-              href={href}
-              style={{ textDecoration: "none" }}
-              onClick={() => handleBreadcrumbClick(href)}
-              onMouseEnter={() => { try { router.prefetch(href); } catch (_) {} }}
-            >
-              <Typography
-                sx={{
-                  color: "#1976d2",
-                  fontWeight: 500,
-                  fontSize: ".75rem",
-                  transition: "color 0.2s ease",
-                  "&:hover": {
-                    color: "#0045a5",
-                    textDecoration: "underline",
-                  },
-                }}
+            <Box key={item.id} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <ChevronRightIcon sx={{ color: "#8B7548", fontSize: "1rem" }} />
+              <Link
+                href={href}
+                style={{ textDecoration: "none" }}
+                onClick={() => handleBreadcrumbClick(href)}
+                onMouseEnter={() => { try { router.prefetch(href); } catch (_) {} }}
               >
-                {item.title}
-              </Typography>
-            </Link>
+                <Typography
+                  sx={{
+                    color: "#8B7548",
+                    fontWeight: 500,
+                    fontSize: ".875rem",
+                    transition: "color 0.2s ease",
+                    "&:hover": {
+                      color: "#6B5D4F",
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  {item.title}
+                </Typography>
+              </Link>
+            </Box>
           );
         })}
-      </Breadcrumbs>
+      </Box>
     </Box>
   );
 }

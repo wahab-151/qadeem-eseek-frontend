@@ -50,9 +50,22 @@ export default function SearchArea({
       {/* <SearchInput placeholder={searchPlaceholder} onChange={e => handleSearch(e.target.value)} /> */}
 
       <FlexBox gap={2}>
-        { showButton && <Button href={url} color="info" fullWidth={downSM} variant="contained" startIcon={<Add />} LinkComponent={Link} sx={{
-        minHeight: 44
-      }}>
+        { showButton && <Button 
+          href={url} 
+          color="primary" 
+          fullWidth={downSM} 
+          variant="contained" 
+          startIcon={<Add />} 
+          LinkComponent={Link} 
+          sx={{
+            minHeight: 44,
+            backgroundColor: '#8B7548', // Heritage bronze
+            color: '#FFFFFF',
+            '&:hover': {
+              backgroundColor: '#6B5D4F', // Darker brown on hover
+            }
+          }}
+        >
           {buttonText}
         </Button>}
         {rightSlot}

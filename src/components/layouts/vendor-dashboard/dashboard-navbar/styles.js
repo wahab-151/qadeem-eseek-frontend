@@ -10,9 +10,11 @@ export const DashboardNavbarRoot = styled(AppBar)(({
   zIndex: 11,
   paddingTop: "1rem",
   paddingBottom: "1rem",
-  backgroundColor: "#ffffff",
-  boxShadow: theme.shadows[2],
-  color: theme.palette.text.primary
+  backgroundColor: "#FEFAF0", // Warm cream background to match customer theme
+  backgroundImage: "linear-gradient(135deg, #FEFAF0 0%, #FAF6F0 100%)",
+  boxShadow: "0px 2px 8px rgba(139, 117, 72, 0.08)", // Subtle bronze shadow
+  borderBottom: "1px solid #EFE6D5", // Light border
+  color: "#2C2416" // Deep warm brown text
 }));
 export const StyledToolBar = styled(Toolbar)({
   "@media (min-width: 0px)": {

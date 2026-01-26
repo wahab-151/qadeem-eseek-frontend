@@ -47,7 +47,7 @@ export default function ProductCard9({
  const { showProductCardLoader } = useLoading();
  const images= Array.isArray(rawImages) && rawImages.length > 0
   ? rawImages
-  : [{ preview: "/assets/images/logo.jpeg" }]
+  : [{ preview: "/assets/images/small-screen-logo.png" }]
 
   const handleLinkClick = (e) => {
     e.preventDefault();
@@ -78,7 +78,7 @@ export default function ProductCard9({
         {state?.user?.id &&  <DiscountChip price={price} discount={pricing} />}
 
           {/* PRODUCT IMAGE / THUMBNAIL */}
-          <LazyImage src={images[0]?.preview ||"/assets/images/logo.jpeg"} alt={name} width={500} height={500} />
+          <LazyImage src={images[0]?.preview ||"/assets/images/small-screen-logo.png"} alt={name} width={500} height={500} />
         </div>
 
         <div className="content">

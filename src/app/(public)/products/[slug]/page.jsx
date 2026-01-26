@@ -27,15 +27,15 @@ export async function generateMetadata({ params }) {
   // Default metadata if product not found
   if (!product) {
     return {
-      title: 'Product Not Found - SIFRA',
+      title: 'Product Not Found - QADEEM',
       description: 'The requested product could not be found.',
     };
   }
 
-  const title = product.metaTitle || `${product.name} - SIFRA`;
+  const title = product.metaTitle || `${product.name} - QADEEM`;
   const description = product.metaDescription || 
     product.description?.slice(0, 160) || 
-    `Buy ${product.name} at SIFRA. Quality products with personalized pricing.`;
+    `Buy ${product.name} at QADEEM. Quality products with personalized pricing.`;
   
   const imageUrl = product.images?.[0]?.preview || 
     product.images?.[0]?.url || 
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }) {
       ...(product.tags || []),
       'wholesale',
       'retail',
-      'SIFRA'
+      'QADEEM'
     ].filter(Boolean),
     openGraph: {
       title,

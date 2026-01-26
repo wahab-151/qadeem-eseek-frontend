@@ -162,8 +162,11 @@ export default function themeOptions(pathname) {
     paths: ["/furniture-1", "/medical"],
     theme: THEMES.PASTE
   }, {
-    paths: ["/gadget-3", "/health-beauty", "/admin", "/vendor"],
+    paths: ["/gadget-3", "/health-beauty"],
     theme: THEMES.HEALTH
+  }, {
+    paths: ["/admin", "/vendor"], // Admin panel uses DEFAULT heritage theme
+    theme: THEMES.DEFAULT
   }];
   let selectedMapping = themeMappings.find(mapping => mapping.paths.some(path => pathname.startsWith(path)));
   if (["/mini-cart", "/login"].includes(pathname)) {

@@ -216,13 +216,13 @@ export default function ProductRow({ product, refetch }) {
             sx={{ 
               width: 50, 
               height: 50,
-              backgroundColor: 'grey.100'
+              backgroundColor: '#EFE6D5' // Light heritage beige
             }}
           >
             {image ? (
               <Image 
                 fill 
-                src={image?.[0]?.preview || "/assets/images/logo.jpeg"} 
+                src={image?.[0]?.preview || "/assets/images/small-screen-logo.png"} 
                 alt={name} 
                 sizes="(50px, 50px)"
                 style={{ objectFit: 'cover' }}

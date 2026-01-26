@@ -5,8 +5,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sifrausa.com';
 
 // Optimized: Use static metadata with proper SEO
 export const metadata = {
-  title: "All Products - SIFRA | Wholesale & Retail Store",
-  description: "Browse all products at SIFRA. Quality tools, parts, and supplies with personalized wholesale and retail pricing. Fast delivery available.",
+  title: "All Products - QADEEM | Wholesale & Retail Store",
+  description: "Browse all products at QADEEM. Quality tools, parts, and supplies with personalized wholesale and retail pricing. Fast delivery available.",
   keywords: [
     'all products',
     'wholesale products',
@@ -14,7 +14,7 @@ export const metadata = {
     'tools',
     'parts',
     'supplies',
-    'SIFRA',
+    'QADEEM',
   ],
   openGraph: {
     title: 'All Products - SIFRA',

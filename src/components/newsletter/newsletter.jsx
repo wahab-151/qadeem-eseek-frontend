@@ -82,7 +82,7 @@ export default function Newsletter({
                   color: "primary.main"
                 }
               }}>
-                  Sign up to <span>SIFRA</span>
+                  Sign up to <span>QADEEM</span>
                 </Typography>
 
                 <Typography variant="body1" sx={{

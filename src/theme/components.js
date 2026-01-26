@@ -44,7 +44,28 @@ export const components = {
     styleOverrides: {
       paper: {
         borderRadius: 12,
-        boxShadow: "none"
+        boxShadow: "0px 8px 24px rgba(139, 117, 72, 0.15)", // Heritage bronze shadow for dialogs
+        border: "1px solid #EFE6D5", // Light heritage border
+      }
+    }
+  },
+  MuiDialogTitle: {
+    styleOverrides: {
+      root: {
+        color: "#2C2416", // Deep warm brown for dialog titles
+        fontWeight: 600,
+        fontSize: "1.25rem",
+        borderBottom: "1px solid #EFE6D5", // Light heritage border
+        paddingBottom: "12px",
+        fontFamily: '"Times New Roman", Times, serif', // Elegant font for dialog titles
+      }
+    }
+  },
+  MuiDialogContent: {
+    styleOverrides: {
+      root: {
+        paddingTop: "20px !important", // Override MUI default
+        color: "#2C2416", // Deep warm brown for dialog content
       }
     }
   },
@@ -54,7 +75,10 @@ export const components = {
     },
     styleOverrides: {
       root: {
-        borderRadius: 12
+        borderRadius: 12,
+        backgroundColor: "#FFFFFF", // White background for cards
+        boxShadow: "0px 2px 8px rgba(139, 117, 72, 0.08)", // Subtle heritage bronze shadow
+        border: "1px solid #EFE6D5", // Light heritage border
       }
     }
   },
@@ -101,7 +125,11 @@ export const components = {
   MuiInputLabel: {
     styleOverrides: {
       root: {
-        zIndex: 0
+        zIndex: 0,
+        color: "#6B5D4F", // Medium brown for labels
+        "&.Mui-focused": {
+          color: "#8B7548", // Heritage bronze when focused
+        },
       },
       sizeSmall: {
         lineHeight: "1.8em"
@@ -111,7 +139,14 @@ export const components = {
   MuiOutlinedInput: {
     styleOverrides: {
       root: {
-        borderRadius: 8
+        borderRadius: 8,
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#8B7548", // Heritage bronze on hover
+        },
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#8B7548", // Heritage bronze when focused
+          borderWidth: 2,
+        },
       },
       sizeSmall: {
         lineHeight: "1.8em"
@@ -120,7 +155,7 @@ export const components = {
         height: "1.8em"
       },
       notchedOutline: {
-        borderColor: grey[300]
+        borderColor: "#EFE6D5" // Light heritage border
       }
     }
   },
@@ -166,6 +201,33 @@ export const components = {
       style: {
         color: "white",
         backgroundColor: success.main
+      }
+    }, {
+      props: {
+        color: "info",
+        variant: "contained"
+      },
+      style: {
+        color: "#FFFFFF",
+        backgroundColor: "#8B7548", // Heritage bronze
+        transition: "all 0.3s",
+        ":hover": {
+          backgroundColor: "#6B5D4F" // Darker brown on hover
+        }
+      }
+    }, {
+      props: {
+        color: "info",
+        variant: "outlined"
+      },
+      style: {
+        color: "#8B7548", // Heritage bronze
+        borderColor: "#8B7548",
+        transition: "all 0.3s",
+        ":hover": {
+          borderColor: "#6B5D4F",
+          backgroundColor: "rgba(139, 117, 72, 0.08)"
+        }
       }
     }],
     defaultProps: {

@@ -124,7 +124,7 @@ export default function FloatingWhatsApp(
                 <CloseIcon />
               </button>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontWeight: '600', fontSize: '16px', color: theme.palette.secondary.main }}>SIFRA - Support</div>
+                <div style={{ fontWeight: '600', fontSize: '16px', color: theme.palette.secondary.main }}>QADEEM - Support</div>
                 {/* <div style={{ fontWeight: '600', fontSize: '14px', color: theme.palette.secondary.main }}>- Support</div> */}
               </div>
               <div style={{

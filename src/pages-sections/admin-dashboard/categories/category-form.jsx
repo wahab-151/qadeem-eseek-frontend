@@ -506,6 +506,22 @@ export default function CategoryForm({ initialValues, onSuccess, mode }) {
             </FlexBox>
           </Grid>
 
+          {/* Mark as New Category Checkbox */}
+          <Grid item xs={12} sm={6}>
+            <Checkbox
+              name="isRecentlyAdded"
+              label="Mark as New Category"
+              color="info"
+              disabled={mode === "view"}
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  fontWeight: 500,
+                  fontSize: "14px"
+                }
+              }}
+            />
+          </Grid>
+
           {/* Submit Button (always full width) */}
           <Grid item xs={12} md={6}>
             {mode !== "view" ? (

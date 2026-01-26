@@ -35,17 +35,26 @@ export default function SectionCategories() {
     const fetchCategories = async () => {
       try {
         const response = await api.getFeaturedCategories();
+        console.log("[SectionCategories] API Response:", response);
+        
         // API returns { success, message, data: categories[] }
         const data = response?.data?.data || response?.data || response;
+        console.log("[SectionCategories] Parsed data:", data);
+        
         if (data && Array.isArray(data) && data.length > 0) {
-          // Filter to only show parent categories (level 1) that have images
-          const parentCategories = data.filter(cat => cat.level === 1 && cat.image);
+          // Filter to only show parent categories (level 1)
+          // Removed the image filter since API doesn't return images
+          const parentCategories = data.filter(cat => cat.level === 1);
+          console.log("[SectionCategories] Parent categories:", parentCategories);
+          
           // Sort by displayOrder
           const sorted = [...parentCategories].sort((a, b) => {
             const ao = typeof a?.displayOrder === "number" ? a.displayOrder : Number.POSITIVE_INFINITY;
             const bo = typeof b?.displayOrder === "number" ? b.displayOrder : Number.POSITIVE_INFINITY;
             return ao - bo;
           });
+          
+          console.log("[SectionCategories] Sorted categories:", sorted);
           setCategories(sorted);
         }
       } catch (error) {
@@ -95,19 +104,12 @@ export default function SectionCategories() {
               slidesToShow={4}
               responsive={responsive}
               spaceBetween={spaceBetween}
-              dots={categories.length > 4}
+              dots={false} // Dots removed
               arrows={false}
               autoplay={categories.length > 4}
               infinite={categories.length > 4}
               swipe={categories.length > 4}
               draggable={categories.length > 4}
-              dotColor="#FAE7AF"
-              activeDotColor="#271E03"
-              dotStyles={{
-                mt: 4,
-                mb: 2,
-                position: "relative",
-              }}
             >
               {categories.map((category) => (
                 <CategoryCard key={category._id} category={category} />

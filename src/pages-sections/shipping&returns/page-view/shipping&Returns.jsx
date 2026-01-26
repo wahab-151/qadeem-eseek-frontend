@@ -37,7 +37,7 @@ const ShippinInfo = () => {
         <>
       <Container maxWidth="md" sx={{ py: 6 }}>
       <Typography variant="h3" gutterBottom color="primary" fontWeight="bold">
-        LCD Screen Replacement & Return Policy – SIFRA
+        LCD Screen Replacement & Return Policy – QADEEM
       </Typography>
 
       <Box  sx={{ mt:4,

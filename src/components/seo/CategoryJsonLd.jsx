@@ -17,7 +17,7 @@ export default function CategoryJsonLd({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: category.name || category.title,
-    description: category.description || `Browse ${category.name} products at SIFRA`,
+    description: category.description || `Browse ${category.name} products at QADEEM`,
     url: categoryUrl,
     mainEntity: {
       '@type': 'ItemList',

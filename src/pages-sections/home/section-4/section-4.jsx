@@ -89,19 +89,12 @@ export default function Section4() {
               slidesToShow={4}
               responsive={responsive}
               spaceBetween={spaceBetween}
-              dots={products?.length > 4} // Only show dots if there are more than 4 products
+              dots={false} // Dots removed
               arrows={false}
               autoplay={products?.length > 4} // Only autoplay if there are more than 4 products
               infinite={products?.length > 4} // Only infinite scroll if there are more than 4 products
               swipe={products?.length > 4} // Only allow swiping if there are more than 4 products
               draggable={products?.length > 4} // Only allow dragging if there are more than 4 products
-              dotColor="#FAE7AF" // Normal color for inactive dots
-              activeDotColor="#271E03" // Active color for active dot
-              dotStyles={{
-                mt: 4,
-                mb: 2,
-                position: "relative",
-              }}
             >
               {products?.map((product) => (
                 <ProductCard2 key={product?._id} product={product} />

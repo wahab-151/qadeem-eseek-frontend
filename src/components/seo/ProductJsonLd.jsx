@@ -19,7 +19,7 @@ export default function ProductJsonLd({ product, baseUrl = 'https://www.sifrausa
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    description: product.description || product.metaDescription || `${product.name} - Quality product from SIFRA`,
+    description: product.description || product.metaDescription || `${product.name} - Quality product from QADEEM`,
     image: imageUrls.length > 0 ? imageUrls : [`${baseUrl}/assets/images/logo.jpeg`],
     sku: product.sku || product.productId,
     mpn: product.productId,
@@ -38,7 +38,7 @@ export default function ProductJsonLd({ product, baseUrl = 'https://www.sifrausa
       itemCondition: 'https://schema.org/NewCondition',
       seller: {
         '@type': 'Organization',
-        name: 'SIFRA',
+        name: 'QADEEM',
       },
     },
   };

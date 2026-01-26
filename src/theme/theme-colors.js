@@ -28,33 +28,35 @@ export const grey = {
   100: "#F6F9FC"
 };
 export const primary = {
-  100: "#F5F3E8", // Very light tint
-  200: "#E8E0C4", // Light tint
-  300: "#D4C89A", // Lighter shade
-  400: "#B8A86B", // Light brown
-  500: "#8B7A4A", // Mid-tone brown
-  600: "#6B5D38", // Medium brown
+  100: "#FAF6F0", // Very light cream - warmer
+  200: "#EFE6D5", // Light beige
+  300: "#D4C4A0", // Soft tan
+  400: "#A89267", // Medium gold-brown
+  500: "#8B7548", // Rich bronze (NEW MAIN)
+  600: "#6B5835", // Deep bronze
   700: "#4A3F26", // Dark brown
-  800: "#352D1A", // Darker brown
-  900: "#271E03", // Darkest (main brand color)
-  main: "#271E03", // Primary brand color
-  light: "#8B7A4A", // Lighter variant for light mode
-  dark: "#1A1502" // Darker variant for dark mode
+  800: "#342D1A", // Darker brown
+  900: "#271E03", // Darkest (original brand color)
+  main: "#8B7548", // Primary brand color - warmer, more luxurious
+  light: "#D4C4A0", // Lighter variant for light mode
+  dark: "#342D1A", // Darker variant for dark mode
+  contrastText: "#FFFFFF"
 };
 
 export const secondary = {
-  100: "#d6e4f2", // very light tint
-  200: "#adc9e6", // lighter tint
-  300: "#84add9", // light tint
-  400: "#5b91cc", // soft blue
-  500: "#3275bf", // mid blue
-  600: "#155a97", // main color
-  700: "#104674", // slightly darker
-  800: "#0c3455", // dark
-  900: "#09243b", // very dark
-  main: "#705D27",
-  dark: "#09243b",
-  light: "#3275bf"
+  100: "#F5EDE6", // Pale terracotta
+  200: "#E5D0BE", // Light warm beige
+  300: "#C9A17A", // Warm caramel
+  400: "#A67C52", // Desert sand
+  500: "#8B6239", // Spice brown
+  600: "#6B4423", // Deep caramel
+  700: "#4A2F18", // Dark caramel
+  800: "#342110", // Very dark brown
+  900: "#1F1309", // Darkest brown
+  main: "#A67C52", // Warm desert sand - replaces blue
+  dark: "#4A2F18", // Darker variant
+  light: "#C9A17A", // Lighter variant
+  contrastText: "#FFFFFF"
 };
 
 // export const secondary = {
@@ -196,6 +198,75 @@ export const warning = {
   dark: "#faa63b",
   light: "#ffd767"
 };
+
+// Accent colors for heritage luxury theme
+export const emerald = {
+  50: "#E8F3F0",
+  100: "#C5E2DA",
+  200: "#9FD0C2",
+  300: "#78BDA9",
+  400: "#5AAF96",
+  500: "#3DA183",
+  600: "#379175",
+  700: "#2F7D64",
+  800: "#276A54",
+  900: "#1A4A3A",
+  main: "#2C5F4F", // Deep emerald for NEW badges, success
+  light: "#5AAF96",
+  dark: "#1A4A3A",
+  contrastText: "#FFFFFF"
+};
+
+export const burgundy = {
+  50: "#F8E8EA",
+  100: "#EDC6CB",
+  200: "#E2A0A9",
+  300: "#D67A87",
+  400: "#CD5E6D",
+  500: "#C44153",
+  600: "#B33B4C",
+  700: "#9F3242",
+  800: "#8B2A39",
+  900: "#691C28",
+  main: "#8B4049", // Deep burgundy for SALE badges, urgent CTAs
+  light: "#CD5E6D",
+  dark: "#691C28",
+  contrastText: "#FFFFFF"
+};
+
+export const sapphire = {
+  50: "#E6ECF2",
+  100: "#C1D0DE",
+  200: "#97B1C8",
+  300: "#6D92B2",
+  400: "#4E7AA1",
+  500: "#2F6290",
+  600: "#2A5A88",
+  700: "#234F7D",
+  800: "#1D4573",
+  900: "#123360",
+  main: "#2C4A6B", // Deep blue for info, premium features
+  light: "#4E7AA1",
+  dark: "#123360",
+  contrastText: "#FFFFFF"
+};
+
+export const antique = {
+  50: "#FAF6F0",
+  100: "#F2E8DC",
+  200: "#E9D9C5",
+  300: "#DFCAAE",
+  400: "#D8BF9D",
+  500: "#D1B48C",
+  600: "#CCAD84",
+  700: "#C5A479",
+  800: "#BF9C6F",
+  900: "#B48C5C",
+  main: "#C19A6B", // Antique gold for premium features
+  light: "#D8BF9D",
+  dark: "#B48C5C",
+  contrastText: "#4A3F26"
+};
 export const gold = {
   50: "#fffae8",
   100: "#fef3c5",
@@ -238,14 +309,20 @@ export const themeColors = {
   warning,
   success,
   secondary,
+  // New accent colors for heritage luxury theme
+  emerald,
+  burgundy,
+  sapphire,
+  antique,
   info: blue,
   divider: grey[200],
   background: {
-    default: "#ffffff"
+    default: "#FEFAF0", // Warm cream background
+    paper: "#FFFFFF"
   },
   text: {
-    primary: "#271E03",
-    secondary: "#705D27",
+    primary: "#2C2416", // Deep warm brown - more readable
+    secondary: "#6B5D4F", // Medium brown
     disabled: grey[400],
     green: "#74A12E"
   },
