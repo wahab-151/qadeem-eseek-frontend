@@ -1,10 +1,7 @@
-import Link from "next/link";
 import Image from "next/image";
 
 // MUI
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
@@ -15,10 +12,6 @@ import Remove from "@mui/icons-material/Remove";
 
 // GLOBAL CUSTOM COMPONENTS
 import FlexBox from "components/flex-box/flex-box";
-
-// CUSTOM UTILS LIBRARY FUNCTION
-import { currency } from "lib";
-import OrderQuantity from "./productQuantity";
 
 // CUSTOM DATA MODEL
 
@@ -98,7 +91,6 @@ export default function MiniCartItem({
   handleCartAmountChange,
   onProductClick
 }) {
-  // console.log("item", item)
   const handleClick = () => {
     if (onProductClick) {
       // Use slug for SEO-friendly URLs, fallback to id
@@ -106,73 +98,195 @@ export default function MiniCartItem({
     }
   };
 
+  const handleRemove = () => {
+    handleCartAmountChange(0, item)();
+  };
+
+  const handleDecrement = () => {
+    if (item.qty > 1) {
+      handleCartAmountChange(item.qty - 1, item)();
+    }
+  };
+
+  const handleIncrement = () => {
+    const maxStock = typeof item?.stock === "number" ? item.stock : 99;
+    if (item.qty < maxStock) {
+      handleCartAmountChange(item.qty + 1, item)();
+    }
+  };
+
+  const itemPrice = Number(item.price) || 0;
+  const itemQty = Number(item.qty) || 0;
+  const totalItemPrice = itemPrice * itemQty;
+
   return (
-    <FlexBox
-      py={2}
-      px={2.5}
-      key={item.id}
-      alignItems="center"
-      borderBottom="1px dashed"
-      borderColor="divider"
-      gap={2}
+    <Box
+      sx={{
+        px: 3,
+        py: 2.5,
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 2,
+        borderBottom: "1px solid #E5E7EB",
+      }}
     >
-      {/* Clickable Image */}
-      <Box onClick={handleClick} sx={{ cursor: 'pointer' }}>
-        <Avatar
-          variant="rounded"
+      {/* Product Image */}
+      <Box 
+        onClick={handleClick} 
+        sx={{ 
+          cursor: 'pointer',
+          flexShrink: 0,
+        }}
+      >
+        <Box
           sx={{
-            width: 75,
-            height: 75,
-            borderRadius: 3,
+            width: "65px",
+            height: "65px",
+            borderRadius: "4px",
+            overflow: "hidden",
+            border: "1px solid #E5E7EB",
+            position: "relative",
+            backgroundColor: "#FFFFFF",
+            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
           }}
         >
           <Image
             alt={item.title}
             src={item.thumbnail || "/assets/images/small-screen-logo.png"}
             fill
-            sizes="(75px, 75px)"
+            sizes="65px"
+            style={{ objectFit: "cover" }}
           />
-        </Avatar>
+        </Box>
       </Box>
 
+      {/* Middle Section: Product Name and Quantity */}
       <Box
-        flex="1"
-        textOverflow="ellipsis"
-        whiteSpace="nowrap"
-        overflow="hidden"
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+          minWidth: 0,
+        }}
       >
-        {/* ✅ Make Title Clickable */}
+        {/* Product Name */}
         <Typography
-          noWrap
-          variant="h6"
-          className="title"
           onClick={handleClick}
-          sx={{ cursor: 'pointer' }}
+          sx={{
+            cursor: 'pointer',
+            color: "#211E1F",
+            fontSize: "15px",
+            fontWeight: 400,
+            fontFamily: "sans-serif",
+            lineHeight: 1.4,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}
         >
           {item.title}
         </Typography>
 
-        <Typography
-          variant="body1"
-          sx={{
-            fontSize: 12,
-            color: 'grey.600',
-            mb: 1,
-          }}
-        >
-          {currency(Number(item.price) || 0)} x {Number(item.qty) || 0}
-        </Typography>
+        {/* Quantity Controls */}
+        <FlexBox alignItems="center" gap={0.5}>
+          <IconButton
+            onClick={handleDecrement}
+            disabled={itemQty <= 1}
+            sx={{
+              padding: "2px",
+              color: "#211E1F",
+              minWidth: "auto",
+              width: "20px",
+              height: "20px",
+              "&:hover": {
+                backgroundColor: "rgba(33, 30, 31, 0.04)",
+              },
+              "&.Mui-disabled": {
+                color: "#9CA3AF",
+              },
+            }}
+          >
+            <Remove sx={{ fontSize: "16px" }} />
+          </IconButton>
+          
+          <Typography
+            sx={{
+              color: "#211E1F",
+              fontSize: "16px",
+              fontWeight: 600,
+              fontFamily: "sans-serif",
+              minWidth: "20px",
+              textAlign: "center",
+            }}
+          >
+            {itemQty}
+          </Typography>
 
-        <OrderQuantity
-          quantity={item.qty}
-          onChange={(newQty) => handleCartAmountChange(newQty, item)()}
-          max={99}
-        />
+          <IconButton
+            onClick={handleIncrement}
+            disabled={itemQty >= (item?.stock || 99)}
+            sx={{
+              padding: "2px",
+              color: "#211E1F",
+              minWidth: "auto",
+              width: "20px",
+              height: "20px",
+              "&:hover": {
+                backgroundColor: "rgba(33, 30, 31, 0.04)",
+              },
+              "&.Mui-disabled": {
+                color: "#9CA3AF",
+              },
+            }}
+          >
+            <Add sx={{ fontSize: "16px" }} />
+          </IconButton>
+        </FlexBox>
       </Box>
 
-      <IconButton size="small" onClick={handleCartAmountChange(0, item)}>
-        <Close fontSize="small" />
-      </IconButton>
-    </FlexBox>
+      {/* Right Section: Price and Remove Button */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: 1,
+          flexShrink: 0,
+        }}
+      >
+        {/* Remove Button - aligned with product name */}
+        <IconButton
+          onClick={handleRemove}
+          sx={{
+            padding: "4px",
+            color: "#211E1F",
+            minWidth: "auto",
+            width: "24px",
+            height: "24px",
+            "&:hover": {
+              backgroundColor: "rgba(33, 30, 31, 0.04)",
+            },
+          }}
+        >
+          <Close sx={{ fontSize: "16px" }} />
+        </IconButton>
+
+        {/* Price - aligned with quantity controls */}
+        <Typography
+          sx={{
+            color: "#211E1F",
+            fontSize: "15px",
+            fontWeight: 600,
+            fontFamily: "sans-serif",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Rs {Math.round(totalItemPrice).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+        </Typography>
+      </Box>
+    </Box>
   );
 }

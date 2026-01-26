@@ -14,7 +14,7 @@ import LazyImage from "components/LazyImage";
 import FlexBox from "components/flex-box/flex-box";
 
 import { useState, useCallback } from "react";
-import useCart from "hooks/useCart";
+import useAddToCart from "hooks/useAddToCart";
 import AddToCart from "pages-sections/product-details/product-intro/add-to-cart";
 import { Box, Tooltip, Chip, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -61,8 +61,7 @@ function ProductCard2({
   const router = useRouter();
   const { showProductCardLoader, showProductDetailLoader } = useLoading();
   const [isNavigating, setIsNavigating] = useState(false);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const { addToCart } = useCart();
+  const { addToCart, isLoading: isAddingToCart } = useAddToCart();
 
   // Calculate effective price and discount
   const userRole = state?.user?.role;
@@ -115,7 +114,6 @@ function ProductCard2({
     e.preventDefault();
     e.stopPropagation();
     
-    setIsAddingToCart(true);
     try {
       const productData = {
         id: product._id,
@@ -131,8 +129,7 @@ function ProductCard2({
       await addToCart(productData, quantity, product?.category?._id);
     } catch (error) {
       console.error("Error adding to cart:", error);
-    } finally {
-      setIsAddingToCart(false);
+      // Error handling is done by useAddToCart hook (login redirect, notifications, etc.)
     }
   }, [product, quantity, addToCart]);
 

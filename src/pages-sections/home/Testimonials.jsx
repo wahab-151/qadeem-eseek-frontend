@@ -120,7 +120,6 @@ export default function Testimonials({ backgroundColor = "#FFFFFF" }) {
 
   return (
     <section
-      className="mt-4 mb-4"
       style={{ backgroundColor: backgroundColor, overflow: "visible" }}
     >
       <Container

@@ -4,8 +4,10 @@ import { MiniCart } from "pages-sections/mini-cart";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useTheme, alpha } from "@mui/material/styles";
 
 export default function MiniCartDrawer({ isOpen, onClose, isLoading = false }) {
+  const theme = useTheme();
 
   return (
     <Drawer 
@@ -15,6 +17,15 @@ export default function MiniCartDrawer({ isOpen, onClose, isLoading = false }) {
       transitionDuration={{ enter: 250, exit: 200 }}
       sx={{
         zIndex: 99999,
+        '& .MuiBackdrop-root': {
+          backgroundColor: alpha('#000000', 0.5),
+          background: alpha('#000000', 0.5),
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+          // Remove any linear gradient
+          backgroundImage: 'none !important',
+          WebkitBackgroundImage: 'none !important',
+        },
         '& .MuiDrawer-paper': {
           right: 0,
           left: 'auto !important',
@@ -24,8 +35,7 @@ export default function MiniCartDrawer({ isOpen, onClose, isLoading = false }) {
       }} 
       PaperProps={{
         sx: {
-          borderTopLeftRadius: 12,
-          borderBottomLeftRadius: 12,
+          borderRadius: 0,
           position: "relative",
           width: { xs: '85%', sm: 380, md: 380 },
           maxWidth: 420,
