@@ -3,7 +3,6 @@
 // import { createContext, useMemo, useReducer, useEffect } from "react";
 // import useUser from "hooks/useUser";
 
-
 // const INITIAL_STATE = {
 //   cart: [],
 // };
@@ -17,7 +16,7 @@
 //         prevCount: state.cart?.length,
 //         payload: action.payload,
 //       });
-      
+
 //       let cartList = state.cart;
 //       let cartItem = action.payload;
 
@@ -100,7 +99,7 @@
 //       }
 //       // Debug: Log SKU in payload
 //       if (Array.isArray(action.payload) && action.payload.length > 0) {
-//         console.log("[CartReducer] SET_CART payload with SKU:", 
+//         console.log("[CartReducer] SET_CART payload with SKU:",
 //           action.payload.map(item => ({ id: item.id, sku: item.sku }))
 //         );
 //       }
@@ -131,13 +130,13 @@
 //         console.log("[CartProvider] Cart already has items, skipping localStorage load");
 //         return;
 //       }
-      
+
 //       try {
 //         const savedCart = localStorage.getItem("cart");
 //         if (savedCart) {
 //           const parsed = JSON.parse(savedCart);
 //           const items = Array.isArray(parsed) ? parsed : [];
-          
+
 //           // Normalize cart items
 //           const normalized = items
 //             .filter((item) => item && item.id)
@@ -200,7 +199,7 @@
 //             skuType: typeof item.sku,
 //             hasSku: item.sku !== undefined && item.sku !== null && item.sku !== "",
 //           });
-          
+
 //           return {
 //             ...item,
 //             user: item.user || user.id,
@@ -208,11 +207,11 @@
 //             sku: item.sku !== undefined && item.sku !== null && item.sku !== "" ? String(item.sku) : "",
 //           };
 //         });
-        
-//         console.log("[CartProvider] Saving cart to localStorage with SKU:", 
+
+//         console.log("[CartProvider] Saving cart to localStorage with SKU:",
 //           cartWithUser.map(item => ({ id: item.id, sku: item.sku }))
 //         );
-        
+
 //         localStorage.setItem("cart", JSON.stringify(cartWithUser));
 //         if (state.cart.length > 0) {
 //           console.log("[CartProvider] Saved cart to localStorage", {
@@ -276,12 +275,13 @@ const reducer = (state, action) => {
       const existingCartId = cartList.find((item) => item.cartId)?.cartId;
       if (hasEmptyCartId && existingCartId) {
         cartList = cartList.map((item) =>
-          !item.cartId ? { ...item, cartId: existingCartId } : item
+          !item.cartId ? { ...item, cartId: existingCartId } : item,
         );
       }
 
       const existIndex = cartList.findIndex((item) => item.id === cartItem.id);
-      const maxStock = typeof cartItem.stock === "number" ? cartItem.stock : Infinity;
+      const maxStock =
+        typeof cartItem.stock === "number" ? cartItem.stock : Infinity;
 
       // Remove if qty < 1
       if (cartItem.qty < 1) {
@@ -348,11 +348,11 @@ export default function CartProvider({ children }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const userId = user?.id;
+    const userId = user?.id || "guest";
 
     // --- Load from localStorage (only once, and only if cart is empty) ---
     const loadCart = () => {
-      if (hasHydrated.current || !userId) return;
+      if (hasHydrated.current) return;
 
       try {
         const saved = localStorage.getItem("cart");
@@ -374,8 +374,9 @@ export default function CartProvider({ children }) {
                 ? String(item.sku)
                 : "",
             user: item.user || userId,
-          }))
-          .filter((item) => item.user === userId);
+          }));
+        // Removed checking for item.user === userId to allow guest cart loading
+        // .filter((item) => item.user === userId);
 
         if (normalized.length > 0 && state.cart.length === 0) {
           dispatch({ type: "SET_CART", payload: normalized });
@@ -389,10 +390,7 @@ export default function CartProvider({ children }) {
 
     // --- Save to localStorage ---
     const saveCart = () => {
-      if (!userId) {
-        localStorage.removeItem("cart");
-        return;
-      }
+      // Removed !userId check to allow guest cart saving
 
       try {
         const cartToSave = state.cart.map((item) => ({
@@ -409,29 +407,28 @@ export default function CartProvider({ children }) {
       }
     };
 
-    // --- Clear on logout ---
-    const clearCart = () => {
-      if (state.cart.length > 0) {
-        dispatch({ type: "CLEAR_CART" });
-      }
-      try {
-        localStorage.removeItem("cart");
-      } catch (err) {
-        console.error("[CartProvider] Clear error:", err);
-      }
-    };
+    // --- Clear on logout (Optional: Removed auto-clear for now to support refresh) ---
+    // const clearCart = () => {
+    //   if (state.cart.length > 0) {
+    //     dispatch({ type: "CLEAR_CART" });
+    //   }
+    //   try {
+    //     localStorage.removeItem("cart");
+    //   } catch (err) {
+    //     console.error("[CartProvider] Clear error:", err);
+    //   }
+    // };
 
     // === Run logic ===
-    if (userId) {
-      loadCart();
+    loadCart();
+    // Only save if cart has items or we explicitly want to save empty state (usually we wait for changes)
+    if (state.cart.length > 0) {
       saveCart();
-    } else {
-      clearCart();
     }
 
     // Save on every change (after initial load)
     return () => {
-      if (userId && state.cart.length > 0) {
+      if (state.cart.length > 0) {
         saveCart();
       }
     };
@@ -443,12 +440,10 @@ export default function CartProvider({ children }) {
       state,
       dispatch,
     }),
-    [state, dispatch]
+    [state, dispatch],
   );
 
   return (
-    <CartContext.Provider value={contextValue}>
-      {children}
-    </CartContext.Provider>
+    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
   );
 }

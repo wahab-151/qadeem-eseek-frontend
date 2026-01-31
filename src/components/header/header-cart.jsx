@@ -16,9 +16,12 @@ export default function HeaderCart({ onCartClick, isLoading = false }) {
     setMounted(true);
   }, []);
 
-  // Always show the cart button, even when not mounted (for SSR)
-  const itemCount = mounted ? (state?.cart?.reduce((total, item) => total + (item.qty || 0), 0) || 0) : 0;
-  const totalPrice = mounted ? (state?.cart?.reduce((total, item) => total + item.qty * item.price, 0) || 0) : 0;
+  // Show unique items count to match the cart page rows
+  const itemCount = mounted ? state?.cart?.length || 0 : 0;
+  const totalPrice = mounted
+    ? state?.cart?.reduce((total, item) => total + item.qty * item.price, 0) ||
+      0
+    : 0;
 
   useEffect(() => {
     if (!mounted) return;
