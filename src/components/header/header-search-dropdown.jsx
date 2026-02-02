@@ -38,6 +38,7 @@ export default function HeaderSearchDropdown({ open, onClose }) {
   const [isFocused, setIsFocused] = useState(false);
   const searchInputRef = useRef(null);
   const theme = useTheme();
+  const borderRadius = 0;
 
   const { push } = useGuardedRouter() || {};
   const { enqueueSnackbar } = useSnackbar();
@@ -260,9 +261,9 @@ export default function HeaderSearchDropdown({ open, onClose }) {
             left: 0,
             right: 0,
             zIndex: 1300,
-            backgroundColor: "#FEFAF0",
+            backgroundColor: theme.palette.background.default,
             boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
-            borderBottom: "1px solid rgba(0,0,0,0.1)",
+            borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
         <Container maxWidth="xl" sx={{ py: 3, position: "relative" }}>
@@ -273,10 +274,10 @@ export default function HeaderSearchDropdown({ open, onClose }) {
               position: "absolute",
               top: 16,
               right: 16,
-              color: "#424242",
+              color: theme.palette.text.primary,
               zIndex: 1,
               "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.05)",
+                backgroundColor: theme.palette.action.hover,
               },
             }}
             aria-label="Close search"
@@ -301,11 +302,12 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                 border: isFocused 
                   ? `1px solid ${theme.palette.primary.main}` 
                   : "1px solid transparent",
-                borderRadius: 0,
+                borderRadius: borderRadius,
                 transition: "border-color 0.2s ease",
                 "&:hover": {
                   border: `1px solid ${theme.palette.primary.main}`,
                 },
+                overflow: "hidden",
               }}
             >
               <TextField
@@ -320,9 +322,10 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                 size="medium"
                 sx={{
                   flex: 1,
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: "grey.200",
                   "& .MuiOutlinedInput-root": {
-                    borderRadius: 0,
+                    height: 44,
+                    borderRadius: `${borderRadius}px 0 0 ${borderRadius}px`,
                     borderRight: "none",
                     "& fieldset": {
                       border: "none",
@@ -341,13 +344,13 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                 InputProps={{
                   startAdornment: (
                     <Box sx={{ display: "flex", alignItems: "center", mr: 1 }}>
-                      <SearchIcon sx={{ color: "#424242", fontSize: 24 }} />
+                      <SearchIcon sx={{ color: theme.palette.text.secondary, fontSize: 24 }} />
                     </Box>
                   ),
                   endAdornment: searchTerm && (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       {isLoading && (
-                        <CircularProgress size={20} sx={{ color: "#424242" }} />
+                        <CircularProgress size={20} sx={{ color: theme.palette.primary.main }} />
                       )}
                       <IconButton
                         onClick={(e) => {
@@ -356,9 +359,9 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                         }}
                         size="small"
                         sx={{
-                          color: "#424242",
+                          color: theme.palette.text.secondary,
                           "&:hover": {
-                            backgroundColor: "rgba(0,0,0,0.05)",
+                            backgroundColor: theme.palette.action.hover,
                           },
                         }}
                       >
@@ -375,7 +378,8 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                 variant="contained"
                 color="primary"
                 sx={{
-                  borderRadius: 0,
+                  height: 44,
+                  borderRadius: `0 ${borderRadius}px ${borderRadius}px 0`,
                   px: 3,
                   py: 1.5,
                   minWidth: "auto",
@@ -396,16 +400,17 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                 overflow: "hidden",
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: "#FFFFFF",
+                backgroundColor: theme.palette.background.paper,
                 borderRadius: 2,
+                border: `1px solid ${theme.palette.divider}`,
               }}
             >
               {/* Categories Section */}
               {categories.length > 0 && (
-                <Box sx={{ p: 2, borderBottom: "1px solid #E0E0E0" }}>
+                <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
                   <Typography
                     variant="subtitle2"
-                    sx={{ fontWeight: 600, mb: 1.5, color: "#424242" }}
+                    sx={{ fontWeight: 600, mb: 1.5, color: theme.palette.text.primary }}
                   >
                     Categories
                   </Typography>
@@ -423,14 +428,14 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                               px: 2,
                               py: 1,
                               borderRadius: 2,
-                              border: "1px solid #E0E0E0",
+                              border: `1px solid ${theme.palette.divider}`,
                               fontSize: "0.875rem",
-                              color: "#424242",
+                              color: theme.palette.text.primary,
                               transition: "all 0.2s ease",
                               "&:hover": {
-                                bgcolor: "#424242",
-                                color: "#FFFFFF",
-                                borderColor: "#424242",
+                                bgcolor: theme.palette.secondary.main,
+                                color: theme.palette.secondary.contrastText,
+                                borderColor: theme.palette.secondary.main,
                               },
                             }}
                           >
@@ -453,7 +458,7 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                 >
                   <Typography
                     variant="subtitle2"
-                    sx={{ fontWeight: 600, color: "#424242" }}
+                    sx={{ fontWeight: 600, color: theme.palette.text.primary }}
                   >
                     Products
                   </Typography>
@@ -469,11 +474,11 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                       }}
                       sx={{
                         fontWeight: 500,
-                        color: "#424242",
+                        color: theme.palette.text.primary,
                         cursor: "pointer",
                         textDecoration: "underline",
                         "&:hover": {
-                          color: "#616161",
+                          color: theme.palette.text.secondary,
                         },
                       }}
                     >
@@ -488,11 +493,11 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                       <Grid item xs={6} sm={4} md={3} key={idx}>
                         <Box
                           sx={{
-                            border: "1px solid #E0E0E0",
+                            border: `1px solid ${theme.palette.divider}`,
                             borderRadius: 2,
                             p: 2,
                             height: 220,
-                            bgcolor: "#FFFFFF",
+                            bgcolor: theme.palette.background.paper,
                           }}
                         >
                           <Skeleton variant="rectangular" width="100%" height={100} />
@@ -508,7 +513,7 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                           onClick={(event) => handleProductClick(product, event)}
                           sx={{
                             cursor: "pointer",
-                            border: "1px solid #E0E0E0",
+                            border: `1px solid ${theme.palette.divider}`,
                             borderRadius: 2,
                             p: 2,
                             textAlign: "center",
@@ -518,9 +523,9 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                             justifyContent: "center",
                             alignItems: "center",
                             transition: "all 0.2s ease",
-                            bgcolor: "#FFFFFF",
+                            bgcolor: theme.palette.background.paper,
                             "&:hover": {
-                              borderColor: "#424242",
+                              borderColor: theme.palette.secondary.main,
                               boxShadow: 2,
                               transform: "translateY(-2px)",
                             },
@@ -531,7 +536,7 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                               Array.isArray(product?.images) &&
                               product.images[0]?.preview
                                 ? product.images[0].preview
-                                : "/assets/images/logo3.jpeg"
+                                : "/assets/images/Large-screen-logo.png"
                             }
                             alt={product?.name || "Product Image"}
                             style={{
@@ -544,13 +549,13 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                             }}
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = "/assets/images/logo3.jpeg";
+                              e.target.src = "/assets/images/Large-screen-logo.png";
                             }}
                           />
                           <Typography
                             variant="body2"
                             gutterBottom
-                            sx={{ fontSize: "0.75rem", color: "#757575" }}
+                            sx={{ fontSize: "0.75rem", color: theme.palette.text.secondary }}
                           >
                             {product?.sku}
                           </Typography>
@@ -559,7 +564,7 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                             sx={{
                               fontSize: "0.875rem",
                               lineHeight: 1.2,
-                              color: "#424242",
+                              color: theme.palette.text.primary,
                               fontWeight: 500,
                             }}
                           >
@@ -570,7 +575,7 @@ export default function HeaderSearchDropdown({ open, onClose }) {
                     ))
                   ) : debouncedTerm.length > 1 && !isLoading ? (
                     <Box sx={{ p: 4, textAlign: "center", width: "100%" }}>
-                      <Typography sx={{ color: "#757575" }}>
+                      <Typography sx={{ color: theme.palette.text.secondary }}>
                         No products found
                       </Typography>
                     </Box>

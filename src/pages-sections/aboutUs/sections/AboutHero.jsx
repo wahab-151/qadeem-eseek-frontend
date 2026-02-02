@@ -13,7 +13,7 @@ export default function AboutHero() {
       sx={{
         position: "relative",
         width: "100%",
-        height: { xs: 320, sm: 400, md: 480 },
+        height: { xs: 320, sm: 350, md: 400, lg: 400 },
         overflow: "hidden",
       }}
     >

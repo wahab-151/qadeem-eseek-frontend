@@ -15,12 +15,14 @@ import {
   IconButton,
   Portal,
 } from "@mui/material";
+ import { useTheme } from "@mui/material/styles";
 import useGuardedRouter from "hooks/useGuardedRouter";
 import { useGetAllProductsQuery } from "app/store/services";
 import { extractCategoriesFromProducts } from "utils/helpers";
 import { useSnackbar } from "notistack";
 import Clear from "@mui/icons-material/Clear";
 import { EXCLUDED_CATEGORY_ID } from "utils/constants";
+ import QadeemButton from "components/QadeemButton";
 
 export default function MobileSearchInput({ onClose }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,6 +33,7 @@ export default function MobileSearchInput({ onClose }) {
   const [open, setOpen] = useState(false);
   const [hasRequested, setHasRequested] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const theme = useTheme();
   
   const { push } = useGuardedRouter() || {};
   const anchorRef = useRef(null);
@@ -326,10 +329,13 @@ export default function MobileSearchInput({ onClose }) {
         sx={{
           height: 44,
           padding: 0,
-          borderRadius: 8,
+          borderRadius: 0,
           backgroundColor: "grey.200",
           "& .MuiOutlinedInput-notchedOutline": {
             border: 0,
+          },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 0,
           },
         }}
         fullWidth
@@ -343,24 +349,20 @@ export default function MobileSearchInput({ onClose }) {
           endAdornment: (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pr: 1 }}>
               {isLoading && <CircularProgress size={18} color="primary" />}
-              <button
-                type="button"
+              <QadeemButton
                 onClick={(e) => handleSubmitSearch(e)}
                 disabled={isSubmitting || !searchTerm?.trim()}
-                style={{
+                loading={isSubmitting}
+                variant="contained"
+                sx={{
                   height: 30,
-                  padding: '0 12px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: '#1976d2',
-                  color: '#fff',
-                  fontWeight: 600,
-                  opacity: (isSubmitting || !searchTerm?.trim()) ? 0.6 : 1,
-                  cursor: (isSubmitting || !searchTerm?.trim()) ? 'not-allowed' : 'pointer',
+                  minWidth: 'auto',
+                  px: 1.5,
+                  borderRadius: 0,
                 }}
               >
-                {isSubmitting ? 'Searching…' : 'Search'}
-              </button>
+                Search
+              </QadeemButton>
             </Box>
           ),
         }}
@@ -383,7 +385,8 @@ export default function MobileSearchInput({ onClose }) {
               flexDirection: "column",
               zIndex: 2000,
               overflow: "hidden",
-              bgcolor: "#fff",
+              bgcolor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
             }}
           >
               <span ref={menuRef} />
@@ -394,10 +397,10 @@ export default function MobileSearchInput({ onClose }) {
                 justifyContent: "space-between",
                 alignItems: "center",
                 p: 2,
-                borderBottom: "1px solid #eee",
+                borderBottom: `1px solid ${theme.palette.divider}`,
               }}
             >
-              <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: theme.palette.text.primary }}>
                 Search Results
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -412,8 +415,8 @@ export default function MobileSearchInput({ onClose }) {
             {/* Content */}
             <Box sx={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
               {/* Categories Section */}
-              <Box sx={{ p: 2, borderBottom: "1px solid #eee" }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+              <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1, color: theme.palette.text.primary }}>
                   Categories
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
@@ -430,11 +433,12 @@ export default function MobileSearchInput({ onClose }) {
                             px: 2,
                             py: 1,
                             borderRadius: 2,
-                            border: "1px solid #ddd",
+                            border: `1px solid ${theme.palette.divider}`,
                             fontSize: "0.875rem",
+                            color: theme.palette.text.primary,
                             "&:hover": {
                               bgcolor: "secondary.main",
-                              color: "#fff",
+                              color: theme.palette.secondary.contrastText,
                               borderColor: "secondary.main",
                             },
                           }}
@@ -485,11 +489,11 @@ export default function MobileSearchInput({ onClose }) {
                       <Grid item xs={6} key={idx}>
                         <Box
                           sx={{
-                            border: "1px solid #eee",
+                            border: `1px solid ${theme.palette.divider}`,
                             borderRadius: 2,
                             p: 2,
                             height: 200,
-                            bgcolor: "#fff",
+                            bgcolor: theme.palette.background.paper,
                           }}
                         >
                           <Skeleton
@@ -509,7 +513,7 @@ export default function MobileSearchInput({ onClose }) {
                           onClick={(event) => handleProductClick(product, event)}
                           sx={{
                             cursor: "pointer",
-                            border: "1px solid #eee",
+                            border: `1px solid ${theme.palette.divider}`,
                             borderRadius: 2,
                             p: 2,
                             textAlign: "center",
@@ -530,7 +534,7 @@ export default function MobileSearchInput({ onClose }) {
                               Array.isArray(product?.images) &&
                               product.images[0]?.preview
                                 ? product.images[0].preview
-                                : "/assets/images/logo3.jpeg"
+                                : "/assets/images/Large-screen-logo.png"
                             }
                             alt={product?.name || "Product Image"}
                             style={{
@@ -543,7 +547,7 @@ export default function MobileSearchInput({ onClose }) {
                             }}
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = "/assets/images/logo3.jpeg";
+                              e.target.src = "/assets/images/Large-screen-logo.png";
                             }}
                           />
                           <Typography variant="body2" gutterBottom sx={{ fontSize: "0.75rem" }}>
@@ -557,7 +561,7 @@ export default function MobileSearchInput({ onClose }) {
                     ))
                   ) : (
                     <Box sx={{ p: 2, textAlign: "center", width: "100%" }}>
-                      <Typography>No Product Found!!</Typography>
+                      <Typography sx={{ color: theme.palette.text.secondary }}>No Product Found!!</Typography>
                     </Box>
                   )}
                 </Grid>

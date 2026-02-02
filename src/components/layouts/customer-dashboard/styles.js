@@ -3,51 +3,46 @@
 import Link from "next/link";
 import Card from "@mui/material/Card";
 import styled from "@mui/material/styles/styled";
-export const MainContainer = styled(Card)(({
-  theme
-}) => ({
+export const MainContainer = styled(Card)(({ theme }) => ({
+  width: 262,
   paddingBottom: "1.5rem",
-  [theme.breakpoints.down("md")]: {
-    boxShadow: "none",
+  backgroundColor: "#FEFAF0", // Warm Cream
+  borderRadius: "0px",
+  boxShadow: "none",
+  border: "none",
+  overflow: "hidden",
+  [theme.breakpoints.down("lg")]: {
+    width: "100%",
     overflowY: "auto",
-    height: "calc(100vh - 64px)"
-  }
+    height: "calc(100vh - 64px)",
+  },
 }));
 export const StyledLink = styled(Link, {
-  shouldForwardProp: prop => prop !== "isActive"
-})(({
-  theme,
-  isActive
-}) => ({
-  display: "flex",
+  shouldForwardProp: (prop) => prop !== "isActive",
+})(({ theme, isActive }) => ({
+  display: "inline-flex",
   alignItems: "center",
-  borderLeft: "4px solid",
-  paddingLeft: "1.5rem",
-  paddingRight: "1.5rem",
-  marginBottom: "1.25rem",
-  justifyContent: "space-between",
-  borderColor: "transparent",
-  transition: "all 0.2s ease-in-out",
+  padding: "12px 0",
+  margin: "0 30px",
+  justifyContent: "flex-start",
+  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  color: "#6C7275",
+  textDecoration: "none",
+  fontSize: "16px",
+  fontWeight: isActive ? "600" : "400",
+  width: "calc(100% - 60px)",
   "& .title": {
     display: "flex",
     alignItems: "center",
-    gap: theme.spacing(1)
+    gap: theme.spacing(1),
   },
   "& .nav-icon": {
-    color: theme.palette.grey[600]
+    display: "none", // Design doesn't show icons in the sidebar list
   },
   "&:hover": {
-    color: theme.palette.primary.main,
-    borderColor: theme.palette.primary.main,
-    "& .nav-icon": {
-      color: theme.palette.primary.main
-    }
+    color: "#2C2416",
   },
   ...(isActive && {
-    color: theme.palette.primary.main,
-    borderColor: theme.palette.primary.main,
-    "& .nav-icon": {
-      color: theme.palette.primary.main
-    }
-  })
+    color: "#2C2416",
+  }),
 }));

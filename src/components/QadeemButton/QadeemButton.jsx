@@ -8,7 +8,7 @@ import { styled } from "@mui/material/styles";
 
 /**
  * QadeemButton - A comprehensive, reusable button component
- * 
+ *
  * @param {Object} props
  * @param {React.ReactNode} props.children - Button text/content
  * @param {React.ReactNode} props.startIcon - Icon to display at the start
@@ -32,13 +32,19 @@ import { styled } from "@mui/material/styles";
 
 const StyledButton = styled(Button)(({ theme, ownerState }) => {
   const { variant, customColor } = ownerState;
-  
+
   // Default styles for all buttons
   const baseStyles = {
     textTransform: "none",
     fontWeight: 600,
     borderRadius: 0,
     transition: "all 0.2s ease-in-out",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    gap: "0.5rem",
     "&.Mui-disabled": {
       opacity: 0.6,
     },
@@ -79,12 +85,27 @@ const StyledButton = styled(Button)(({ theme, ownerState }) => {
   }
 
   // For contained variant without customColor, ensure it uses theme primary
-  // MUI Button already handles this via color="primary", but we ensure it's applied
   if (variant === "contained" && !customColor) {
     return {
       ...baseStyles,
-      // MUI will apply theme.palette.primary.main via color prop
-      // We just ensure our base styles are applied
+      backgroundColor: "#2B2118",
+      color: "#fff",
+      "&:hover": {
+        backgroundColor: "#1a130e",
+      },
+    };
+  }
+
+  // For outlined variant without customColor, use brand dark color
+  if (variant === "outlined" && !customColor) {
+    return {
+      ...baseStyles,
+      borderColor: "#2B2118",
+      color: "#2B2118",
+      "&:hover": {
+        borderColor: "#1a130e",
+        backgroundColor: "rgba(43, 33, 24, 0.04)",
+      },
     };
   }
 
@@ -128,9 +149,11 @@ export default function QadeemButton({
   if (iconOnly) {
     // Use startIcon or endIcon as the icon (prefer startIcon)
     const icon = startIcon || endIcon;
-    
+
     if (!icon) {
-      console.warn("QadeemButton: iconOnly requires either startIcon or endIcon");
+      console.warn(
+        "QadeemButton: iconOnly requires either startIcon or endIcon",
+      );
       return null;
     }
 
@@ -148,7 +171,9 @@ export default function QadeemButton({
         {...otherProps}
       >
         {loading ? (
-          <CircularProgress size={size === "small" ? 20 : size === "large" ? 28 : 24} />
+          <CircularProgress
+            size={size === "small" ? 20 : size === "large" ? 28 : 24}
+          />
         ) : (
           icon
         )}
@@ -168,7 +193,7 @@ export default function QadeemButton({
   ) : null;
 
   // Ensure color defaults to "primary" if not specified and no customColor
-  const buttonColor = customColor ? undefined : (color || "primary");
+  const buttonColor = customColor ? undefined : color || "primary";
 
   return (
     <StyledButton
@@ -216,4 +241,3 @@ export const QadeemButtonSizes = {
   MEDIUM: "medium",
   LARGE: "large",
 };
-

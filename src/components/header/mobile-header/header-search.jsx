@@ -66,10 +66,10 @@ export default function HeaderSearch({
             }}>
               <Link href="/home" style={{ display: 'block', maxWidth: '100%' }}> 
                 <Image 
-                  alt="logo" 
+                  alt="QADEEM Logo" 
                   width={105} 
                   height={50} 
-                  src="/assets/images/logo.jpeg"
+                  src="/assets/images/Large-screen-logo.png"
                   style={{
                     maxWidth: '100%',
                     height: 'auto',

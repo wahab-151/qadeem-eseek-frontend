@@ -1,4 +1,4 @@
-'use clients'
+"use client";
 import { useState, useEffect, useRef } from "react";
 import {
   Box,
@@ -21,296 +21,6 @@ import { extractCategoriesFromProducts } from "utils/helpers";
 import { useSnackbar } from "notistack";
 import { EXCLUDED_CATEGORY_ID } from "utils/constants";
 
-// export default function SearchBar() {
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const [products, setProducts] = useState([]);
-//   const [categories, setCategories] = useState([]);
-//   const [productCount, setProductCount] = useState();
-
-//   const [debouncedTerm, setDebouncedTerm] = useState("");
-//   const [open, setOpen] = useState(false);
-//   const router = useRouter();
-//   const anchorRef = useRef(null);
-
-//   // Debounce input
-//   useEffect(() => {
-//     const handler = setTimeout(() => {
-//       setDebouncedTerm(searchTerm);
-//     }, 300);
-//     return () => clearTimeout(handler);
-//   }, [searchTerm]);
-
-//   // RTK Query
-//   const { data, isLoading, error } = useGetAllProductsQuery(
-//     { search: debouncedTerm },
-//     {
-//       skip: debouncedTerm.length <= 3,
-//     }
-//   );
-
-//   useEffect(() => {
-//     if (error) {
-//       enqueueSnackbar("Something Went Wrong!", { variant: "error" });
-//     } else if (data?.data?.products.length > 0) {
-//       setProducts(data?.data?.products);
-//       let categoriesData = extractCategoriesFromProducts(data?.data?.products);
-
-//       setCategories(categoriesData);
-//       const productsCount = data?.data?.products?.length;
-
-//       let viewMoreCount = productsCount - 9;
-//       if (viewMoreCount > 0) setProductCount(viewMoreCount);
-//     }
-//   }, [data]);
-
-//   // Show modal
-//   useEffect(() => {
-//     setOpen(debouncedTerm.length > 1);
-//   }, [debouncedTerm]);
-
-//   const handleProductClick = (id) => {
-//     router.push(`/products/${id}`);
-//     setOpen(false);
-//   };
-
-//   const handleCategoryClick = (category) => {
-//     router.push(`allProducts?category=${category}&view=grid`);
-//     setOpen(false);
-//   };
-
-//   // const categories =  extractCategoriesFromProducts(data?.products)|| [];
-//   //   // const categories =   [];
-
-//   // const products = data?.products || [];
-//   // console.log("products and categories", products, categories);
-//   return (
-//     <Box
-//       sx={{
-//         position: "relative",
-//         maxWidth: "30rem",
-//         width: "100%",
-//         backgroundColor: "transparent",
-//         border: "none",
-//       }}
-//       ref={anchorRef}
-//     >
-//       <TextField
-//         sx={{
-//           height: 46,
-//           padding: 0,
-//           borderRadius: 8,
-//           backgroundColor: "grey.200",
-//           "& .MuiOutlinedInput-notchedOutline": {
-//             border: 0,
-//           },
-//         }}
-//         fullWidth
-//         placeholder="Search parts..."
-//         value={searchTerm}
-//         onChange={(e) => setSearchTerm(e.target.value)}
-//         variant="outlined"
-//         size="small"
-//       />
-//       {open && (
-//         <ClickAwayListener onClickAway={() => setOpen(false)}>
-//           <Paper
-//             elevation={3}
-//             sx={{
-//               position: "absolute",
-//               top: "105%",
-//               left: "50%",
-//               transform: "translateX(-35%)",
-//               width: {
-//                 xs: "95vw",
-//                 sm: "90vw",
-//                 md: "80vw",
-//                 lg: "70vw",
-//               },
-//               maxWidth: "1200px",
-//               height: { xs: 400, sm: 450, md: 500 },
-//               borderRadius: 2,
-//               boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
-//               display: "flex",
-//               zIndex: 10,
-//               overflow: "hidden",
-//               bgcolor: "#fff",
-      
-//             }}
-//           >
-//             {/* Left: Categories */}
-//             <Box
-//               sx={{
-//                 width: { xs: "35%", sm: "30%" },
-//                 borderRight: "1px solid #ddd",
-//                 overflowY: "auto",
-//                 bgcolor: "#F9FAFB",
-//                 p: 2,
-//               }}
-//             >
-//               <Typography
-//                 variant="subtitle2"
-//                 sx={{ fontWeight: "bold", mb: 1 }}
-//               >
-//                 Categories
-//               </Typography>
-//               <List dense>
-//                 {isLoading
-//                   ? Array.from({ length: 6 }).map((_, idx) => (
-//                       <ListItem key={idx}>
-//                         <Skeleton width="80%" height={20} />
-//                       </ListItem>
-//                     ))
-//                   : categories.map((cat) => (
-//                       <ListItem
-//                         button
-//                         key={cat.id}
-//                         onClick={() => handleCategoryClick(cat.id)}
-//                         sx={{
-//                           borderRadius: 1,
-//                           px: 1,
-//                           "&:hover": {
-//                             bgcolor: "secondary.main",
-//                             color: "#fff",
-//                           },
-//                         }}
-//                       >
-//                         <ListItemText primary={cat.name} />
-//                       </ListItem>
-//                     ))}
-//               </List>
-//             </Box>
-
-//             {/* Right: Products */}
-//             <Box
-//               sx={{
-//                 width: { xs: "65%", sm: "70%" },
-//                 overflowY: "auto",
-//                 p: 2,
-//               }}
-//             >
-//               <Box
-//                 sx={{
-//                   display: "flex",
-//                   justifyContent: "space-between",
-//                   alignItems: "center",
-//                   mb: 2,
-//                 }}
-//               >
-//                 <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-//                   Products
-//                 </Typography>
-//                 {productCount > 0 && (
-//                   <Typography
-//                     variant="body2"
-//                     sx={{
-//                       fontWeight: 500,
-//                       color: "primary.main",
-//                       cursor: "pointer",
-//                     }}
-//                   >
-//                     View More (+{productCount})
-//                   </Typography>
-//                 )}
-//               </Box>
-
-//               <Grid container spacing={2}>
-//                 {isLoading ? (
-//                   Array.from({ length: 9 }).map((_, idx) => (
-//                     <Grid item xs={12} sm={6} md={4} key={idx}>
-//                       <Box
-//                         sx={{
-//                           border: "1px solid #eee",
-//                           borderRadius: 2,
-//                           p: 2,
-//                           height: 260,
-//                           bgcolor: "#fff",
-//                         }}
-//                       >
-//                         <Skeleton
-//                           variant="rectangular"
-//                           width="100%"
-//                           height={100}
-//                         />
-//                         <Skeleton width="80%" height={20} sx={{ mt: 1 }} />
-//                       </Box>
-//                     </Grid>
-//                   ))
-//                 ) : products && products.length > 0 ? (
-//                   products.slice(0, 9).map((product) => (
-//                     <Grid item xs={12} sm={6} md={4} key={product.id}>
-//                       <Box
-//                         onClick={() => handleProductClick(product._id)}
-//                         sx={{
-//                           cursor: "pointer",
-//                           border: "1px solid #eee",
-//                           borderRadius: 2,
-//                           p: 2,
-//                           textAlign: "center",
-//                           height: 260,
-//                           display: "flex",
-//                           flexDirection: "column",
-//                           justifyContent: "center",
-//                           alignItems: "center",
-//                           transition: "all 0.3s ease",
-//                           "&:hover": {
-//                             borderColor: "secondary.main",
-//                             boxShadow: 3,
-//                           },
-//                         }}
-//                       >
-//                         {/* <img
-//                           src={
-//                             Array.isArray(product?.images) &&
-//                             product.images[0]?.preview
-//                               ? product.images[0].preview
-//                               : "/assets/images/logo.jpeg"
-//                           }
-//                           alt={product.name}
-//                           style={{
-//                             height: 100,
-//                             objectFit: "contain",
-//                             marginBottom: 8,
-//                           }}
-//                         /> */}
-//                         <img
-//                           src={
-//                             Array.isArray(product?.images) &&
-//                             product.images[0]?.preview
-//                               ? product.images[0].preview
-//                               : "/assets/images/logo.jpeg"
-//                           }
-//                           alt={product?.name || "Product Image"}
-//                           style={{
-//                             height: 100,
-//                             maxWidth: "100%",
-//                             width: "auto",
-//                             objectFit: "contain",
-//                             marginBottom: 8,
-//                             display: "block", // ensures it respects container width
-//                           }}
-//                           onError={(e) => {
-//                             e.target.onerror = null;
-//                             e.target.src = "/assets/images/logo.jpeg";
-//                           }}
-//                         />
-//                         <Typography variant="body2" gutterBottom>
-//                           {product?.sku}
-//                         </Typography>
-//                         <Typography variant="body2">{product?.name}</Typography>
-//                       </Box>
-//                     </Grid>
-//                   ))
-//                 ) : (
-//                   <Typography m={2} >No Product Found!!</Typography>
-//                 )}
-//               </Grid>
-//             </Box>
-//           </Paper>
-//         </ClickAwayListener>
-//       )}
-//     </Box>
-//   );
-// }
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [products, setProducts] = useState([]);
@@ -519,11 +229,6 @@ export default function SearchBar() {
     setOpen(false);
   };
 
-  // const categories =  extractCategoriesFromProducts(data?.products)|| [];
-  //   // const categories =   [];
-
-  // const products = data?.products || [];
-  
   return (
     <Box
       sx={{
@@ -688,9 +393,7 @@ export default function SearchBar() {
                     </Grid>
                   ))
                 ) : products && products.length > 0 ? (
-                  products.slice(0, 9).map((product) => {
-                    
-                    return (
+                  products.slice(0, 9).map((product) => (
                     <Grid item xs={12} sm={6} md={4} key={product._id || product.id}>
                       <Box
                         onClick={(event) =>{
@@ -714,20 +417,6 @@ export default function SearchBar() {
                           },
                         }}
                       >
-                        {/* <img
-                          src={
-                            Array.isArray(product?.images) &&
-                            product.images[0]?.preview
-                              ? product.images[0].preview
-                              : "/assets/images/logo.jpeg"
-                          }
-                          alt={product.name}
-                          style={{
-                            height: 100,
-                            objectFit: "contain",
-                            marginBottom: 8,
-                          }}
-                        /> */}
                         <Image
                           width={100}
                           height={100}
@@ -735,16 +424,11 @@ export default function SearchBar() {
                             Array.isArray(product?.images) &&
                             product.images[0]?.preview
                               ? product.images[0].preview
-                              : "/assets/images/logo3.jpeg"
+                              : "/assets/images/Large-screen-logo.png"
                           }
                           alt={product?.name || "Product Image"}
                           sizes="100px"
-                          loading="lazy"
-                          quality={75}
                           style={{
-                            height: 100,
-                            maxWidth: "100%",
-                            width: "auto",
                             objectFit: "contain",
                             marginBottom: 8,
                             display: "block",
@@ -756,8 +440,7 @@ export default function SearchBar() {
                         <Typography variant="body2">{product?.name}</Typography>
                       </Box>
                     </Grid>
-                    );
-                  })
+                  ))
                 ) : (
                   <Typography m={2} >No Product Found!!</Typography>
                 )}

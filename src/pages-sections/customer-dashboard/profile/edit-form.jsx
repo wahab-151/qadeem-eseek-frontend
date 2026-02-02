@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, Card, CircularProgress, Grid, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LoadingButton } from "@mui/lab";
 import { TextField as MuiTextField } from "@mui/material";
@@ -25,19 +25,18 @@ import {
   UploadImageBox,
 } from "pages-sections/admin-dashboard/styles";
 import { enqueueSnackbar } from "notistack";
+import QadeemButton from "components/QadeemButton";
 const schema = yup.object().shape({
   firstName: yup.string().required("Required"),
   lastName: yup.string().required("Required"),
+  displayName: yup.string().required("Required"),
   email: yup.string().email().required("Required"),
-  phone: yup.string().required("Required"),
-  companyName: yup.string().required("Required"),
-  postalCode: yup.string().required("Required"),
-  addressLine1: yup.string().required("Required"),
-  addressLine2: yup.string(),
-  city: yup.string().required("Required"),
-  state: yup.string().required("Required"),
+  oldPassword: yup.string(),
+  newPassword: yup.string(),
+  repeatNewPassword: yup
+    .string()
+    .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
 });
-
 
 export default function ProfileEditForm() {
   const { state } = useUser();
@@ -52,20 +51,22 @@ export default function ProfileEditForm() {
     defaultValues: {
       firstName: "",
       lastName: "",
+      displayName: "",
       email: "",
-      phone: "",
-      companyName: "",
-      postalCode: "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      state: "",
-      files: [],
+      oldPassword: "",
+      newPassword: "",
+      repeatNewPassword: "",
     },
     resolver: yupResolver(schema),
   });
   const didResetRef = useRef(false);
-  const { control, handleSubmit, formState: { isSubmitting }, getValues, setValue } = methods;
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+    getValues,
+    setValue,
+  } = methods;
   useEffect(() => {
     const user = profileData?.data?.user;
     if (user && !didResetRef.current) {
@@ -78,8 +79,10 @@ export default function ProfileEditForm() {
         fileUrls.map((url, i) => ({
           name: `existing-${i}`,
           preview: url,
-          type: url.match(/\.(jpe?g|gif|png)$/i) ? 'image/*' : 'application/pdf'
-        }))
+          type: url.match(/\.(jpe?g|gif|png)$/i)
+            ? "image/*"
+            : "application/pdf",
+        })),
       );
       didResetRef.current = true;
     }
@@ -90,14 +93,14 @@ export default function ProfileEditForm() {
       if (!file || file.size > 20 * 1024 * 1024) {
         enqueueSnackbar(
           file ? `${file.name} exceeds 20MB` : "No file selected",
-          { variant: "error" }
+          { variant: "error" },
         );
         continue;
       }
       try {
         const uniqueId = uuidv4();
         let blob;
-        if (file.type.startsWith('image/')) {
+        if (file.type.startsWith("image/")) {
           const compressedFile = await compressImage(file);
           const watermarkedUrl = await addWatermark(compressedFile, "");
           const response = await fetch(watermarkedUrl);
@@ -116,11 +119,14 @@ export default function ProfileEditForm() {
         });
         if (uploadedUrl) {
           const cleanUrl = uploadedUrl.split("?")[0];
-          setFiles((prev) => [...prev, {
-            name: file.name,
-            preview: cleanUrl,
-            type: file.type
-          }]);
+          setFiles((prev) => [
+            ...prev,
+            {
+              name: file.name,
+              preview: cleanUrl,
+              type: file.type,
+            },
+          ]);
           methods.setValue("files", [
             ...(methods.getValues("files") || []),
             cleanUrl,
@@ -145,64 +151,72 @@ export default function ProfileEditForm() {
       // The URL structure is: https://bucket.s3.region.amazonaws.com/timestamp-filename
       const url = new URL(file.preview);
       const pathname = url.pathname;
-      
+
       // Remove leading slash and get the full filename (including timestamp)
       const fullFileName = pathname.substring(1);
-      
+
       // The backend has an issue with key construction, so let's try sending the full filename
       // This might work if the backend is flexible enough
       const fileName = fullFileName;
-      
+
       // Determine file type from the file object or URL extension
-      const fileType = file.type || 'image/jpeg';
-      
-      console.log("Deleting file:", { 
+      const fileType = file.type || "image/jpeg";
+
+      console.log("Deleting file:", {
         fullFileName,
-        fileName, 
-        fileType, 
+        fileName,
+        fileType,
         originalFile: file,
-        url: file.preview 
+        url: file.preview,
       });
-      
+
       // Call the delete API with the full filename
-      await deleteImageHandle({ 
-        fileName, 
-        fileType 
+      await deleteImageHandle({
+        fileName,
+        fileType,
       });
-      
+
       // Remove from local state
-      setFiles((prev) =>
-        prev.filter((f) => f.preview !== file.preview)
-      );
-      
+      setFiles((prev) => prev.filter((f) => f.preview !== file.preview));
+
       // Remove from form values
       methods.setValue(
         "files",
-        methods.getValues("files").filter((url) => url !== file.preview)
+        methods.getValues("files").filter((url) => url !== file.preview),
       );
-      
+
       enqueueSnackbar("File deleted!", { variant: "success" });
     } catch (err) {
       console.error("Error deleting file:", err);
       // Show more specific error message if available
-      const errorMessage = err?.data?.error || err?.data?.message || "Error deleting file";
+      const errorMessage =
+        err?.data?.error || err?.data?.message || "Error deleting file";
       enqueueSnackbar(errorMessage, { variant: "error" });
     }
     setProcessing(false);
   };
 
-
+  useEffect(() => {
+    const user = profileData?.data?.user;
+    if (user && !didResetRef.current) {
+      methods.reset({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        displayName: user.displayName || "",
+        email: user.email || "",
+        oldPassword: "",
+        newPassword: "",
+        repeatNewPassword: "",
+      });
+      didResetRef.current = true;
+    }
+  }, [profileData]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (!data.files || data.files.length === 0) {
-        enqueueSnackbar("Files are required", { variant: "error" });
-        return;
-      }
       const res = await updateUserProfile({
         userId,
         ...data,
-        file: data.files,
       });
       if (res?.data?.success === true) {
         enqueueSnackbar("Profile updated", { variant: "success" });
@@ -224,110 +238,251 @@ export default function ProfileEditForm() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={onSubmit}>
-        <Grid container spacing={3}>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="firstName" label="First Name" />
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "700",
+              mb: 3,
+              fontSize: "18px",
+              color: "#1c1c1c",
+            }}
+          >
+            Account Details
+          </Typography>
+
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Box sx={{ mb: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1c1c1c",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  First Name *
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                name="firstName"
+                placeholder="First name"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "0px",
+                    height: "45px",
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box sx={{ mb: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1c1c1c",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Last Name *
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                name="lastName"
+                placeholder="Last name"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "0px",
+                    height: "45px",
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box sx={{ mb: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1c1c1c",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Display Name *
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                name="displayName"
+                placeholder="Display name"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "0px",
+                    height: "45px",
+                  },
+                }}
+              />
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  color: "grey.600",
+                  mt: 0.5,
+                  fontStyle: "italic",
+                }}
+              >
+                This will be how your name will be displayed in the account
+                section and in reviews
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box sx={{ mb: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1c1c1c",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Email *
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                name="email"
+                type="email"
+                placeholder="Email"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "0px",
+                    height: "45px",
+                  },
+                }}
+              />
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="lastName" label="Last Name" />
+        </Box>
+
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "700",
+              mb: 3,
+              fontSize: "18px",
+              color: "#1c1c1c",
+            }}
+          >
+            Password
+          </Typography>
+
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Box sx={{ mb: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1c1c1c",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Old Password
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                name="oldPassword"
+                type="password"
+                placeholder="Old password"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "0px",
+                    height: "45px",
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box sx={{ mb: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1c1c1c",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  New Password
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                name="newPassword"
+                type="password"
+                placeholder="New password"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "0px",
+                    height: "45px",
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box sx={{ mb: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1c1c1c",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Repeat New Password
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                name="repeatNewPassword"
+                type="password"
+                placeholder="Repeat new password"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "0px",
+                    height: "45px",
+                  },
+                }}
+              />
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField
-              fullWidth
-              name="email"
-              type="email"
-              label="Email"
-              disabled
-              sx={{
-                "& .MuiInputBase-input.Mui-disabled": {
-                  color: "black", // input text color
-                },
-                "& .MuiInputLabel-root.Mui-disabled": {
-                  color: "black", // label color
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "rgba(0, 0, 0, 0.23)", // optional: visible border
-                },
-              }}
-            />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth label="Phone" name="phone" />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="companyName" label="Company Name" />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="postalCode" label="Postal Code" />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="addressLine1" label="Address Line 1" />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="addressLine2" label="Address Line 2" />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="city" label="City" />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField fullWidth name="state" label="State" />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body2" gutterBottom>
-              Documents (Images and PDFs)
-            </Typography>
-            <DropZone onChange={handleChangeDropZone} processing={processing} />
-            <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
-              {files.map((f, i) => {
-                const isImage = f.type?.startsWith('image/') ||
-                  (f.preview?.match(/\.(jpe?g|gif|png)$/i));
-                return (
-                  <UploadImageBox key={i}>
-                    {isImage ? (
-                      <Box
-                        component="img"
-                        src={f.preview}
-                        width={100}
-                        height={100}
-                        sx={{ objectFit: "cover" }}
-                      />
-                    ) : (
-                      <Box
-                        width={100}
-                        height={100}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{
-                          bgcolor: 'grey.100',
-                          border: '1px solid grey.300'
-                        }}
-                      >
-                        <Typography variant="body2">PDF</Typography>
-                      </Box>
-                    )}
-                    <StyledClear onClick={() => handleDelete(f)()} />
-                  </UploadImageBox>
-                );
-              })}
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <LoadingButton
-              color="secondary"
-              type="submit"
-              variant="contained"
-              loading={isSubmitting}
-              sx={{
-                '&:hover': {
-                  backgroundColor: (theme) => theme.palette.primary.main,
-                },
-              }}
-            >
-              Save Changes
-            </LoadingButton>
-          </Grid>
-        </Grid>
+        </Box>
+
+        <Box sx={{ mt: 5 }}>
+          <QadeemButton
+            type="submit"
+            loading={isSubmitting}
+            sx={{
+              px: 4,
+              py: 1.5,
+              fontSize: "14px",
+              fontWeight: "700",
+              width: { xs: "100%", sm: "auto" },
+            }}
+          >
+            Save Changes
+          </QadeemButton>
+        </Box>
       </form>
     </FormProvider>
   );

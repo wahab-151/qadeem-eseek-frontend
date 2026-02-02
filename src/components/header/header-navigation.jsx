@@ -15,7 +15,7 @@ const standardNavItems = [
   { title: "Product", url: "/allProducts" },
   { title: "Blogs", url: "/blog" },
   { title: "About", url: "/aboutUs" },
-  { title: "Contact", url: "/contact" },
+  { title: "Contact", url: "/contact-us" },
 ];
 
 export default function HeaderNavigation({ navigation }) {
@@ -49,9 +49,10 @@ export default function HeaderNavigation({ navigation }) {
 
   // Use all categories from navigation for the Categories dropdown
   // The navigation prop contains the full category tree from megaMenuList
-  const categoriesMenuData = (navigation && Array.isArray(navigation) && navigation.length > 0)
-    ? navigation
-    : null;
+  const categoriesMenuData =
+    navigation && Array.isArray(navigation) && navigation.length > 0
+      ? navigation
+      : null;
 
   // Debug: Log navigation data
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function HeaderNavigation({ navigation }) {
                 handleMouseEnter(item.title);
               }}
               onMouseLeave={handleMouseLeave}
-              sx={{ 
+              sx={{
                 position: "relative",
                 cursor: "pointer",
               }}
@@ -201,14 +202,17 @@ export default function HeaderNavigation({ navigation }) {
                       nav={{ title: "Categories", child: categoriesMenuData }}
                     />
                   ) : (
-                    <Box sx={{ 
-                      p: 3, 
-                      backgroundColor: "#FEFAF0", 
-                      borderRadius: 0,
-                      textAlign: "center",
-                      color: "grey.600"
-                    }}>
-                      No categories available. Check console for navigation data.
+                    <Box
+                      sx={{
+                        p: 3,
+                        backgroundColor: "#FEFAF0",
+                        borderRadius: 0,
+                        textAlign: "center",
+                        color: "grey.600",
+                      }}
+                    >
+                      No categories available. Check console for navigation
+                      data.
                     </Box>
                   )}
                 </Box>
@@ -216,7 +220,7 @@ export default function HeaderNavigation({ navigation }) {
             </Box>
           );
         }
-        
+
         // Regular navigation item without dropdown
         return (
           <NavLink key={item.title} href={item.url} className="nav-link">
@@ -230,4 +234,3 @@ export default function HeaderNavigation({ navigation }) {
     </FlexBox>
   );
 }
-

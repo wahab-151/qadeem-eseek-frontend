@@ -147,7 +147,7 @@ export const footerSocialLinks = {
 //   address: "5955 Jimmy Carter Blvd ste 120, Norcross, GA 30071, United States"
 // };
 
-export const logoUrl = "/assets/images/logo3.jpeg"
+export const logoUrl = "/assets/images/Large-screen-logo.png"
 
 // export const mainCarouselData = [
 //   {

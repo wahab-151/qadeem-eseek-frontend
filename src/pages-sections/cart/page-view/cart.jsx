@@ -170,7 +170,7 @@ export default function CartPageView() {
       <Box
         sx={{
           position: "relative",
-          minHeight: { xs: 200, md: 393 },
+          minHeight: { xs: 200, md: 393, lg: 400 },
           width: "100%",
           backgroundImage: `url(${BANNER_IMAGE})`,
           backgroundSize: "cover",

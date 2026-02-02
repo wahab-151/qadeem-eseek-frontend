@@ -4,9 +4,7 @@ import Drawer from "@mui/material/Drawer";
 // GLOBAL CUSTOM COMPONENT
 import OverlayScrollbar from "components/overlay-scrollbar";
 
-
 // ================================================================
-
 
 // ================================================================
 
@@ -76,19 +74,25 @@ export default function SideNav({
         }}
         PaperProps={{
           sx: {
-            WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain',
-          }
+            WebkitOverflowScrolling: "touch",
+            overscrollBehavior: "contain",
+          },
         }}
       >
-        <OverlayScrollbar sx={{ height: '100dvh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>{children}</OverlayScrollbar>
+        <OverlayScrollbar
+          sx={{
+            height: "100dvh",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {children}
+        </OverlayScrollbar>
       </Drawer>
 
       {/* Trigger Button (hamburger, etc.) */}
-      {typeof handler === 'function'
-        ? (handler.length <= 1
-            ? handler(handleClose)
-            : handler({ open: handleOpen, close: handleClose }))
+      {typeof handler === "function"
+        ? handler({ open: handleOpen, close: handleClose })
         : null}
     </>
   );
