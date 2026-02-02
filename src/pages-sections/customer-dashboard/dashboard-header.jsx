@@ -3,28 +3,24 @@
 import Link from "next/link";
 
 // MUI
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
 // MUI ICON COMPONENTS
-import { Menu } from "@mui/icons-material";
+import { Menu, Edit } from "@mui/icons-material";
 
 // GLOBAL CUSTOM COMPONENTS
 import SideNav from "components/side-nav";
-import FlexBox from "components/flex-box/flex-box";
 import { Navigation } from "components/layouts/customer-dashboard";
 import useUser from "hooks/useUser";
-import { notFound } from "next/navigation";
 import Person from "@mui/icons-material/Person";
 import { usePathname } from "next/navigation";
+import QadeemButton from "components/QadeemButton";
 
 // STYLED COMPONENT
 const StyledRoot = styled("div")(({ theme }) => ({
   display: "flex",
-  marginTop: theme.spacing(-2),
+  marginTop: 0,
   marginBottom: theme.spacing(3),
   "& .header-hold": {
     flexGrow: 1,
@@ -37,14 +33,12 @@ const StyledRoot = styled("div")(({ theme }) => ({
     },
     [theme.breakpoints.up(575)]: {
       "& .btn-link": {
-        display: "block",
+        display: "inline-flex",
       },
     },
   },
   "& .btn-link": {
     display: "none",
-    paddingInline: "2rem",
-    backgroundColor: theme.palette.primary.light,
     [theme.breakpoints.down(575)]: {
       display: "flex",
       marginTop: "1rem",
@@ -55,15 +49,17 @@ const StyledRoot = styled("div")(({ theme }) => ({
     display: "flex",
     alignItems: "center",
   },
+  "& .menu-icon-box": {
+    display: "none",
+    [theme.breakpoints.down("lg")]: {
+      display: "block",
+    },
+  },
   "& .avatar": {
     width: 35,
     height: 35,
     backgroundColor: theme.palette.grey[200],
-  },
-  [theme.breakpoints.up("lg")]: {
-    "& .right > div": {
-      display: "none",
-    },
+    borderRadius: "0px",
   },
   [theme.breakpoints.down("md")]: {
     flexDirection: "column",
@@ -72,72 +68,11 @@ const StyledRoot = styled("div")(({ theme }) => ({
 
 // ==============================================================
 
-// ==============================================================
-
-// export default function DashboardHeader({
-//   title = "My Profile",
-//   buttonText = "Edit Profile",
-//   Icon = Person,
-//   buttonText,
-// }) {
-//   const { state } = useUser();
-//   const pathname = usePathname();
-// const isProfilePage = pathname === `/profile/${state?.user?.id}`;
-
-//   // console.log("userrrr in headr", title, buttonText, state);
-
-//   // if (!state?.user) notFound();
-//   const HEADER_LINK = (
-//     <Button
-//       href={`/profile/${state?.user?.id}`}
-//       color="primary"
-//       LinkComponent={Link}
-//       className="btn-link"
-//     >
-//       {buttonText}
-//     </Button>
-//   );
-
-//   return (
-//     <StyledRoot>
-//       <div className="header-hold">
-//         <FlexBox alignItems="center" gap={1.5}>
-//           {Icon && (
-//             <Avatar variant="rounded" className="avatar">
-//               <Icon color="primary" />
-//             </Avatar>
-//           )}
-
-//           <Typography noWrap variant="h2">
-//             {title}
-//           </Typography>
-//         </FlexBox>
-
-//         {/* SHOW ONLY SMALL DEVICE */}
-//         <div className="right">
-//           <SideNav
-//             position="left"
-//             handler={({ open, close }) => (
-//               <IconButton onClick={open}>
-//                 <Menu fontSize="small" />
-//               </IconButton>
-//             )}
-//           >
-//             <Navigation />
-//           </SideNav>
-//           {buttonText ? HEADER_LINK : null}
-//         </div>
-//       </div>
-
-//       {buttonText ? HEADER_LINK : null}
-//     </StyledRoot>
-//   );
-// }
-
 export default function DashboardHeader({
   title = "My Profile",
   buttonText = "Edit Profile",
   Icon = Person,
+  hideButton = false,
 }) {
   const { state } = useUser();
   const pathname = usePathname();
@@ -148,48 +83,50 @@ export default function DashboardHeader({
   }
 
   const HEADER_LINK = state?.user?.id && (
-    <Button
+    <QadeemButton
+      variant="outlined"
       href={`/profile/${state.user.id}`}
-      color="primary"
-      LinkComponent={Link}
+      startIcon={<Edit sx={{ fontSize: 16 }} />}
+      component={Link}
       className="btn-link"
+      sx={{
+        borderRadius: "0px",
+        display: "inline-flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       {buttonText}
-    </Button>
+    </QadeemButton>
   );
 
   return (
     <StyledRoot>
-      <div className="header-hold">
-        <FlexBox alignItems="center" gap={1.5}>
-          {Icon && (
-            <Avatar variant="rounded" className="avatar">
-              <Icon color="primary" />
-            </Avatar>
-          )}
-          <Typography noWrap variant="h2">
-            {title}
-          </Typography>
-        </FlexBox>
-
-        {title !== "Requests" && <div className="right">
-          <SideNav
-            position="left"
-            handler={({ open, close }) => (
-              <IconButton onClick={open}>
-                <Menu fontSize="small" />
-              </IconButton>
-            )}
+      <div className="header-hold" style={{ marginTop: 0 }}>
+        {/* Simplified: Title moved to page hero */}
+        {title !== "Requests" && (
+          <div
+            className="right"
+            style={{ flexGrow: 1, justifyContent: "flex-end" }}
           >
-            <Navigation />
-          </SideNav>
+            <div className="menu-icon-box">
+              <SideNav
+                position="left"
+                handler={({ open }) => (
+                  <IconButton onClick={open}>
+                    <Menu fontSize="small" />
+                  </IconButton>
+                )}
+              >
+                <Navigation />
+              </SideNav>
+            </div>
 
-          {/* {!isProfilePage && buttonText ? HEADER_LINK : null} */}
-          {!isProfilePage && HEADER_LINK}
-        </div>}
+            {!isProfilePage && !hideButton && HEADER_LINK}
+          </div>
+        )}
       </div>
-      {title !== "Requests" && !isProfilePage && HEADER_LINK}
-      {/* {!isProfilePage && buttonText ? HEADER_LINK : null} */}
     </StyledRoot>
   );
 }

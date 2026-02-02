@@ -8,23 +8,21 @@ import DashboardHeader from "../../dashboard-header";
 
 // CUSTOM DATA MODEL
 
+// ============================================================
 
 // ============================================================
 
-
-// ============================================================
-
-export default function ProfilePageView({
-  user
-}) {
-  return <Fragment>
+export default function ProfilePageView({ user }) {
+  return (
+    <Fragment>
       {/* TITLE HEADER AREA */}
-      <DashboardHeader  />
+      {/* <DashboardHeader hideButton={true} /> */}
 
       {/* USER PROFILE INFO */}
       {/* <UserAnalytics user={user} /> */}
 
-    {/* USER PROFILE INFO  */}
-      <UserInfo  />   
+      {/* USER PROFILE INFO  */}
+      <UserInfo />
     </Fragment>
+  );
 }

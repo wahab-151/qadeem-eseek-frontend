@@ -296,7 +296,6 @@
 //       router.replace("/home");
 //       return;
 //     }
-   
 
 //     if (parsedUser) {
 //       // console.log("auth user found");
@@ -313,8 +312,6 @@
 //     }
 //   }, [pathname]);
 
-
-  
 //   const cartDataRecieved = cartData?.data?.items?.length > 0;
 
 //   const cartAlreadySet = cartState.cart?.length > 0;
@@ -455,7 +452,6 @@
 //     if (!isSpecialUninitialized) refetchSpecialProducts && refetchSpecialProducts();
 //   }, [userState?.user?.id]);
 
-
 //   if (pathname === "/login" && redirecting) {
 //     return null; // show nothing while redirecting
 //   }
@@ -463,7 +459,7 @@
 //   const MOBILE_VERSION_HEADER = (
 //     <MobileHeader>
 //       <MobileHeader.Left>
-//         <MobileMenu navigation={megaMenuState?.megaMenuList} /> 
+//         <MobileMenu navigation={megaMenuState?.megaMenuList} />
 //       </MobileHeader.Left>
 //       <MobileHeader.Logo logoUrl={logoUrl} />
 //       <MobileHeader.Right>
@@ -539,10 +535,10 @@
 //       {children}
 //       {/* SMALL DEVICE BOTTOM NAVIGATION-bottomsheet */}
 //       <MobileNavigationBar navigation={mobileNavigation} />
-     
+
 //       {/* Floating WhatsApp Button - At the end of Fragment to float above everything */}
 //       <FloatingWhatsApp phone={footerContact?.phone} />
-     
+
 //       {/* FOOTER SECTION */}
 //       <Footer1>
 //         <Box
@@ -727,11 +723,10 @@
 //           </Box>
 //         </Box>
 //       </Footer1>
-     
+
 //     </Fragment>
 //   );
 // }
-
 
 "use client";
 import Link from "next/link";
@@ -758,7 +753,11 @@ import HeaderSearchButton from "components/header/header-search";
 import HeaderSearchDropdown from "components/header/header-search-dropdown";
 import MiniCartDrawer from "components/mini-cart-drawer/MiniCartDrawer";
 import { MobileHeader, HeaderSearch } from "components/header/mobile-header";
-import { SearchInput, SearchInputWithCategory, MobileSearchInput } from "components/search-box";
+import {
+  SearchInput,
+  SearchInputWithCategory,
+  MobileSearchInput,
+} from "components/search-box";
 import {
   footer,
   header,
@@ -797,17 +796,11 @@ import {
   useTheme,
 } from "@mui/material";
 import useProducts from "hooks/useProducts";
-import {
-  languageOptions,
-} from "data/layout-data";
+import { languageOptions } from "data/layout-data";
 import useCart from "hooks/useCart";
 import useCategoriesMegaMenu from "hooks/useCategoriesMegaMenu";
 import BreadcrumbNav from "components/BreadcrumbsNav";
-import {
-  useParams,
-  usePathname,
-  useSearchParams,
-} from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import useGuardedRouter from "hooks/useGuardedRouter";
 import useUser from "hooks/useUser";
 import useWebsiteInfo from "hooks/useWebsiteInfo";
@@ -817,7 +810,11 @@ import EmailIcon from "@mui/icons-material/Email";
 import FloatingWhatsApp from "components/whatsapp/FloatingWhatsApp";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
-import { prefetchCommonRoutes, setupViewportPrefetching, setupHoverPrefetching } from "utils/prefetch";
+import {
+  prefetchCommonRoutes,
+  setupViewportPrefetching,
+  setupHoverPrefetching,
+} from "utils/prefetch";
 import { setupRscDeduplication } from "utils/rsc-deduplication";
 import performanceMonitor from "utils/performanceMonitor";
 
@@ -849,19 +846,21 @@ export default function ShopLayout1(props) {
   const { state, dispatch } = useProducts();
 
   const { state: cartState, dispatch: cartDispatch } = useCart();
-  
+
   // Track last visited page for next login (customer side only)
   useTrackLastVisitedPage(!!userState?.user?.id, userState?.user?.role);
 
   const { state: megaMenuState, dispatch: megaMenuDispatch } =
     useCategoriesMegaMenu();
   // Use website info context state to avoid repeated fetches
-  const { state: websiteInfoState, dispatch: webInfoDispatch } = useWebsiteInfo();
+  const { state: websiteInfoState, dispatch: webInfoDispatch } =
+    useWebsiteInfo();
 
   // New: route-aware checks to limit heavy global queries on specific pages
   const isAllProductsPage = pathname === "/allProducts";
   const isProductPage = pathname.startsWith("/products/");
-  const isCheckoutPage = pathname.startsWith("/checkout") || pathname.startsWith("/payment");
+  const isCheckoutPage =
+    pathname.startsWith("/checkout") || pathname.startsWith("/payment");
 
   // Old flags (kept for easy revert)
   // const shouldFetchMegaMenu = !megaMenuState?.megaMenuList?.length;
@@ -872,13 +871,23 @@ export default function ShopLayout1(props) {
   // New flags: avoid duplicate global products fetch and defer specials on /allProducts
   // Skip heavy queries on checkout/payment pages for faster loading (but keep cart and website info)
   const isHomePage = pathname === "/home";
-  const shouldFetchMegaMenu = !isCheckoutPage && !megaMenuState?.megaMenuList?.length;
+  const shouldFetchMegaMenu =
+    !isCheckoutPage && !megaMenuState?.megaMenuList?.length;
   // Skip getAllProducts on home page and checkout pages - it only needs special products (mostSold, mostPopular, featured)
   // getAllProducts is only needed for product listing/search pages
-  const shouldFetchProducts = !isCheckoutPage && !isAllProductsPage && !isProductPage && !isHomePage && !state?.products?.length;
+  const shouldFetchProducts =
+    !isCheckoutPage &&
+    !isAllProductsPage &&
+    !isProductPage &&
+    !isHomePage &&
+    !state?.products?.length;
   // Cart is still needed on checkout page, so don't skip it
   const shouldFetchCart = !cartState.cart?.length;
-  const shouldFetchSpecialProducts = !isCheckoutPage && !isAllProductsPage && !isProductPage && !state.mostSold?.length;
+  const shouldFetchSpecialProducts =
+    !isCheckoutPage &&
+    !isAllProductsPage &&
+    !isProductPage &&
+    !state.mostSold?.length;
   const {
     data,
     error,
@@ -918,7 +927,7 @@ export default function ShopLayout1(props) {
     error: websiteInfoError,
     refetch: refetchWebsiteInfo,
     isUninitialized: isWebsiteInfoUninitialized,
-  } = useGetWebsiteInfoQuery(undefined, { 
+  } = useGetWebsiteInfoQuery(undefined, {
     // Don't skip - let RTK Query handle caching
     // It will use cached data if available, preventing unnecessary requests
     refetchOnMountOrArgChange: true, // Allow refetch to get fresh data when needed
@@ -926,30 +935,44 @@ export default function ShopLayout1(props) {
     refetchOnReconnect: false,
   });
 
- 
   // Performance: Track website info API call when it starts loading
   useEffect(() => {
-    if (websiteInfoLoading && !isWebsiteInfoUninitialized && typeof window !== 'undefined' && !window.__websiteInfoPerfId) {
+    if (
+      websiteInfoLoading &&
+      !isWebsiteInfoUninitialized &&
+      typeof window !== "undefined" &&
+      !window.__websiteInfoPerfId
+    ) {
       const perfId = performanceMonitor.start(
         `website-info-${Date.now()}`,
-        'website-info-api',
-        { pathname }
+        "website-info-api",
+        { pathname },
       );
       window.__websiteInfoPerfId = perfId;
     }
   }, [websiteInfoLoading, isWebsiteInfoUninitialized, pathname]);
-  
+
   // Use context state as primary source, fallback to query data, then constants
   const footerDataFromQuery = websiteInfo?.data?.content || {};
-  const finalFooterDescription = websiteInfoState?.description || footerDataFromQuery.description ;
-  const finalFooterContact = websiteInfoState?.contact || footerDataFromQuery.contact ;
-  const finalFooterSocialLinks = websiteInfoState?.socialLinks || footerDataFromQuery.socialLinks || footerSocialLinks;
-  
+  const finalFooterDescription =
+    websiteInfoState?.description || footerDataFromQuery.description;
+  const finalFooterContact =
+    websiteInfoState?.contact || footerDataFromQuery.contact;
+  const finalFooterSocialLinks =
+    websiteInfoState?.socialLinks ||
+    footerDataFromQuery.socialLinks ||
+    footerSocialLinks;
+
   // Extract other fields with fallbacks
   const finalAboutUs = websiteInfoState?.aboutUs || footerDataFromQuery.aboutUs;
-  const finalShippingReturnPolicy = websiteInfoState?.shippingAndReturnPolicy || footerDataFromQuery.shippingReturnPolicy;
-  const finalPrivacyPolicy = websiteInfoState?.privacyPolicy || footerDataFromQuery.privacyPolicy;
-  const finalTermsConditionsPolicy = websiteInfoState?.termsAndConditions || footerDataFromQuery.termsConditionsPolicy;
+  const finalShippingReturnPolicy =
+    websiteInfoState?.shippingAndReturnPolicy ||
+    footerDataFromQuery.shippingReturnPolicy;
+  const finalPrivacyPolicy =
+    websiteInfoState?.privacyPolicy || footerDataFromQuery.privacyPolicy;
+  const finalTermsConditionsPolicy =
+    websiteInfoState?.termsAndConditions ||
+    footerDataFromQuery.termsConditionsPolicy;
 
   // console.log("webInfo", websiteInfo?.data?.content )
 
@@ -958,7 +981,9 @@ export default function ShopLayout1(props) {
     const isProductPage = pathname.startsWith("/products/");
     const isAllProductsPage = pathname === "/allProducts";
     const isCategoriesPage = pathname === "/categories";
-    setShouldShowBreadcrumb(breadcrumb && (isProductPage || isAllProductsPage || isCategoriesPage));
+    setShouldShowBreadcrumb(
+      breadcrumb && (isProductPage || isAllProductsPage || isCategoriesPage),
+    );
   }, [pathname, breadcrumb]);
 
   // Only call the query if user is logged in
@@ -982,9 +1007,10 @@ export default function ShopLayout1(props) {
   useEffect(() => {
     if (websiteInfo?.data?.content) {
       // Performance tracking: End timing when data is received
-      if (typeof window !== 'undefined' && window.__websiteInfoPerfId) {
-        performanceMonitor.end(window.__websiteInfoPerfId, 'success', {
-          hasHomepageBanners: !!websiteInfo.data.content.homepageBanners?.length,
+      if (typeof window !== "undefined" && window.__websiteInfoPerfId) {
+        performanceMonitor.end(window.__websiteInfoPerfId, "success", {
+          hasHomepageBanners:
+            !!websiteInfo.data.content.homepageBanners?.length,
           hasDescription: !!websiteInfo.data.content.description,
         });
         delete window.__websiteInfoPerfId;
@@ -1021,9 +1047,9 @@ export default function ShopLayout1(props) {
     }
     if (websiteInfoError) {
       // Performance tracking: End timing on error
-      if (typeof window !== 'undefined' && window.__websiteInfoPerfId) {
-        performanceMonitor.end(window.__websiteInfoPerfId, 'error', {
-          error: websiteInfoError.message || 'Unknown error'
+      if (typeof window !== "undefined" && window.__websiteInfoPerfId) {
+        performanceMonitor.end(window.__websiteInfoPerfId, "error", {
+          error: websiteInfoError.message || "Unknown error",
         });
         delete window.__websiteInfoPerfId;
       }
@@ -1051,7 +1077,9 @@ export default function ShopLayout1(props) {
       setBreadcrumb(path);
     } else if (pathname === "/categories") {
       // Set breadcrumb for categories page
-      setBreadcrumb([{ id: "categories", title: "All Categories", child: null }]);
+      setBreadcrumb([
+        { id: "categories", title: "All Categories", child: null },
+      ]);
     } else {
       // Clear breadcrumb for other pages
       setBreadcrumb([]);
@@ -1099,7 +1127,6 @@ export default function ShopLayout1(props) {
       replace("/home").catch(console.error);
       return;
     }
-   
 
     if (parsedUser) {
       // console.log("auth user found");
@@ -1116,8 +1143,6 @@ export default function ShopLayout1(props) {
     }
   }, [pathname]);
 
-
-  
   const cartDataRecieved = cartData?.data?.items?.length > 0;
 
   const cartAlreadySet = cartState.cart?.length > 0;
@@ -1145,25 +1170,32 @@ export default function ShopLayout1(props) {
     //for logged in user
     if (cartDataRecieved && !cartAlreadySet && user) {
       // Normalize and set cart items with SKU preserved
-      const normalizedItems = cartData?.data?.items
-        ?.filter((item) => item && item.id)
-        .map((item) => ({
-          id: item.id,
-          cartId: item.cartId,
-          slug: item.slug || item.title,
-          price: Number(item.price || 0),
-          title: item.title,
-          thumbnail: item.thumbnail || "",
-          qty: Number(item.quantity || 0),
-          user: user.id,
-          stock: item.stock,
-          category: item?.category || "",
-          // Preserve SKU from server response, ensure it's a string
-          sku: item.sku !== undefined && item.sku !== null && item.sku !== "" ? String(item.sku) : "",
-        })) || [];
-      
+      const normalizedItems =
+        cartData?.data?.items
+          ?.filter((item) => item && item.id)
+          .map((item) => ({
+            id: item.id,
+            cartId: item.cartId,
+            slug: item.slug || item.title,
+            price: Number(item.price || 0),
+            title: item.title,
+            thumbnail: item.thumbnail || "",
+            qty: Number(item.quantity || 0),
+            user: user.id,
+            stock: item.stock,
+            category: item?.category || "",
+            // Preserve SKU from server response, ensure it's a string
+            sku:
+              item.sku !== undefined && item.sku !== null && item.sku !== ""
+                ? String(item.sku)
+                : "",
+          })) || [];
+
       if (normalizedItems.length > 0) {
-        console.log("[ShopLayout] Setting cart with normalized items:", normalizedItems);
+        console.log(
+          "[ShopLayout] Setting cart with normalized items:",
+          normalizedItems,
+        );
         cartDispatch({ type: "SET_CART", payload: normalizedItems });
       }
     }
@@ -1180,17 +1212,25 @@ export default function ShopLayout1(props) {
   // Track app initialization performance
   useEffect(() => {
     // Check if this is a logo click or initial app load
-    const perfId = typeof window !== 'undefined' ? sessionStorage.getItem('__logoClickPerfId') : null;
-    const isInitialLoad = !perfId && pathname === '/home' && !megaMenuState?.megaMenuList?.length;
-    
+    const perfId =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("__logoClickPerfId")
+        : null;
+    const isInitialLoad =
+      !perfId && pathname === "/home" && !megaMenuState?.megaMenuList?.length;
+
     if (isInitialLoad) {
       // Start tracking initial app load
-      const newPerfId = performanceMonitor.start('app-initial-load', 'app-load', {
-        trigger: 'initial-page-load',
-        pathname,
-      });
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('__appLoadPerfId', newPerfId);
+      const newPerfId = performanceMonitor.start(
+        "app-initial-load",
+        "app-load",
+        {
+          trigger: "initial-page-load",
+          pathname,
+        },
+      );
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("__appLoadPerfId", newPerfId);
       }
     }
   }, []);
@@ -1198,18 +1238,20 @@ export default function ShopLayout1(props) {
   // Populate Mega Menu as soon as categories are ready (independent of products)
   useEffect(() => {
     if (!categoriesReady) return;
-    
+
     // Track API response for app load
-    const perfId = typeof window !== 'undefined' 
-      ? (sessionStorage.getItem('__logoClickPerfId') || sessionStorage.getItem('__appLoadPerfId'))
-      : null;
-    
+    const perfId =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("__logoClickPerfId") ||
+          sessionStorage.getItem("__appLoadPerfId")
+        : null;
+
     if (perfId) {
-      performanceMonitor.markMilestone(perfId, 'categories-api-response', {
+      performanceMonitor.markMilestone(perfId, "categories-api-response", {
         categoriesCount: data.data?.length || 0,
       });
     }
-    
+
     const categoryList = convertToCategoryListByDisplayOrder(data.data);
     const categoryNavigation = transformCategoriesForMegaMenu(data.data);
 
@@ -1222,10 +1264,10 @@ export default function ShopLayout1(props) {
       type: "SET_MEGAMENU_LIST",
       payload: categoryNavigation,
     });
-    
+
     // Mark categories mapped milestone
     if (perfId) {
-      performanceMonitor.markMilestone(perfId, 'categories-mapped', {
+      performanceMonitor.markMilestone(perfId, "categories-mapped", {
         categoryListCount: categoryList?.length || 0,
         megaMenuCount: categoryNavigation?.length || 0,
       });
@@ -1239,18 +1281,20 @@ export default function ShopLayout1(props) {
   // Set products state when available (not required for navbar/breadcrumbs)
   useEffect(() => {
     if (!(productsReady && !productsAlreadySet)) return;
-    
+
     // Track products API response for app load
-    const perfId = typeof window !== 'undefined' 
-      ? (sessionStorage.getItem('__logoClickPerfId') || sessionStorage.getItem('__appLoadPerfId'))
-      : null;
-    
+    const perfId =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("__logoClickPerfId") ||
+          sessionStorage.getItem("__appLoadPerfId")
+        : null;
+
     if (perfId) {
-      performanceMonitor.markMilestone(perfId, 'products-api-response', {
+      performanceMonitor.markMilestone(perfId, "products-api-response", {
         productsCount: getProducts?.data?.products?.length || 0,
       });
     }
-    
+
     dispatch({
       type: "SET_PRODUCTS",
       payload: getProducts?.data.products,
@@ -1259,28 +1303,28 @@ export default function ShopLayout1(props) {
       type: "PAGINATION",
       payload: getProducts?.data.pagination,
     });
-    
+
     // Mark products mapped milestone
     if (perfId) {
-      performanceMonitor.markMilestone(perfId, 'products-mapped', {
+      performanceMonitor.markMilestone(perfId, "products-mapped", {
         productsSet: getProducts?.data?.products?.length || 0,
       });
-      
+
       // End app load tracking after all APIs are mapped
       setTimeout(() => {
         const timer = performanceMonitor.activeTimers.get(perfId);
         if (timer) {
-          performanceMonitor.end(perfId, 'success', {
+          performanceMonitor.end(perfId, "success", {
             totalAppLoadTime: performance.now() - timer.startTime,
           });
-          if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('__logoClickPerfId');
-            sessionStorage.removeItem('__appLoadPerfId');
+          if (typeof window !== "undefined") {
+            sessionStorage.removeItem("__logoClickPerfId");
+            sessionStorage.removeItem("__appLoadPerfId");
           }
         }
       }, 100);
     }
-    
+
     if (productError) {
       enqueueSnackbar("Products fetch failed!", { variant: "error" });
     }
@@ -1288,11 +1332,15 @@ export default function ShopLayout1(props) {
 
   // Performance tracking: Track special products API call when it starts loading
   useEffect(() => {
-    if (specialProductLoading && typeof window !== 'undefined' && !window.__specialProductsPerfId) {
+    if (
+      specialProductLoading &&
+      typeof window !== "undefined" &&
+      !window.__specialProductsPerfId
+    ) {
       const perfId = performanceMonitor.start(
         `special-products-${Date.now()}`,
-        'special-products-api',
-        { pathname }
+        "special-products-api",
+        { pathname },
       );
       window.__specialProductsPerfId = perfId;
     }
@@ -1302,48 +1350,58 @@ export default function ShopLayout1(props) {
   useEffect(() => {
     if (specialProducts?.data?.products?.mostSold?.length > 0) {
       // Performance tracking: End timing when data is received
-      if (typeof window !== 'undefined' && window.__specialProductsPerfId) {
-        performanceMonitor.end(window.__specialProductsPerfId, 'success', {
+      if (typeof window !== "undefined" && window.__specialProductsPerfId) {
+        performanceMonitor.end(window.__specialProductsPerfId, "success", {
           mostSoldCount: specialProducts.data.products.mostSold.length,
           mostPopularCount: specialProducts.data.products.mostPopular.length,
           featuredCount: specialProducts.data.products.featured.length,
         });
         delete window.__specialProductsPerfId;
       }
-      
+
       // Also track as milestone in app-load if it's still active
-      const appLoadPerfId = typeof window !== 'undefined' 
-        ? (sessionStorage.getItem('__logoClickPerfId') || sessionStorage.getItem('__appLoadPerfId'))
-        : null;
+      const appLoadPerfId =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem("__logoClickPerfId") ||
+            sessionStorage.getItem("__appLoadPerfId")
+          : null;
       if (appLoadPerfId) {
-        performanceMonitor.markMilestone(appLoadPerfId, 'special-products-api-response', {
-          mostSoldCount: specialProducts.data.products.mostSold.length,
-          mostPopularCount: specialProducts.data.products.mostPopular.length,
-          featuredCount: specialProducts.data.products.featured.length,
-        });
-        performanceMonitor.markMilestone(appLoadPerfId, 'special-products-mapped', {
-          mapped: true,
-        });
-        
+        performanceMonitor.markMilestone(
+          appLoadPerfId,
+          "special-products-api-response",
+          {
+            mostSoldCount: specialProducts.data.products.mostSold.length,
+            mostPopularCount: specialProducts.data.products.mostPopular.length,
+            featuredCount: specialProducts.data.products.featured.length,
+          },
+        );
+        performanceMonitor.markMilestone(
+          appLoadPerfId,
+          "special-products-mapped",
+          {
+            mapped: true,
+          },
+        );
+
         // On home page, complete app-load after special products are mapped
         // (since we skip getAllProducts on home page)
-        if (pathname === '/home') {
+        if (pathname === "/home") {
           setTimeout(() => {
             const timer = performanceMonitor.activeTimers.get(appLoadPerfId);
             if (timer) {
-              performanceMonitor.end(appLoadPerfId, 'success', {
+              performanceMonitor.end(appLoadPerfId, "success", {
                 totalAppLoadTime: performance.now() - timer.startTime,
-                note: 'Completed after special products (getAllProducts skipped on home)',
+                note: "Completed after special products (getAllProducts skipped on home)",
               });
-              if (typeof window !== 'undefined') {
-                sessionStorage.removeItem('__logoClickPerfId');
-                sessionStorage.removeItem('__appLoadPerfId');
+              if (typeof window !== "undefined") {
+                sessionStorage.removeItem("__logoClickPerfId");
+                sessionStorage.removeItem("__appLoadPerfId");
               }
             }
           }, 100);
         }
       }
-      
+
       // console.log("specialProducts received", specialProducts?.data?.products);
       dispatch({
         type: "SET_MOST_SOLD",
@@ -1360,26 +1418,39 @@ export default function ShopLayout1(props) {
     }
     if (specialProductError) {
       // Performance tracking: End timing on error
-      if (typeof window !== 'undefined' && window.__specialProductsPerfId) {
-        performanceMonitor.end(window.__specialProductsPerfId, 'error', {
-          error: specialProductError.message || 'Unknown error'
+      if (typeof window !== "undefined" && window.__specialProductsPerfId) {
+        performanceMonitor.end(window.__specialProductsPerfId, "error", {
+          error: specialProductError.message || "Unknown error",
         });
         delete window.__specialProductsPerfId;
       }
-      
+
       // Track error in app-load if active
-      const appLoadPerfId = typeof window !== 'undefined' 
-        ? (sessionStorage.getItem('__logoClickPerfId') || sessionStorage.getItem('__appLoadPerfId'))
-        : null;
+      const appLoadPerfId =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem("__logoClickPerfId") ||
+            sessionStorage.getItem("__appLoadPerfId")
+          : null;
       if (appLoadPerfId) {
-        performanceMonitor.markMilestone(appLoadPerfId, 'special-products-api-error', {
-          error: specialProductError.message || 'Unknown error'
-        });
+        performanceMonitor.markMilestone(
+          appLoadPerfId,
+          "special-products-api-error",
+          {
+            error: specialProductError.message || "Unknown error",
+          },
+        );
       }
-      
+
       enqueueSnackbar("Special Products Fetch failed!", { variant: "error" });
     }
-  }, [specialProducts, specialProductError, specialProductLoading, dispatch, enqueueSnackbar, pathname]);
+  }, [
+    specialProducts,
+    specialProductError,
+    specialProductLoading,
+    dispatch,
+    enqueueSnackbar,
+    pathname,
+  ]);
 
   // Refetch role-based data when auth changes (login or logout)
   // Use setTimeout to make this non-blocking and allow navigation to complete first
@@ -1401,26 +1472,35 @@ export default function ShopLayout1(props) {
     }, 100); // Small delay to prioritize navigation
 
     return () => clearTimeout(timeoutId);
-  }, [userState?.user?.id, isWebsiteInfoUninitialized, isProductsUninitialized, isSpecialUninitialized, refetchWebsiteInfo, refetchProducts, refetchSpecialProducts]);
+  }, [
+    userState?.user?.id,
+    isWebsiteInfoUninitialized,
+    isProductsUninitialized,
+    isSpecialUninitialized,
+    refetchWebsiteInfo,
+    refetchProducts,
+    refetchSpecialProducts,
+  ]);
 
   // Setup route prefetching for better navigation performance
   useEffect(() => {
     // Prefetch common routes after page load
     prefetchCommonRoutes();
-    
+
     // Setup viewport prefetching for links
-    const mainContent = document.querySelector('main') || document.body;
+    const mainContent = document.querySelector("main") || document.body;
     const cleanupViewport = setupViewportPrefetching(mainContent);
-    
+
     // Setup hover prefetching for navigation
     const navElements = document.querySelectorAll('nav, [role="navigation"]');
-    const cleanupHovers = navElements.length > 0 
-      ? Array.from(navElements).map(el => setupHoverPrefetching(el))
-      : [];
-    
+    const cleanupHovers =
+      navElements.length > 0
+        ? Array.from(navElements).map((el) => setupHoverPrefetching(el))
+        : [];
+
     return () => {
       cleanupViewport?.();
-      cleanupHovers.forEach(cleanup => cleanup?.());
+      cleanupHovers.forEach((cleanup) => cleanup?.());
     };
   }, [pathname]); // Re-run when route changes to setup prefetching for new page
 
@@ -1431,23 +1511,21 @@ export default function ShopLayout1(props) {
   const MOBILE_VERSION_HEADER = (
     <MobileHeader>
       <MobileHeader.Left>
-        <MobileMenu navigation={megaMenuState?.megaMenuList} /> 
+        <MobileHeader.Logo logoUrl={logoUrl} />
       </MobileHeader.Left>
-      <MobileHeader.Logo logoUrl={logoUrl} />
       <MobileHeader.Right>
         <HeaderSearch>
           <MobileSearchInput />
         </HeaderSearch>
-        {/* <HeaderLogin /> */}
-        <AccountPopover />
-        <HeaderCart 
+        <HeaderCart
           onCartClick={() => {
             setIsMiniCartLoading(true);
             setIsMiniCartOpen(true);
             setTimeout(() => setIsMiniCartLoading(false), 150); // Reduced from 300ms for faster rendering
-          }} 
+          }}
           isLoading={isMiniCartLoading}
         />
+        <MobileMenu navigation={megaMenuState?.megaMenuList} />
       </MobileHeader.Right>
     </MobileHeader>
   );
@@ -1470,19 +1548,19 @@ export default function ShopLayout1(props) {
         </Header.Mid>
         <Header.Right>
           {/* HEADER SEARCH BUTTON */}
-          <HeaderSearchButton 
+          <HeaderSearchButton
             onSearchClick={() => {
               setIsSearchOpen(true);
-            }} 
+            }}
           />
           {/* HEADER CART BUTTON */}
-          <HeaderCart 
+          <HeaderCart
             onCartClick={() => {
               setIsMiniCartLoading(true);
               setIsMiniCartOpen(true);
               // Hide loader after drawer animation completes
               setTimeout(() => setIsMiniCartLoading(false), 150); // Reduced from 300ms for faster rendering
-            }} 
+            }}
             isLoading={isMiniCartLoading}
           />
           {/* HEADER WISHLIST BUTTON */}
@@ -1493,11 +1571,10 @@ export default function ShopLayout1(props) {
       </Header>
 
       {/* HEADER SEARCH DROPDOWN */}
-      <HeaderSearchDropdown 
-        open={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
+      <HeaderSearchDropdown
+        open={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
       />
-
 
       {breadcrumb && shouldShowBreadcrumb && (
         <BreadcrumbNav breadcrumb={breadcrumb} />
@@ -1505,8 +1582,8 @@ export default function ShopLayout1(props) {
       {/* BODY CONTENT */}
       {children}
       {/* MINI CART DRAWER */}
-      <MiniCartDrawer 
-        isOpen={isMiniCartOpen} 
+      <MiniCartDrawer
+        isOpen={isMiniCartOpen}
         onClose={() => {
           setIsMiniCartLoading(true);
           setIsMiniCartOpen(false);
@@ -1516,456 +1593,524 @@ export default function ShopLayout1(props) {
       />
       {/* SMALL DEVICE BOTTOM NAVIGATION-bottomsheet */}
       <MobileNavigationBar navigation={mobileNavigation} />
-     
+
       {/* Floating WhatsApp Button - At the end of Fragment to float above everything */}
       <FloatingWhatsApp phone={finalFooterContact?.phone} />
-     
-    {/* FOOTER SECTION  */}
-    <Footer1>
-      <Grid container spacing={4} sx={{ pb: 4 }}>
-        {/* Column 1: Company Information */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            {/* Logo */}
-            <Link href="/" style={{ display: "block", marginBottom: "16px", maxWidth: "100%", width: "fit-content" }}>
-              <Image
-                src="/assets/images/footer-logo.png"
-                alt="logo"
-                width={230}
-                height={94}
+
+      {/* FOOTER SECTION  */}
+      <Footer1>
+        <Grid container spacing={4} sx={{ pb: 4 }}>
+          {/* Column 1: Company Information */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
+              {/* Logo */}
+              <Link
+                href="/"
                 style={{
-                  objectFit: "contain",
-                  width: "230px",
-                  height: "auto",
-                  maxWidth: "230px",
                   display: "block",
-                  flexShrink: 0,
+                  marginBottom: "16px",
+                  maxWidth: "100%",
+                  width: "fit-content",
                 }}
-              />
-            </Link>
+              >
+                <Image
+                  src="/assets/images/footer-logo.png"
+                  alt="logo"
+                  width={230}
+                  height={94}
+                  style={{
+                    objectFit: "contain",
+                    width: "230px",
+                    height: "auto",
+                    maxWidth: "230px",
+                    display: "block",
+                    flexShrink: 0,
+                  }}
+                />
+              </Link>
 
-            {/* Description */}
-            <Typography
-              variant="body2"
-              sx={{
-                color: "#0B090A",
-                mb: 2,
-                fontSize: "0.875rem",
-                lineHeight: 1.6,
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspetristique. Duis n eros elecuenindisse varius enim
-            </Typography>
-
-            {/* Phone */}
-            <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-              <PhoneIcon sx={{ color: "#0B090A", fontSize: "1.2rem", mr: 1 }} />
+              {/* Description */}
               <Typography
                 variant="body2"
                 sx={{
                   color: "#0B090A",
+                  mb: 2,
                   fontSize: "0.875rem",
+                  lineHeight: 1.6,
                 }}
               >
-                +92 3000000000
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspetristique. Duis n eros elecuenindisse varius enim
               </Typography>
-            </Box>
 
-            {/* Email */}
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <EmailIcon sx={{ color: "#0B090A", fontSize: "1.2rem", mr: 1 }} />
+              {/* Phone */}
+              <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                <PhoneIcon
+                  sx={{ color: "#0B090A", fontSize: "1.2rem", mr: 1 }}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  +92 3000000000
+                </Typography>
+              </Box>
+
+              {/* Email */}
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <EmailIcon
+                  sx={{ color: "#0B090A", fontSize: "1.2rem", mr: 1 }}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#0B090A",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  forexample@gmail.com
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+
+          {/* Column 2: Quick Links */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
               <Typography
-                variant="body2"
+                variant="h6"
                 sx={{
                   color: "#0B090A",
-                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  mb: 2,
                 }}
               >
-                forexample@gmail.com
+                Quick Links
               </Typography>
-            </Box>
-          </Box>
-        </Grid>
-
-        {/* Column 2: Quick Links */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#0B090A",
-                fontWeight: 600,
-                fontSize: "1rem",
-                mb: 2,
-              }}
-            >
-              Quick Links
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Link href="/" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Home
-                </Typography>
-              </Link>
-              <Link href="/shop" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Shop
-                </Typography>
-              </Link>
-              <Link href="/products" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Products
-                </Typography>
-              </Link>
-              <Link href="/aboutUs" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  About
-                </Typography>
-              </Link>
-              <Link href="/blogs" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Blogs
-                </Typography>
-              </Link>
-            </Box>
-          </Box>
-        </Grid>
-
-        {/* Column 3: Help & Infor */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#0B090A",
-                fontWeight: 600,
-                fontSize: "1rem",
-                mb: 2,
-              }}
-            >
-              Help & Infor
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Link href="/orders" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Track Your Order
-                </Typography>
-              </Link>
-              <Link href="/returns" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Returns Policies
-                </Typography>
-              </Link>
-              <Link href="/shipping" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Shipping + Delivery
-                </Typography>
-              </Link>
-              <Link href="/contact" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  Contact Us
-                </Typography>
-              </Link>
-              <Link href="/faqs" style={{ textDecoration: "none" }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#0B090A",
-                    fontSize: "0.875rem",
-                    "&:hover": { color: "#0B090A", fontWeight: 500, opacity: 0.7 },
-                  }}
-                >
-                  FAQs
-                </Typography>
-              </Link>
-            </Box>
-          </Box>
-        </Grid>
-
-        {/* Column 4: Newsletter */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#0B090A",
-                fontWeight: 600,
-                fontSize: "1rem",
-                mb: 1.5,
-              }}
-            >
-              Newsletter
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "#0B090A",
-                fontSize: "0.875rem",
-                mb: 2,
-                lineHeight: 1.6,
-              }}
-            >
-              Sign up for newsletter and get 10% cash back offer
-            </Typography>
-
-            {/* Newsletter Subscription Form */}
-            <Box
-              sx={{
-                display: "flex",
-                gap: 0,
-                mb: 3,
-              }}
-            >
-              <TextField
-                placeholder="Email address"
-                variant="outlined"
-                size="small"
-                sx={{
-                  flex: 1,
-                  "& .MuiOutlinedInput-root": {
-                    backgroundColor: "#FEFAF0",
-                    borderRadius: 0,
-                    "& fieldset": {
-                      borderColor: "#0B090A",
-                      borderWidth: "1px",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#0B090A",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#0B090A",
-                      borderWidth: "1px",
-                    },
-                    "&.Mui-focused": {
-                      outline: "none",
-                      boxShadow: "none",
-                    },
-                  },
-                  "& input": {
-                    padding: "8px 12px",
-                    fontSize: "0.875rem",
-                    color: "#0B090A",
-                    backgroundColor: "#FEFAF0",
-                    "&:focus": {
-                      outline: "none",
-                    },
-                    "&::placeholder": {
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Link href="/" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
                       color: "#0B090A",
-                      opacity: 0.6,
-                    },
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0B090A",
-                  },
-                }}
-              />
-              <Button
-                variant="contained"
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Home
+                  </Typography>
+                </Link>
+                <Link href="/shop" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Shop
+                  </Typography>
+                </Link>
+                <Link href="/products" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Products
+                  </Typography>
+                </Link>
+                <Link href="/aboutUs" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    About
+                  </Typography>
+                </Link>
+                <Link href="/blogs" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Blogs
+                  </Typography>
+                </Link>
+              </Box>
+            </Box>
+          </Grid>
+
+          {/* Column 3: Help & Infor */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
+              <Typography
+                variant="h6"
                 sx={{
-                  backgroundColor: "#0B090A",
-                  color: "#fff",
-                  borderRadius: 0,
-                  px: 2,
-                  textTransform: "none",
-                  fontSize: "0.875rem",
-                  fontWeight: 500,
-                  "&:hover": {
-                    backgroundColor: "#0B090A",
-                    opacity: 0.9,
-                  },
+                  color: "#0B090A",
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  mb: 2,
                 }}
               >
-                Subscribe
-              </Button>
+                Help & Infor
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Link href="/orders" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Track Your Order
+                  </Typography>
+                </Link>
+                <Link href="/returns" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Returns Policies
+                  </Typography>
+                </Link>
+                <Link href="/shipping" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Shipping + Delivery
+                  </Typography>
+                </Link>
+                <Link href="/contact-us" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    Contact Us
+                  </Typography>
+                </Link>
+                <Link href="/faqs" style={{ textDecoration: "none" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#0B090A",
+                      fontSize: "0.875rem",
+                      "&:hover": {
+                        color: "#0B090A",
+                        fontWeight: 500,
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
+                    FAQs
+                  </Typography>
+                </Link>
+              </Box>
             </Box>
+          </Grid>
 
-            {/* Social Media Icons */}
-            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-              {/* Facebook Icon */}
-              <Link
-                href={footerSocialLinks?.facebook || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+          {/* Column 4: Newsletter */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "#0B090A",
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  mb: 1.5,
+                }}
               >
-                <Box
-                  component="svg"
-                  viewBox="0 0 24 24"
+                Newsletter
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "#0B090A",
+                  fontSize: "0.875rem",
+                  mb: 2,
+                  lineHeight: 1.6,
+                }}
+              >
+                Sign up for newsletter and get 10% cash back offer
+              </Typography>
+
+              {/* Newsletter Subscription Form */}
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 0,
+                  mb: 3,
+                }}
+              >
+                <TextField
+                  placeholder="Email address"
+                  variant="outlined"
+                  size="small"
                   sx={{
-                    width: "1.5rem",
-                    height: "1.5rem",
-                    fill: "#0B090A",
-                    "&:hover": { opacity: 0.7 },
-                    transition: "opacity 0.2s",
+                    flex: 1,
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "#FEFAF0",
+                      borderRadius: 0,
+                      "& fieldset": {
+                        borderColor: "#0B090A",
+                        borderWidth: "1px",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#0B090A",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#0B090A",
+                        borderWidth: "1px",
+                      },
+                      "&.Mui-focused": {
+                        outline: "none",
+                        boxShadow: "none",
+                      },
+                    },
+                    "& input": {
+                      padding: "8px 12px",
+                      fontSize: "0.875rem",
+                      color: "#0B090A",
+                      backgroundColor: "#FEFAF0",
+                      "&:focus": {
+                        outline: "none",
+                      },
+                      "&::placeholder": {
+                        color: "#0B090A",
+                        opacity: 0.6,
+                      },
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#0B090A",
+                    },
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#0B090A",
+                    color: "#fff",
+                    borderRadius: 0,
+                    px: 2,
+                    textTransform: "none",
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                    "&:hover": {
+                      backgroundColor: "#0B090A",
+                      opacity: 0.9,
+                    },
                   }}
                 >
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </Box>
-              </Link>
+                  Subscribe
+                </Button>
+              </Box>
 
-              {/* X (Twitter) Icon */}
-              <Link
-                href={footerSocialLinks?.twitter || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
-              >
-                <Box
-                  component="svg"
-                  viewBox="0 0 24 24"
-                  sx={{
-                    width: "1.5rem",
-                    height: "1.5rem",
-                    fill: "#0B090A",
-                    "&:hover": { opacity: 0.7 },
-                    transition: "opacity 0.2s",
+              {/* Social Media Icons */}
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                {/* Facebook Icon */}
+                <Link
+                  href={footerSocialLinks?.facebook || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </Box>
-              </Link>
+                  <Box
+                    component="svg"
+                    viewBox="0 0 24 24"
+                    sx={{
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      fill: "#0B090A",
+                      "&:hover": { opacity: 0.7 },
+                      transition: "opacity 0.2s",
+                    }}
+                  >
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </Box>
+                </Link>
 
-              {/* Instagram Icon */}
-              <Link
-                href={footerSocialLinks?.instagram || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
-              >
-                <Box
-                  component="svg"
-                  viewBox="0 0 24 24"
-                  sx={{
-                    width: "1.5rem",
-                    height: "1.5rem",
-                    fill: "none",
-                    stroke: "#0B090A",
-                    strokeWidth: 1.5,
-                    strokeLinecap: "round",
-                    strokeLinejoin: "round",
-                    "&:hover": { opacity: 0.7 },
-                    transition: "opacity 0.2s",
+                {/* X (Twitter) Icon */}
+                <Link
+                  href={footerSocialLinks?.twitter || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </Box>
-              </Link>
+                  <Box
+                    component="svg"
+                    viewBox="0 0 24 24"
+                    sx={{
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      fill: "#0B090A",
+                      "&:hover": { opacity: 0.7 },
+                      transition: "opacity 0.2s",
+                    }}
+                  >
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </Box>
+                </Link>
 
-              {/* LinkedIn Icon */}
-              <Link
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
-              >
-                <Box
-                  component="svg"
-                  viewBox="0 0 24 24"
-                  sx={{
-                    width: "1.5rem",
-                    height: "1.5rem",
-                    fill: "#0B090A",
-                    "&:hover": { opacity: 0.7 },
-                    transition: "opacity 0.2s",
+                {/* Instagram Icon */}
+                <Link
+                  href={footerSocialLinks?.instagram || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </Box>
-              </Link>
+                  <Box
+                    component="svg"
+                    viewBox="0 0 24 24"
+                    sx={{
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      fill: "none",
+                      stroke: "#0B090A",
+                      strokeWidth: 1.5,
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      "&:hover": { opacity: 0.7 },
+                      transition: "opacity 0.2s",
+                    }}
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </Box>
+                </Link>
+
+                {/* LinkedIn Icon */}
+                <Link
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    component="svg"
+                    viewBox="0 0 24 24"
+                    sx={{
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      fill: "#0B090A",
+                      "&:hover": { opacity: 0.7 },
+                      transition: "opacity 0.2s",
+                    }}
+                  >
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  </Box>
+                </Link>
+              </Box>
             </Box>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
 
-      {/* Copyright Section */}
-      <Box
-        sx={{
-          width: "100%",
-          borderTop: "1px solid #D7CCC8",
-          pt: 2,
-          pb: 2,
-          textAlign: "center",
-          px: { xs: 2, sm: 3 },
-          mx: { xs: -2, sm: -3 },
-        }}
-      >
-        <Typography
-          variant="body2"
+        {/* Copyright Section */}
+        <Box
           sx={{
-            color: "#0B090A",
-            fontSize: "0.875rem",
+            width: "100%",
+            borderTop: "1px solid #D7CCC8",
+            pt: 2,
+            pb: 2,
+            textAlign: "center",
+            px: { xs: 2, sm: 3 },
+            mx: { xs: -2, sm: -3 },
           }}
         >
-          Copyright © 2025 Qadeem handicraft | All Rights Reserved
-        </Typography>
-      </Box>
-    </Footer1>
-     
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#0B090A",
+              fontSize: "0.875rem",
+            }}
+          >
+            Copyright © 2025 Qadeem handicraft | All Rights Reserved
+          </Typography>
+        </Box>
+      </Footer1>
     </Fragment>
   );
 }

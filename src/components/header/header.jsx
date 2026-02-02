@@ -202,7 +202,7 @@ Header.Logo = ({
           width: 'fit-content'
         }}
       >
-        {/* Large screen logo */}
+        {/* Large screen logo - QADEEM */}
         <Box
           sx={{
             display: { xs: 'none', md: 'block' },
@@ -223,25 +223,25 @@ Header.Logo = ({
             height={94}
           />
         </Box>
-        {/* Small screen logo */}
+        {/* Small screen logo - QADEEM (smaller size) */}
         <Box
           sx={{
             display: { xs: 'block', md: 'none' },
           }}
         >
           <LazyImage
-            src="/assets/images/small-screen-logo.png"
+            src="/assets/images/Large-screen-logo.png"
             alt="logo"
             style={{
               objectFit: 'contain',
-              width: '230px',
+              width: '120px',
               height: 'auto',
-              maxWidth: '230px',
+              maxWidth: '120px',
               display: 'block',
               flexShrink: 0
             }}
-            width={230}
-            height={60}
+            width={120}
+            height={49}
           />
         </Box>
       </Link>

@@ -25,24 +25,26 @@ export default function ClientProviders({ children, modal }) {
     try {
       localStorage.getItem("auth-token");
       localStorage.getItem("auth-user-role");
-    } catch { }
+    } catch {}
   }, []);
 
   useEffect(() => {
     // Hide Next.js dev overlays/toasts (no-ops in production)
-    const devOverlay = document.querySelector('[data-nextjs-dev-overlay]');
-    if (devOverlay) devOverlay.style.display = 'none';
+    const devOverlay = document.querySelector("[data-nextjs-dev-overlay]");
+    if (devOverlay) devOverlay.style.display = "none";
 
     const toast = document.querySelector('[data-nextjs-toast="true"]');
-    if (toast) toast.style.display = 'none';
+    if (toast) toast.style.display = "none";
 
-    const nIndicator = document.querySelector('body > div[style*="bottom: 0px"][style*="left: 0px"]');
-    if (nIndicator) nIndicator.style.display = 'none';
+    const nIndicator = document.querySelector(
+      'body > div[style*="bottom: 0px"][style*="left: 0px"]',
+    );
+    if (nIndicator) nIndicator.style.display = "none";
   }, []);
 
   // Suppress hydration warnings only on client (in effect)
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
     const originalError = console.error;
     // eslint-disable-next-line no-console
     console.error = (...args) => {
@@ -61,8 +63,6 @@ export default function ClientProviders({ children, modal }) {
   }, []);
   console.warn("[ClientProviders] mounted");
 
-
-
   return (
     <Provider store={store}>
       <WebsiteInfoProvider>
@@ -79,12 +79,8 @@ export default function ClientProviders({ children, modal }) {
                           <ProgressBar />
                           <SnackbarProvider>
                             <ErrorBoundary>
-                              {React.Children.toArray(modal).map((child, index) => 
-                                React.isValidElement(child) ? React.cloneElement(child, { key: `modal-${index}` }) : child
-                              )}
-                              {React.Children.toArray(children).map((child, index) => 
-                                React.isValidElement(child) ? React.cloneElement(child, { key: `child-${index}` }) : child
-                              )}
+                              {modal}
+                              {children}
                             </ErrorBoundary>
                           </SnackbarProvider>
                         </LoadingProvider>
@@ -100,5 +96,3 @@ export default function ClientProviders({ children, modal }) {
     </Provider>
   );
 }
-
-
